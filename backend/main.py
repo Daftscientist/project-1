@@ -8,7 +8,6 @@ prefix = routes.routes_v1[0]
 for route in routes.routes_v1[1]:
     app.add_route(
         handler=route[1][1], 
-        uri=route[0],
-        methods=route[1][0],
-        version_prefix=prefix
+        uri="/" + prefix + route[0],
+        methods=route[1][0]
     )
