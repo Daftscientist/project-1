@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 class User(Base):
     __tablename__ = 'User'
 
-    identifier = Column(Integer, nullable=False, autoincrement=True)
+    identifier = Column(Integer, nullable=False, autoincrement=True, unique=True)
     uuid = Column(Uuid, nullable=False, primary_key=True, default=uuid.uuid4())
     username = Column(String, nullable=False)
     email = Column(String, nullable=False)

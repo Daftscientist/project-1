@@ -5,14 +5,16 @@ from sqlalchemy.sql import func
 
 
 class Server(Base):
-    __tablename__ = 'Server'
+    __tablename__ = "Server"
 
     identifier = Column(Integer, nullable=False, autoincrement=True)
     uuid = Column(Uuid, nullable=False, primary_key=True, default=uuid.uuid4())
     name = Column(String, nullable=False)
     node_identifier = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now()
+    )
 
     cpu_limit = Column(Integer, nullable=False)
     memory_limit = Column(Integer, nullable=False)
