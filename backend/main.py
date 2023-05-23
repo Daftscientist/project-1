@@ -1,14 +1,17 @@
 import sanic
 import routes
+import asyncio
 import datetime
 from core import cache
+from database import db
 from sanic.handlers import ErrorHandler
 
 app = sanic.Sanic("backend")
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 prefix = routes.routes_v1[0]
 
-cache.init()
+asyncio.run(cache.init())
+asyncio.run(db.init(True))
 
 class CustomErrorHandler(ErrorHandler):
     def default(self, request: sanic.Request, exception: Exception) -> sanic.HTTPResponse:

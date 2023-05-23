@@ -1,5 +1,5 @@
 from database import db
-from database.dals import user_dal
+from database.dals.user_dal import UsersDAL
 
 CACHED_DATA = dict()
 CACHED_EMAIL_TO_UUID = dict()
@@ -11,6 +11,11 @@ async def init():
     async with db.async_session() as session:
         async with session.begin():
             users_dal = UsersDAL(session)
+            users = await users_dal.get_all_users()
+            for user in users:
+                await add(user.identifier, user.uuid, user.email, user.username, user.avatar, user.google_account_identifier, user.discord_account_identifier, user.created_at)
+    print("Cache initilised.")
+    print("Cache contains " + str(len(CACHED_DATA)) + " users.")
 
 
 async def add(identifier: str, uuid: str, email: str, username: str, avatar: str, google_account_identifier: str, discord_account_identifier: str, created_at: str) -> dict:
