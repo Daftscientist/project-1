@@ -15,7 +15,7 @@ class CustomErrorHandler(ErrorHandler):
         ''' handles errors that have no error handlers assigned '''
         
         logf = open("./localstorage/exceptions.log", "w")
-        logf.write(f"ID: {str(request.id)} - Message: '{str(exception)}' - Code: {str(exception.status_code)} - Timestamp: {str(datetime.datetime.now())}")
+        logf.write(f"ID: {str(request.id)} - Message: '{str(exception)}' - Code: {str(exception.status_code)} - Timestamp: {str(datetime.datetime.now())}\n")
         
         return sanic.json({
             "error": str(exception),
