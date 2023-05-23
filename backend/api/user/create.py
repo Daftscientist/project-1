@@ -4,7 +4,7 @@ from database.dals.user_dal import UsersDAL
 from sanic_dantic import parse_params, BaseModel
 from database import db
 
-EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
 
 class CreateUserRequest(BaseModel):
