@@ -43,7 +43,6 @@ class CreateView(HTTPMethodView):
         if not EMAIL_REGEX.fullmatch(params.email):
             raise BadRequest("Email must be a valid email address.")
 
-
         async with db.async_session() as session:
             async with session.begin():
                 users_dal = UsersDAL(session)
@@ -51,5 +50,5 @@ class CreateView(HTTPMethodView):
                     return await BadRequest(request, "Email or username already exists.")
                 
                 await users_dal.create_user(params.username, params.email, await encoder.hash_password(params.password.encode('utf-8')))
-
+        
         return await Success(request, "User created successfully.")

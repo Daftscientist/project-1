@@ -34,8 +34,7 @@ class CustomErrorHandler(ErrorHandler):
 app.error_handler = CustomErrorHandler()
 
 for route in routes.routes_v1[1]:
-    print(f"Adding route: {route[0]} {route[1]}")
     app.add_route(
         handler=route[1],
-        uri=f"/{prefix}/{route[0]}",
+        uri=f"/{prefix}{route[0]}",
     )
