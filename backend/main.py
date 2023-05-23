@@ -1,14 +1,14 @@
 import sanic
 import routes
 import datetime
+from core import cache
+from sanic.handlers import ErrorHandler
 
 app = sanic.Sanic("backend")
-
 app.config.FALLBACK_ERROR_FORMAT = "auto"
-
 prefix = routes.routes_v1[0]
 
-from sanic.handlers import ErrorHandler
+cache.init()
 
 class CustomErrorHandler(ErrorHandler):
     def default(self, request: sanic.Request, exception: Exception) -> sanic.HTTPResponse:
