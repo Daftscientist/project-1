@@ -19,9 +19,10 @@ class CustomErrorHandler(ErrorHandler):
         except AttributeError:
             status_code = 500
 
-        logf = open("./localstorage/exceptions.log", "w")
+        logf = open("./localstorage/exceptions.log", "a")
         logf.write(f"ID: {str(request.id)} - Message: '{str(exception)}' - Code: {str(status_code)} - Timestamp: {str(datetime.datetime.now())}\n")
-        
+        logf.close()
+
         return sanic.json({
             "error": str(exception),
             "status": status_code,
@@ -33,8 +34,8 @@ class CustomErrorHandler(ErrorHandler):
 app.error_handler = CustomErrorHandler()
 
 for route in routes.routes_v1[1]:
+    print(f"Adding route: {route[0]} {route[1]}")
     app.add_route(
-        handler=route[1][1], 
-        uri="/" + prefix + route[0],
-        methods=route[1][0]
+        handler=route[1],
+        uri=f"/{prefix}/{route[0]}",
     )
