@@ -11,7 +11,7 @@ A brief description of your project.
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Tests](#tests)
+- [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -33,7 +33,7 @@ Explain how to use your project. Provide examples or code snippets to demonstrat
 import my_pterodactyl
 ```
 
-# Code examples here
+## Examples
 Tests
 Describe how to run the automated tests for your project. Provide any details about the testing framework used.
 
