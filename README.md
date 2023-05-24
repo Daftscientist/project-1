@@ -12,6 +12,7 @@ A brief description of your project.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Responses](#responses)
 - [Plugin System](#plugins)
 - [Contributing](#contributing)
 - [License](#license)
@@ -115,10 +116,17 @@ response = requests.post(API_URL + "/api/v1/user/logout", cookies={'session': 'j
 print(response.json())
 ```
 
-## Examples
-Tests
-Describe how to run the automated tests for your project. Provide any details about the testing framework used.
-
+## Responses
+Example error:
+```json
+{
+  "error": "Page not found",
+  "status": 404,
+  "path": "/api/v1/user/nothing",
+   "request_id": "reuqest-id",
+  "timestamp": "May 10, 2023, 12:00:00 AM"
+ }
+```
 
 ## Contributing
 We welcome contributions from the community! To contribute to this project, please follow the guidelines below:
