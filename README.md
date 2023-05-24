@@ -12,16 +12,18 @@ A brief description of your project.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Plugin System](#plugins)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
-Highlight the main features of your project and how it can be useful to others. You can use bullet points or a brief description for each feature.
-
-- Feature 1
-- Feature 2
-- Feature 3
+### Made with compatibility in mind 
+- Built with SQLAlchemy, allowing for connections to `SQLite`, `Postgresql`, `MySQL`, `Oracle`, `MS-SQL`, `Firebird`, `Sybase`.
+### [Plugin system](#plugin)
+- Ingegrated, out-the-box [plugin support](#plugins).
+### Contributor focused
+- Built with documentation, comments and moduled. This allows for easy contribiution.
 
 ## Installation
 
