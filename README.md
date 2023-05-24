@@ -36,6 +36,38 @@ Unzip the downloaded files:
 Ubuntu: unzip my-pterodactyl-main.zip -d my-pterodactyl-main
 Windows: zip file. tar -xf my-pterodactyl-main.zip
 ```
+Check if python is installed:
+```shell
+python –version
+OR
+python3 -version
+```
+Make sure PIP package manager is installed:
+```shell
+python -m pip --version
+OR
+python3 -m pip --version
+```
+Run the backend API:
+```shell
+cd Backend
+sanic main
+```
+Use `ctrl+c` to stop the backend running.
+
+### Development tips
+
+Running the backend API with live reloading (e.g. watchdog):
+```shell
+cd Backend
+sanic main --dev
+```
+Running the backend API in debug mode:
+```shell
+cd Backend
+sanic main --debug
+```
+You can combine `sanic main --dev --debug` for development.
 
 ## Usage
 Explain how to use your project. Provide examples or code snippets to demonstrate its functionality.
