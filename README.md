@@ -32,10 +32,8 @@ Download the files:
 git clone https://github.com/Daftscientist/my-pterodactyl
 ```
 Unzip the downloaded files:
-```shell
-Ubuntu: unzip my-pterodactyl-main.zip -d my-pterodactyl-main
-Windows: zip file. tar -xf my-pterodactyl-main.zip
-```
+Ubuntu: ```unzip my-pterodactyl-main.zip -d my-pterodactyl-main```
+Windows: ```zip file. tar -xf my-pterodactyl-main.zip```
 Check if python is installed:
 ```shell
 python –version
