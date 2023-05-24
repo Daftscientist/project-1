@@ -27,7 +27,16 @@ A brief description of your project.
 
 ## Installation
 
-Provide instructions on how to install and set up your project. Include any prerequisites or dependencies required.
+Download the files:
+```shell
+git clone https://github.com/Daftscientist/my-pterodactyl
+```
+Unzip the downloaded files:
+```shell
+Ubuntu: unzip my-pterodactyl-main.zip -d my-pterodactyl-main
+Windows: zip file. tar -xf my-pterodactyl-main.zip
+```
+
 ## Usage
 Explain how to use your project. Provide examples or code snippets to demonstrate its functionality.
 
