@@ -48,6 +48,12 @@ python -m pip --version
 OR
 python3 -m pip --version
 ```
+Install requirements:
+```shell
+pip install -r requirements.txt
+OR
+pip3 install -r requirements.txt
+```
 Run the backend API:
 ```shell
 cd Backend
