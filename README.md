@@ -20,7 +20,7 @@ A brief description of your project.
 
 ### Made with compatibility in mind 
 - Built with SQLAlchemy, allowing for connections to `SQLite`, `Postgresql`, `MySQL`, `Oracle`, `MS-SQL`, `Firebird`, `Sybase`.
-### [Plugin system](#plugin)
+### Plugin system
 - Ingegrated, out-the-box [plugin support](#plugins).
 ### Contributor focused
 - Built with documentation, comments and moduled. This allows for easy contribiution.
