@@ -97,7 +97,7 @@ import requests
 
 API_URL = "http://localhost:8080/"
 
-response = requests.get(API_URL + "/api/v1/user/create", json={
+response = requests.post(API_URL + "/api/v1/user/create", json={
   "username": "example_username",
   "email": "user@example.com",
   "password": "password1",
@@ -111,7 +111,7 @@ import requests
 
 API_URL = "http://localhost:8080/"
 
-response = requests.get(API_URL + "/api/v1/user/logout", cookies={'session': 'jwt-encoded-string'})
+response = requests.post(API_URL + "/api/v1/user/logout", cookies={'session': 'jwt-encoded-string'})
 print(response.json())
 ```
 
