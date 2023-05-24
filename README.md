@@ -48,7 +48,7 @@ python -m pip --version
 OR
 python3 -m pip --version
 ```
-Install requirements:
+Install required dependencies:
 ```shell
 pip install -r requirements.txt
 OR
