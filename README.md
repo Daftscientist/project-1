@@ -111,7 +111,7 @@ import requests
 
 API_URL = "http://localhost:8080/"
 
-response = requests.get(API_URL + "/api/v1/user/logout")
+response = requests.get(API_URL + "/api/v1/user/logout", cookies={'session': 'jwt-encoded-string'})
 print(response.json())
 ```
 
