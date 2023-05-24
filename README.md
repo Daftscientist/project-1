@@ -90,10 +90,29 @@ sanic main --debug
 You can combine `sanic main --dev --debug` for development.
 
 ## Usage
-Explain how to use your project. Provide examples or code snippets to demonstrate its functionality.
 
+Creating a user:
 ```python
-import my_pterodactyl
+import requests
+
+API_URL = "http://localhost:8080/"
+
+response = requests.get(API_URL + "/api/v1/user/create", json={
+  "username": "example_username",
+  "email": "user@example.com",
+  "password": "password1",
+  "repeated_password": "password1"
+})
+print(response.json())
+```
+Logging out (cookies from login must be included in request):
+```python
+import requests
+
+API_URL = "http://localhost:8080/"
+
+response = requests.get(API_URL + "/api/v1/user/logout")
+print(response.json())
 ```
 
 ## Examples
