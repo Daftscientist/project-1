@@ -63,6 +63,20 @@ Use `ctrl+c` to stop the backend running.
 
 ### Development tips
 
+Creating virtual environments:
+```shell
+python -m venv
+OR
+python3 -m venv
+```
+Entering the virtual environment:
+```shell
+Unix or MacOS - bash shell: source /path/to/venv/bin/activate
+Unix or MacOS - csh shell: source /path/to/venv/bin/activate.csh
+Unix or MacOS - fish shell: source /path/to/venv/bin/activate.fish
+Windows - Command Prompt: path\to\venv\Scripts\activate.bat
+Windows - PowerShell: path\to\venv\Scripts\Activate.ps1
+```
 Running the backend API with live reloading (e.g. watchdog):
 ```shell
 cd Backend
