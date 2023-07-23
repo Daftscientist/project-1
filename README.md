@@ -13,6 +13,7 @@ A brief description of your project.
 - [Usage](#usage)
 - [Examples](#examples)
 - [Responses](#responses)
+- [Exceptions](#exceptions-in-production)
 - [Plugin System](#plugins)
 - [Contributing](#contributing)
 - [License](#license)
