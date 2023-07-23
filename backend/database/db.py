@@ -13,5 +13,3 @@ async def init(dev=False):
         if dev:
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
-        else:
-            await conn.run_sync(Base.metadata.create_all)
