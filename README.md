@@ -124,7 +124,7 @@ Example error:
   "error": "Page not found",
   "status": 404,
   "path": "/api/v1/user/nothing",
-   "request_id": "reuqest-id",
+  "request_id": "reuqest-id",
   "timestamp": "May 10, 2023, 12:00:00 AM"
  }
 ```
