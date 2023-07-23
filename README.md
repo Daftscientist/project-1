@@ -128,6 +128,9 @@ Example error:
  }
 ```
 
+## Exceptions in production
+When stumbling across an exception during a production installation of this project, this rarity will be written to the log file. This file, located in `backend/localstorage/exceptions.log`, will provide the error ID (provided to the user in the UI), message, http code and timestamp. Once this information is gathered, check through all open and already solved GitHub issues before reporting it to the development team.
+
 ## Contributing
 We welcome contributions from the community! To contribute to this project, please follow the guidelines below:
 
