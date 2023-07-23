@@ -9,6 +9,7 @@ async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession
 Base = declarative_base()
 
 async def init(dev=False):
+    """ Initializes the database. """
     async with engine.begin() as conn:
         if dev:
             await conn.run_sync(Base.metadata.drop_all)
