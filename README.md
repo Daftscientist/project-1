@@ -131,7 +131,10 @@ Example error:
 ## Exceptions in production
 When stumbling across an exception during a production installation of this project, this rarity will be written to the log file. This file, located in `backend/localstorage/exceptions.log`, will provide the error ID (provided to the user in the UI), message, http code and timestamp.
 #### An excerpt from a real file:
-```ID: 9ac65dcb-fbe3-4ce0-af0e-5136c70fe2f1 - Message: 'Invalid response type <coroutine object Success at 0x0000024A20732960> (need HTTPResponse)' - Code: 500 - Timestamp: 2023-05-23 20:38:26.521845```
+```shell
+ID: 9ac65dcb-fbe3-4ce0-af0e-5136c70fe2f1 - Message: 'Invalid response type <coroutine object Success at 0x0000024A20732960> (need HTTPResponse)' - Code: 500 - Timestamp: 2023-05-23 20:38:26.521845
+```
+<br>
 Once this information is gathered, check through all open and already solved GitHub issues before reporting it to the development team.
 
 ## Contributing
