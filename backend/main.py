@@ -1,10 +1,9 @@
 import sanic
 import routes
 import asyncio
-import datetime
 from core import cache
 from database import db
-from sanic.handlers import ErrorHandler
+from errors import custom_handler
 
 app = sanic.Sanic("backend")
 app.config.FALLBACK_ERROR_FORMAT = "auto"
@@ -13,28 +12,7 @@ prefix = routes.routes_v1[0]
 asyncio.run(cache.init())
 asyncio.run(db.init(True))
 
-class CustomErrorHandler(ErrorHandler):
-    def default(self, request: sanic.Request, exception: Exception) -> sanic.HTTPResponse:
-        ''' handles errors that have no error handlers assigned '''
-        
-        try:
-            status_code = exception.status_code
-        except AttributeError:
-            status_code = 500
-
-        logf = open("./localstorage/exceptions.log", "a")
-        logf.write(f"ID: {str(request.id)} - Message: '{str(exception)}' - Code: {str(status_code)} - Timestamp: {str(datetime.datetime.now())}\n")
-        logf.close()
-
-        return sanic.json({
-            "error": str(exception),
-            "status": status_code,
-            "path": request.path,
-            "request_id": str(request.id),
-            "timestamp": str(datetime.datetime.now())
-        }, status=status_code)
-
-app.error_handler = CustomErrorHandler()
+app.error_handler = custom_handler.CustomErrorHandler()
 
 for route in routes.routes_v1[1]:
     app.add_route(
