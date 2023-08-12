@@ -12,7 +12,6 @@ prefix = routes.routes_v1[0]
 asyncio.run(db.init(True))
 asyncio.run(cache.init())
 
-
 app.error_handler = custom_handler.CustomErrorHandler()
 
 for route in routes.routes_v1[1]:
