@@ -1,5 +1,6 @@
-from sanic import Request, text, BadRequest
+from sanic import Request, SanicException, text, BadRequest
 import re
+import sanic
 from database.dals.user_dal import UsersDAL
 from sanic_dantic import parse_params, BaseModel
 from database import db
@@ -10,8 +11,8 @@ from core.cache import add
 
 EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
-from core.responses import Success
-from sanic import Request, BadRequest
+from core.responses import Success, BadRequest
+from sanic import Request
 from sanic.views import HTTPMethodView
 from core.cookies import check_if_cookie_is_present, remove_cookie
 
@@ -32,23 +33,26 @@ class CreateView(HTTPMethodView):
         """The create user route."""
 
         if await check_if_cookie_is_present(request):
-            return await BadRequest(request, "You are already logged in.")
+            raise BadRequest("You are already logged in.")
 
         ## data validation
         if len(params.username) < 3:
-            return await BadRequest("Username must be at least 3 characters long.")
+            raise BadRequest("Username must be at least 3 characters long.")
         if len(params.password) < 8:
-            return await BadRequest("Password must be at least 8 characters long.")
+            raise BadRequest("Password must be at least 8 characters long.")
         if params.password != params.repeated_password:
-            return await BadRequest("Passwords do not match.")
+            raise BadRequest("Passwords do not match.")
         if not EMAIL_REGEX.fullmatch(params.email):
-            return await BadRequest("Email must be a valid email address.")
+            raise BadRequest("Email must be a valid email address.")
 
         async with db.async_session() as session:
             async with session.begin():
                 users_dal = UsersDAL(session)
+                if await users_dal.check_if_user_exists_email(params.email):
+                    raise BadRequest("Email or username already exists.", status_code=400)
+
                 if await users_dal.check_if_user_exists(params.username, params.email):
-                    return await BadRequest(request, "Email or username already exists.")
+                    raise BadRequest("Email or username already exists.")
                 
                 await users_dal.create_user(params.username, params.email, await encoder.hash_password(params.password.encode('utf-8')))
 

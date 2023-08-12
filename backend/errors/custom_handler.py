@@ -20,7 +20,7 @@ class CustomErrorHandler(ErrorHandler):
             f"ID: {str(request.id)} - Message: '{str(exception)}' - Code: {str(status_code)} - Timestamp: {str(datetime.datetime.now())}\n"
         )
         logf.close()
-
+        print(str(exception))
         if "argument after ** must be a mapping, not NoneType" in str(exception) and status_code == 500:
             error_message = "Invalid JSON body"
         else:

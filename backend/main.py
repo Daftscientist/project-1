@@ -19,6 +19,8 @@ async def main_start(*_):
 
 app.error_handler = custom_handler.CustomErrorHandler()
 
+# Sanic exceptions - https://github.com/sanic-org/sanic/blob/main/sanic/exceptions.py
+
 for route in routes.routes_v1[1]:
     app.add_route(
         handler=route[1],

@@ -1,5 +1,5 @@
 from core.responses import Success
-from sanic import Request, BadRequest
+from sanic import Request, Unauthorized, BadRequest
 from sanic.views import HTTPMethodView
 from core.cookies import check_if_cookie_is_present, remove_cookie, get_cookie
 from core.cache import get_uuid, get
@@ -13,19 +13,19 @@ class LogoutView(HTTPMethodView):
 
         ## check if cookies are present
         if not await check_if_cookie_is_present(request):
-            return await BadRequest(request, "You are not logged in.")
+            return await Unauthorized("Authentication required.")
         
         ## check if session info is present in cache
         cookie = await get_cookie(request)
         uuid = cookie["uuid"]
         if uuid is None:
-            return await BadRequest(request, "You are not logged in.")
+            raise Unauthorized("Authentication required.")
         if get(uuid) is None:
-            return await BadRequest(request, "You are not logged in.")
+            raise Unauthorized("Authentication required.")
         if get(uuid)["session_id"] is None:
-            return await BadRequest(request, "You are not logged in.")
+            raise Unauthorized("Authentication required.")
         if get(uuid)["session_id"] != cookie["session_id"]:
-            return await BadRequest(request, "You are not logged in.")
+            raise Unauthorized("Authentication required.")
 
         response = Success(request, "Logged out successfully.")
         await remove_cookie(response)

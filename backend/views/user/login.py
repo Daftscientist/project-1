@@ -36,7 +36,7 @@ class LoginView(HTTPMethodView):
 
         ## check if cookies are present
         if await check_if_cookie_is_present(request):
-            return await BadRequest(request, "You are already logged in.")
+            return await BadRequest("You are already logged in.")
         
         ## data validation - is it a real email
         if not EMAIL_REGEX.fullmatch(params.email):
@@ -47,12 +47,12 @@ class LoginView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 if not await users_dal.check_if_user_exists_email(params.email):
-                    return await BadRequest(request, "Email does not exist.")
+                    return await BadRequest("Email does not exist.")
                 
                 ## check if the password is correct
                 user_info = await users_dal.get_user_by_email(params.email)
                 if not await check_password(params.password.encode('utf-8'), user_info.password):
-                    return await BadRequest(request, "Password is incorrect.")
+                    return await BadRequest("Password is incorrect.")
 
         uuid = await get_uuid(params.email)
         await update(uuid=uuid, session_id=await create_session_id())

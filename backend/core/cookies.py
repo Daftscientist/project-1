@@ -15,7 +15,7 @@ async def set_cookie(response, data: dict):
     return response
 
 
-async def get_cookie(request) -> dict:
+async def get_cookie(request):
     """Gets the cookie from the request."""
     return jwt.decode(
         request.cookies.get(COOKIE_IDENTITY), SECRET_KEY, algorithms=[ALGORITHM]
