@@ -14,7 +14,7 @@ prefix = routes.routes_v1[0]
 @app.main_process_start
 async def main_start(*_):
     print(">>>>>> main_start <<<<<<")
-    await db.init(True)
+    await db.init(False)
     await cache.init()
 
 app.error_handler = custom_handler.CustomErrorHandler()

@@ -36,13 +36,13 @@ class CreateView(HTTPMethodView):
 
         ## data validation
         if len(params.username) < 3:
-            raise BadRequest("Username must be at least 3 characters long.")
+            return await BadRequest("Username must be at least 3 characters long.")
         if len(params.password) < 8:
-            raise BadRequest("Password must be at least 8 characters long.")
+            return await BadRequest("Password must be at least 8 characters long.")
         if params.password != params.repeated_password:
-            raise BadRequest("Passwords do not match.")
+            return await BadRequest("Passwords do not match.")
         if not EMAIL_REGEX.fullmatch(params.email):
-            raise BadRequest("Email must be a valid email address.")
+            return await BadRequest("Email must be a valid email address.")
 
         async with db.async_session() as session:
             async with session.begin():
@@ -54,6 +54,6 @@ class CreateView(HTTPMethodView):
 
                 user_info = await users_dal.get_user_by_email(params.email)
 
-                await add(user_info.identifier, user_info.uuid, user_info.email, user_info.username, user_info.avatar, user_info.google_account_identifier, user_info.discord_account_identifier, user_info.created_at)
+                await add(user_info.identifier, user_info.uuid, user_info.email, user_info.username, user_info.avatar, user_info.google_account_identifier, user_info.discord_account_identifier, user_info.created_at, None)
 
         return await Success(request, "User created successfully.")

@@ -60,3 +60,10 @@ class UsersDAL():
         if q.scalars().first():
             return True
         return False
+
+    async def check_if_user_exists_email(self, email: str) -> bool:
+        """Checks if a user with the given username or email exists."""
+        q = await self.db_session.execute(select(User).where(User.email == email))
+        if q.scalars().first():
+            return True
+        return False
