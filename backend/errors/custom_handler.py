@@ -21,9 +21,15 @@ class CustomErrorHandler(ErrorHandler):
         )
         logf.close()
 
+        if "argument after ** must be a mapping, not NoneType" in str(exception) and status_code == 500:
+            error_message = "Invalid JSON body"
+        else:
+            error_message = str(exception)
+        
+
         return sanic.json(
             {
-                "error": str(exception),
+                "error": error_message,
                 "status": status_code,
                 "path": request.path,
                 "request_id": str(request.id),

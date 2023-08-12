@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Uuid, DateTime, URL
 import uuid
 from database.db import Base
 from sqlalchemy.sql import func
+import datetime
 
 
 class User(Base):
@@ -13,6 +14,6 @@ class User(Base):
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     avatar = Column(String, nullable=True, default=None)
-    created_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
     google_account_identifier = Column(String(255), nullable=True, default=None)
     discord_account_identifier = Column(String(18), nullable=True, default=None)

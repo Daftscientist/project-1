@@ -12,8 +12,6 @@ app = sanic.Sanic("backend")
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 prefix = routes.routes_v1[0]
 
-
-
 @app.main_process_start
 async def main_start(*_):
     print(">>>>>> main_start <<<<<<")
