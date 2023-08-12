@@ -9,8 +9,9 @@ app = sanic.Sanic("backend")
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 prefix = routes.routes_v1[0]
 
-asyncio.run(cache.init())
 asyncio.run(db.init(True))
+asyncio.run(cache.init())
+
 
 app.error_handler = custom_handler.CustomErrorHandler()
 
