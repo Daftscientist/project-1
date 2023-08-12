@@ -1,4 +1,4 @@
-# My Pterodactyl
+# Project 1
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/Daftscientist/my-pterodactyl/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/Daftscientist/my-pterodactyl.svg?branch=master)](https://travis-ci.org/Daftscientist/my-pterodactyl)
@@ -38,6 +38,10 @@ Unzip the downloaded files:
 Ubuntu: unzip my-pterodactyl-main.zip -d my-pterodactyl-main
 Windows: zip file. tar -xf my-pterodactyl-main.zip
 ```
+Make sure your in the backend folder:
+```shell
+cd backend
+```
 Check if python is installed:
 ```shell
 python –version
@@ -58,7 +62,6 @@ pip3 install -r requirements.txt
 ```
 Run the backend API:
 ```shell
-cd Backend
 sanic main
 ```
 Use `ctrl+c` to stop the backend running.
@@ -79,14 +82,12 @@ Unix or MacOS - fish shell: source /venv/bin/activate.fish
 Windows - Command Prompt: venv\Scripts\activate.bat
 Windows - PowerShell: venv\Scripts\Activate.ps1
 ```
-Running the backend API with live reloading (e.g. watchdog):
+Running the backend API with live reloading:
 ```shell
-cd Backend
 sanic main --dev
 ```
 Running the backend API in debug mode:
 ```shell
-cd Backend
 sanic main --debug
 ```
 You can combine `sanic main --dev --debug` for development.
