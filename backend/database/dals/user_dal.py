@@ -22,6 +22,12 @@ class UsersDAL():
         q = await self.db_session.execute(select(User).where(User.uuid == uuid))
         return q.scalars().first()
 
+    async def get_user_by_email(self, email: str) -> User:
+        """Returns the user with the given email."""
+
+        q = await self.db_session.execute(select(User).where(User.email == email))
+        return q.scalars().first()
+
     async def get_all_users(self) -> List[User]:
         """Returns all users."""
 

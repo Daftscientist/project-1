@@ -1,6 +1,5 @@
 import sanic
 import routes
-import asyncio
 from core import cache
 from database import db
 from errors import custom_handler

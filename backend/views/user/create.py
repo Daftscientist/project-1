@@ -6,6 +6,7 @@ from database import db
 from core import encoder
 from core.responses import Success
 from core.cookies import check_if_cookie_is_present
+from core.cache import add, CACHED_DATA
 
 EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
@@ -50,5 +51,10 @@ class CreateView(HTTPMethodView):
                     return await BadRequest(request, "Email or username already exists.")
                 
                 await users_dal.create_user(params.username, params.email, await encoder.hash_password(params.password.encode('utf-8')))
-        
+
+                user_info = await users_dal.get_user_by_email(params.email)
+
+                await add(user_info.identifier, user_info.uuid, user_info.email, user_info.username, user_info.avatar, user_info.google_account_identifier, user_info.discord_account_identifier, user_info.created_at)
+                print(CACHED_DATA)
+
         return await Success(request, "User created successfully.")
