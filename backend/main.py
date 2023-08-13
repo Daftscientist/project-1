@@ -6,6 +6,7 @@ from errors import custom_handler
 from database.models.allocation import Allocation
 from database.models.server import Server
 from database.models.user import User
+from core import session
 
 app = sanic.Sanic("backend")
 app.config.FALLBACK_ERROR_FORMAT = "auto"
@@ -13,7 +14,7 @@ prefix = routes.routes_v1[0]
 
 @app.main_process_start
 async def main_start(*_):
-    print(">>>>>> main_start <<<<<<")
+    print(session.get_user("test"))
     await db.init(False)
     await cache.init()
 

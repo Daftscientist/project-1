@@ -2,18 +2,20 @@ from core.responses import Success
 from sanic import Request, Unauthorized, BadRequest
 from sanic.views import HTTPMethodView
 from core.cookies import check_if_cookie_is_present, remove_cookie, get_cookie
-from core.cache import get_uuid, get
+from core.cache import get
+from core.authentication import protected_method
 
 
 class LogoutView(HTTPMethodView):
     """The logout view."""
 
+    #@protected_method
     async def post(self, request: Request):
         """ The logout route. """
 
         ## check if cookies are present
         if not await check_if_cookie_is_present(request):
-            return await Unauthorized("Authentication required.")
+            raise Unauthorized("Authentication required.")
         
         ## check if session info is present in cache
         cookie = await get_cookie(request)

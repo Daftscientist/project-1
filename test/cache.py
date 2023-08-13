@@ -1,28 +1,11 @@
-from database import db
-from database.dals.user_dal import UsersDAL
+
 from typing import Union
 
-CACHED_DATA = {}
-CACHED_EMAIL_TO_UUID = {}
-
-async def init():
-    ''' runs the cache '''
-    print("Initilising the cache...")
-    print("Adding user data to the cache...")
-    async with db.async_session() as session:
-        async with session.begin():
-            users_dal = UsersDAL(session)
-            users = await users_dal.get_all_users()
-            for user in users:
-                added = add(user.identifier, user.uuid, user.email, user.username, user.avatar, user.google_account_identifier, user.discord_account_identifier, user.created_at, None)
-                print(added)
-    print("Cache initilised.")
-    print("Cache contains " + str(len(CACHED_DATA)) + " users.")
-    print(CACHED_DATA)
-    print(CACHED_EMAIL_TO_UUID)
+CACHED_DATA = {'uuid': {'identifier': 'identifier', 'uuid': 'uuid', 'email': 'email', 'username': 'username', 'avatar': 'avatar', 'google_account_identifier': 'google_account_identifier', 'discord_account_identifier': 'discord_account_identifier', 'created_at': 'created_at', 'session_id': None}}
+CACHED_EMAIL_TO_UUID = {'email': 'uuid'}
 
 
-def add(identifier: str, uuid: str, email: str, username: str, avatar: str, google_account_identifier: str, discord_account_identifier: str, created_at: str, session_id: Union[str, None]) -> dict:
+async def add(identifier: str, uuid: str, email: str, username: str, avatar: str, google_account_identifier: str, discord_account_identifier: str, created_at: str, session_id: Union[str, None]) -> dict:
     ''' adds a user to the cache '''
     CACHED_DATA[uuid] = {
         "identifier": identifier,
@@ -38,39 +21,39 @@ def add(identifier: str, uuid: str, email: str, username: str, avatar: str, goog
     CACHED_EMAIL_TO_UUID[email] = uuid
     return CACHED_DATA[uuid]
 
-def get(uuid: str) -> dict | None:
+async def get(uuid: str) -> dict | None:
     try:
         return CACHED_DATA[uuid]
     except KeyError:
         return None
 
-def get_uuid(email: str) -> str | None:
+async def get_uuid(email: str) -> str | None:
     try:
         return CACHED_EMAIL_TO_UUID[email]
     except KeyError:
         return None
 
-def delete_uuid(uuid: str) -> None:
+async def delete_uuid(uuid: str) -> None:
     try:
         del CACHED_DATA[uuid]
     except KeyError:
         return None
 
-def delete_user(uuid: str) -> None:
+async def delete_user(uuid: str) -> None:
     try:
         del CACHED_DATA[uuid]
         del CACHED_EMAIL_TO_UUID[CACHED_DATA[uuid]["email"]]
     except KeyError:
         return None
 
-def clear() -> None:
+async def clear() -> None:
     CACHED_DATA.clear()
     CACHED_EMAIL_TO_UUID.clear()
 
-def get_all() -> list[dict]:
+async def get_all() -> list[dict]:
     return list(CACHED_DATA.values())
 
-def update(uuid, email: str = None, username: str = None, avatar: str = None, google_account_identifier: str = None, discord_account_identifier: str = None, session_id: Union[str, None] = None) -> dict:
+async def update(uuid, email: str = None, username: str = None, avatar: str = None, google_account_identifier: str = None, discord_account_identifier: str = None, session_id: Union[str, None] = None) -> dict:
     if email:
         del CACHED_EMAIL_TO_UUID[CACHED_DATA[uuid]["email"]]
         CACHED_DATA[uuid]["email"] = email
@@ -84,9 +67,9 @@ def update(uuid, email: str = None, username: str = None, avatar: str = None, go
     if discord_account_identifier:
         CACHED_DATA[uuid]["discord_account_identifier"] = discord_account_identifier
     if session_id:
-        CACHED_DATA[uuid]["session_id"] = session_id
+        CACHED_DATA[uuid]['session_id'] = session_id
     return CACHED_DATA[uuid]
 
-def update_session_id(uuid: str, session_id: str) -> dict:
+async def update_session_id(uuid: str, session_id: str) -> dict:
     CACHED_DATA[uuid]["session_id"] = session_id
     return CACHED_DATA[uuid]
