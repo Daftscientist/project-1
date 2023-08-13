@@ -6,6 +6,15 @@
 
 A brief description of your project.
 
+## TODO
+| Done? | Idea |
+| --- | --- |
+| X | Update the session system to not rely on system memory. |
+| X | Move the authentication routes to /auth/... |
+| X | |  |
+| X | View and edit user data via API. |
+| X | Add create server routes. |
+
 ## Table of Contents
 
 - [Features](#features)
