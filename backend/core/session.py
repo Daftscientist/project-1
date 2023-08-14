@@ -67,6 +67,10 @@ def delete_user(session_id):
         del session_data[session_id]
     except KeyError:
         return None
+    try:
+        del users_sessions[session_data[session_id]["uuid"]]
+    except KeyError:
+        return None
 
 def get_users_sessions(uuid):
     try:
