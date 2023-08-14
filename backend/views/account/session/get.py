@@ -5,6 +5,7 @@ from sanic import Request, BadRequest
 from core.cookies import get_user
 from core.authentication import protected
 from core.session import get_users_sessions
+from core.general import fix_dict
 
 class GetActiveSessionsView(HTTPMethodView):
     """The get active sessions view."""
@@ -14,9 +15,8 @@ class GetActiveSessionsView(HTTPMethodView):
     async def post(request: Request):
         """The get active sessions route."""
         user = await get_user(request)
+        
+        sessions = get_users_sessions(user["uuid"])
+        sessions = [fix_dict(session) for session in sessions]
 
-        sessions = await get_users_sessions(user["uuid"])
-
-        print(sessions)
-
-        return await DataResponse(request, {"sessions": sessions})
+        return await DataResponse(request, sessions)
