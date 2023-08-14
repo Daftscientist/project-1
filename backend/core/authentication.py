@@ -22,21 +22,14 @@ async def check_authorization(request):
         raise Unauthorized("Authentication required.")
     if not cookie["session_id"] in session_data:
         raise Unauthorized("Authentication required.")
-    print("hi")
     return True
 
-def protected_method(wrapped): ## fix to fetch the function below
-    def decorator(f):
-        @wraps(f)
-        async def decorated_function(request, *args, **kwargs):
-            print(args, kwargs)
-            is_authenticated = await check_authorization(request)
-
-            if not is_authenticated:
-                raise Unauthorized("Authentication required.")
+def protected(myfunc):
+    async def wrapper_func(request, *args, **kwargs):
+        is_authenticated = await check_authorization(request)
+        if not is_authenticated:
+            raise Unauthorized("Authentication required.")
             
-            response = await f(request, *args, **kwargs)
-            return response
-        return decorated_function
-    return decorator(wrapped)
-
+        response = await myfunc(request, *args, **kwargs)
+        return response
+    return wrapper_func
