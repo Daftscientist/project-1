@@ -109,9 +109,9 @@ Creating a user:
 ```python
 import requests
 
-API_URL = "http://localhost:8080/"
+API_URL = "http://localhost:8080/api/v1"
 
-response = requests.post(API_URL + "/api/v1/user/create", json={
+response = requests.post(API_URL + "/user/create", json={
   "username": "example_username",
   "email": "user@example.com",
   "password": "password1",
@@ -119,13 +119,27 @@ response = requests.post(API_URL + "/api/v1/user/create", json={
 })
 print(response.json())
 ```
+Logging in:
+```python
+import requests
+
+API_URL = "http://localhost:8080/api/v1"
+
+response = requests.post(API_URL + "/user/login", json={
+  "email": "user@example.com",
+  "password": "password1"
+})
+print(response.json())
+print(response.cookies.get_dict().session)
+```
+
 Logging out (cookies from login must be included in request):
 ```python
 import requests
 
-API_URL = "http://localhost:8080/"
+API_URL = "http://localhost:8080/api/v1"
 
-response = requests.post(API_URL + "/api/v1/user/logout", cookies={'session': 'jwt-encoded-string'})
+response = requests.post(API_URL + "/user/logout", cookies={'session': 'jwt-encoded-string'})
 print(response.json())
 ```
 
