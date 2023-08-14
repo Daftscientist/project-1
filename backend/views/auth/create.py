@@ -53,6 +53,13 @@ class CreateView(HTTPMethodView):
                 if await users_dal.check_if_user_exists(params.username, params.email):
                     raise BadRequest("Email or username is taken.")
                 
-                await users_dal.create_user(params.username, params.email, await encoder.hash_password(params.password.encode('utf-8')))
+                ip = request.ip or request.remote_addr
+
+                await users_dal.create_user(
+                    params.username, 
+                    params.email,
+                    await encoder.hash_password(params.password.encode('utf-8')),
+                    ip, ip
+                )
 
         return await Success(request, "User created successfully.")

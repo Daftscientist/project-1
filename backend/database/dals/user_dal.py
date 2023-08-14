@@ -11,9 +11,9 @@ class UsersDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_user(self, username: str, email: str, password: str, last_login: datetime.datetime, latest_ip: str, signup_ip: str):
+    async def create_user(self, username: str, email: str, password: str, latest_ip: str, signup_ip: str):
         """Creates a new user."""
-        new_user = User(username=username, email=email, password=password, last_login=last_login, latest_ip=latest_ip, signup_ip=signup_ip)
+        new_user = User(username=username, email=email, password=password, latest_ip=latest_ip, signup_ip=signup_ip)
         self.db_session.add(new_user)
         await self.db_session.flush()
 

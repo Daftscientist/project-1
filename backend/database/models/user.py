@@ -16,7 +16,7 @@ class User(Base):
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     avatar = Column(String, nullable=True, default=None)
-    last_login = Column(DateTime(timezone=True), nullable=False, default=None)
+    last_login = Column(DateTime(timezone=True), nullable=True, default=None)
     latest_ip = Column(String(255), nullable=False, default=None)
     signup_ip = Column(String(255), nullable=False, default=None)
     max_sessions = Column(Integer, nullable=False, default=5)
