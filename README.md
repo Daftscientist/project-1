@@ -5,6 +5,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/Daftscientist/my-pterodactyl/badge.svg?branch=master)](https://coveralls.io/github/Daftscientist/my-pterodactyl?branch=master)
 
 A brief description of your project.
+- Kinda decided to not follow the open authorization spec for this one
+
+## TODO
+| Done? | Idea |
+| --- | --- |
+| X | Update the session system to not rely on system memory. |
+| X | Move the authentication routes to /auth/... |
+| X | Fix decorator for authentication. |
+| X | View and edit user data via API. |
+| X | Add create server routes. |
+| X | Replace `sanic_dantic` with my own solution |
 
 ## Table of Contents
 
@@ -98,9 +109,9 @@ Creating a user:
 ```python
 import requests
 
-API_URL = "http://localhost:8080/"
+API_URL = "http://localhost:8080/api/v1"
 
-response = requests.post(API_URL + "/api/v1/user/create", json={
+response = requests.post(API_URL + "/user/create", json={
   "username": "example_username",
   "email": "user@example.com",
   "password": "password1",
@@ -108,13 +119,27 @@ response = requests.post(API_URL + "/api/v1/user/create", json={
 })
 print(response.json())
 ```
+Logging in:
+```python
+import requests
+
+API_URL = "http://localhost:8080/api/v1"
+
+response = requests.post(API_URL + "/user/login", json={
+  "email": "user@example.com",
+  "password": "password1"
+})
+print(response.json())
+print(response.cookies.get_dict().session)
+```
+
 Logging out (cookies from login must be included in request):
 ```python
 import requests
 
-API_URL = "http://localhost:8080/"
+API_URL = "http://localhost:8080/api/v1"
 
-response = requests.post(API_URL + "/api/v1/user/logout", cookies={'session': 'jwt-encoded-string'})
+response = requests.post(API_URL + "/user/logout", cookies={'session': 'jwt-encoded-string'})
 print(response.json())
 ```
 
