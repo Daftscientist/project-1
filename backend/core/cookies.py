@@ -47,7 +47,7 @@ async def get_cookie(request):
 
 async def remove_cookie(response):
     """Removes the cookie from the response."""
-    response.del_cookie(COOKIE_IDENTITY)
+    response.delete_cookie(COOKIE_IDENTITY)
     return response
 
 
