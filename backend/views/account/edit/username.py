@@ -17,9 +17,10 @@ class UpdateUsernameView(HTTPMethodView):
 
         new_username: str
 
+    @staticmethod
     @protected
     @parse_params(body=UpdateUsernameRequest)
-    async def post(self, request: Request, params: UpdateUsernameRequest):
+    async def post(request: Request, params: UpdateUsernameRequest):
         """The update username route."""
         user = await get_user(request)
 
@@ -33,8 +34,8 @@ class UpdateUsernameView(HTTPMethodView):
                 if await users_dal.check_if_user_exists_username(params.new_username):
                     raise BadRequest("Username is taken.", status_code=400)
                 
-                await users_dal.update_user(user.uuid, username=params.new_username)
+                await users_dal.update_user(user["uuid"], username=params.new_username)
 
-                edit_user(user.session_id, username=params.new_username)
+                edit_user(user["session_id"], username=params.new_username)
 
         return await Success(request, "Username updated successfully.")

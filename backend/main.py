@@ -13,7 +13,7 @@ prefix = routes.routes_v1[0]
 
 @app.main_process_start
 async def main_start(*_):
-    await db.init(True)
+    await db.init(False)
 
 app.error_handler = custom_handler.CustomErrorHandler()
 

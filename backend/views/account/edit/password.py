@@ -20,9 +20,10 @@ class UpdatePasswordView(HTTPMethodView):
         new_password: str
         repeated_new_password: str
 
+    @staticmethod
     @protected
     @parse_params(body=UpdatePasswordRequest)
-    async def post(self, request: Request, params: UpdatePasswordRequest):
+    async def post(request: Request, params: UpdatePasswordRequest):
         """The update password route."""
         user = await get_user(request)
 
@@ -35,13 +36,13 @@ class UpdatePasswordView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 
-                db_user = await users_dal.get_user_by_uuid(user.uuid)
+                db_user = await users_dal.get_user_by_uuid(user["uuid"])
 
                 if not await check_password(params.current_password.encode('utf-8'), db_user.password):
                     raise BadRequest("Current password is incorrect.")
 
                 await users_dal.update_user(
-                    user.uuid, password=await hash_password(params.new_password.encode('utf-8'))
+                    user["uuid"], password=await hash_password(params.new_password.encode('utf-8'))
                 )
 
         return await Success(request, "Password updated successfully.")

@@ -67,3 +67,15 @@ def delete_user(session_id):
         del session_data[session_id]
     except KeyError:
         return None
+
+def get_users_sessions(uuid):
+    try:
+        return users_sessions[uuid]
+    except KeyError:
+        return None
+
+def get_serialized(uuid):
+    try:
+        return session_data[uuid]
+    except KeyError:
+        return None

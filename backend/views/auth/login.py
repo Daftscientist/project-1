@@ -67,6 +67,6 @@ class LoginView(HTTPMethodView):
                 if res == None:
                     raise BadRequest("You have too many sessions open. Please log out of one of your other sessions and try again.")
 
-                users_dal.update_user()
+                await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
 
                 return send_cookie(request, "Logged in successfully.", {"uuid": str(uuid), "session_id": session_id})

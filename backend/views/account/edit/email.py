@@ -21,14 +21,15 @@ class UpdateEmailView(HTTPMethodView):
         new_email: str
         repeated_new_email: str
 
+    @staticmethod
     @protected
     @parse_params(body=UpdateEmailRequest)
-    async def post(self, request: Request, params: UpdateEmailRequest):
+    async def post(request: Request, params: UpdateEmailRequest):
         """The update email route."""
         user = await get_user(request)
 
         ## check validity of email
-        if not EMAIL_REGEX.fullmatch(params.email):
+        if not EMAIL_REGEX.fullmatch(params.current_email):
             raise BadRequest("Email must be a valid email address.")
         if not EMAIL_REGEX.fullmatch(params.new_email):
             raise BadRequest("Email must be a valid email address.")
@@ -36,7 +37,7 @@ class UpdateEmailView(HTTPMethodView):
             raise BadRequest("Email must be a valid email address.")
         
         ## check if email is already in use
-        if not user.email == params.email:
+        if not user["email"] == params.current_email:
             raise BadRequest("Current email is incorrect.")
         
         if params.new_email != params.repeated_new_email:
@@ -46,10 +47,10 @@ class UpdateEmailView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 if await users_dal.check_if_user_exists_email(params.new_email):
-                    raise BadRequest("Email is taken.", status_code=400)
+                    raise BadRequest("Email is taken.")
                 
-                await users_dal.update_user(user.uuid, email=params.new_email)
+                await users_dal.update_user(user["uuid"], email=params.new_email)
 
-                edit_user(user.session_id, email=params.new_email)
+                edit_user(user["session_id"], email=params.new_email)
 
         return await Success(request, "Email updated successfully.")

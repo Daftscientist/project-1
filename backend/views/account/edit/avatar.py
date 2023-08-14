@@ -19,9 +19,10 @@ class UpdateAvatarView(HTTPMethodView):
 
         new_avatar: str
 
+    @staticmethod
     @protected
     @parse_params(body=UpdateAvatarRequest)
-    async def post(self, request: Request, params: UpdateAvatarRequest):
+    async def post(request: Request, params: UpdateAvatarRequest):
         """The update avatar route."""
         user = await get_user(request)
 
@@ -34,8 +35,8 @@ class UpdateAvatarView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 
-                await users_dal.update_user(user.uuid, avatar=params.new_avatar)
+                await users_dal.update_user(user["uuid"], avatar=params.new_avatar)
 
-                edit_user(user.session_id, avatar=params.new_avatar)
+                edit_user(user["session_id"], avatar=params.new_avatar)
 
         return await Success(request, "Avatar updated successfully.")
