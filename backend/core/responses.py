@@ -11,11 +11,11 @@ async def Success(request, data=None, code=200):
     }, status=code)
     return response
 
-"""async def BadRequest(request, data=None, code=400):
+async def DataResponse(request, data=None, code=200):
     response = json({
-        "success": False,
-        "message": data,
+        "success": True,
+        "data": data,
         "code": code,
         "request_id": str(request.id)
     }, status=code)
-    return response"""
+    return response

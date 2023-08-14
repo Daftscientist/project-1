@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from sqlalchemy import update
@@ -10,9 +11,9 @@ class UsersDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_user(self, username: str, email: str, password: str):
+    async def create_user(self, username: str, email: str, password: str, last_login: datetime.datetime, latest_ip: str, signup_ip: str):
         """Creates a new user."""
-        new_user = User(username=username, email=email, password=password)
+        new_user = User(username=username, email=email, password=password, last_login=last_login, latest_ip=latest_ip, signup_ip=signup_ip)
         self.db_session.add(new_user)
         await self.db_session.flush()
 
@@ -34,7 +35,7 @@ class UsersDAL():
         q = await self.db_session.execute(select(User).order_by(User.identifier))
         return q.scalars().all()
 
-    async def update_user(self, uuid: int, username: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None, google_account_identifier: Optional[str] = None, discord_account_identifier: Optional[str] = None):
+    async def update_user(self, uuid: int, username: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None, avatar: Optional[str] = None, last_login: Optional[datetime.datetime] = None, latest_ip: Optional[str] = None, signup_ip: Optional[str] = None, max_sessions: Optional[str] = None, google_account_identifier: Optional[str] = None, discord_account_identifier: Optional[str] = None):
         """Updates the user with the given uuid."""
         
         q = update(User).where(User.uuid == uuid)
@@ -44,6 +45,16 @@ class UsersDAL():
             q = q.values(email=email)
         if password:
             q = q.values(password=password)
+        if avatar:
+            q = q.values(avatar=avatar)
+        if last_login:
+            q = q.values(last_login=last_login)
+        if latest_ip:
+            q = q.values(latest_ip=latest_ip)
+        if signup_ip:
+            q = q.values(signup_ip=signup_ip)
+        if max_sessions:
+            q = q.values(max_sessions=max_sessions)
         if google_account_identifier:
             q = q.values(google_account_identifier=google_account_identifier)
         if discord_account_identifier:

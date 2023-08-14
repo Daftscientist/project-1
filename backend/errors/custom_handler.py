@@ -30,6 +30,7 @@ class CustomErrorHandler(ErrorHandler):
         return sanic.json(
             {
                 "error": error_message,
+                "success": False,
                 "status": status_code,
                 "path": request.path,
                 "request_id": str(request.id),

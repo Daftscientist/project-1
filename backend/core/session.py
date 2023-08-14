@@ -1,16 +1,39 @@
-session_data = {}
+import datetime
 
-def add_user(session_id, uuid, email, username, avatar, google_account_identifier, discord_account_identifier, created_at):
+
+session_data = {}
+users_sessions = {}
+
+def add_user(max_sessions, last_login, latest_ip, signup_ip, session_id, uuid, email, username, avatar, google_account_identifier, discord_account_identifier, created_at):
+    if uuid in users_sessions:
+        if len(users_sessions[uuid]) >= max_sessions:
+            return None
+    
     session_data[session_id] = {
         "uuid": uuid,
-        "email": email,
         "username": username,
+        "email": email,
         "avatar": avatar,
+        "last_login": last_login,
+        "latest_ip": latest_ip,
+        "signup_ip": signup_ip,
+        "max_sessions": max_sessions,
         "google_account_identifier": google_account_identifier,
         "discord_account_identifier": discord_account_identifier,
         "created_at": created_at, 
         "session_id": session_id
     }
+
+    if not uuid in users_sessions:
+        usr_sessions = list()
+        usr_sessions.append({session_id: {"timestamp": datetime.datetime.now(), "latest_ip": latest_ip}})
+        users_sessions[uuid] = usr_sessions
+    else:
+        usr_sessions = users_sessions[uuid]
+        usr_sessions.append({session_id: {"timestamp": datetime.datetime.now(), "latest_ip": latest_ip}})
+        users_sessions[uuid] = usr_sessions
+
+    return session_data[session_id]
 
 def get_user(session_id):
     try:
@@ -18,7 +41,7 @@ def get_user(session_id):
     except KeyError:
         return None
 
-def edit_user(session_id, email: str = None, username: str = None, avatar: str = None, google_account_identifier: str = None, discord_account_identifier: str = None) -> dict:
+def edit_user(session_id, uuid: int, username: str = None, email: str = None, password: str = None, avatar: str = None, last_login: datetime.datetime = None, latest_ip: str = None, signup_ip: str = None, max_sessions: str = None, google_account_identifier: str = None, discord_account_identifier: str = None) -> dict:
     if email:
         session_data[session_id]["email"] = email
     if username:

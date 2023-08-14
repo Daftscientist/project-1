@@ -1,6 +1,5 @@
 import sanic
 import routes
-from core import cache
 from database import db
 from errors import custom_handler
 from database.models.allocation import Allocation
@@ -14,9 +13,7 @@ prefix = routes.routes_v1[0]
 
 @app.main_process_start
 async def main_start(*_):
-    print(session.get_user("test"))
-    await db.init(False)
-    await cache.init()
+    await db.init(True)
 
 app.error_handler = custom_handler.CustomErrorHandler()
 

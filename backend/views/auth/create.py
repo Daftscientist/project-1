@@ -1,4 +1,4 @@
-from sanic import Request, SanicException, text, BadRequest
+from sanic import Request, BadRequest
 import re
 import sanic
 from database.dals.user_dal import UsersDAL
@@ -7,7 +7,6 @@ from database import db
 from core import encoder
 from core.responses import Success
 from core.cookies import check_if_cookie_is_present
-from core.cache import add
 
 EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
@@ -31,7 +30,7 @@ class CreateView(HTTPMethodView):
     @parse_params(body=CreateUserRequest)
     async def post(self, request: Request, params: CreateUserRequest):
         """The create user route."""
-
+        
         if await check_if_cookie_is_present(request):
             raise BadRequest("You are already logged in.")
 
@@ -55,9 +54,5 @@ class CreateView(HTTPMethodView):
                     raise BadRequest("Email or username already exists.")
                 
                 await users_dal.create_user(params.username, params.email, await encoder.hash_password(params.password.encode('utf-8')))
-
-        user_info = await users_dal.get_user_by_email(params.email)
-
-        add(user_info.identifier, user_info.uuid, user_info.email, user_info.username, user_info.avatar, user_info.google_account_identifier, user_info.discord_account_identifier, user_info.created_at, None)
 
         return await Success(request, "User created successfully.")

@@ -1,5 +1,6 @@
 import jwt
 from sanic import json
+from core.session import get_user as fetch_user
 
 SECRET_KEY = "23893784023409283964732894790792848932798479012043789247589357838401293890"  ## For testing only. This should be stored in an environment variable.
 ALGORITHM = "HS256"
@@ -28,7 +29,6 @@ async def set_cookie(response, data: dict):
         str(jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)),
         httponly=True,
     )
-    print(response.cookies)
     response.add_cookie(
         "test",
         "It worked!",
@@ -37,6 +37,11 @@ async def set_cookie(response, data: dict):
     )
     return response
 
+async def get_user(request):
+    """Gets the user from the cookie."""
+    decoded = jwt.decode(
+        request.cookies.get(COOKIE_IDENTITY), SECRET_KEY, algorithms=[ALGORITHM])
+    return fetch_user(decoded["session_id"])
 
 async def get_cookie(request):
     """Gets the cookie from the request."""

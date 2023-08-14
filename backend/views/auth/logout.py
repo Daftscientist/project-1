@@ -8,9 +8,8 @@ from core.session import get_user
 class LogoutView(HTTPMethodView):
     """The logout view."""
 
-    @staticmethod
     @protected
-    async def post(request: Request):
+    async def post(self, request: Request):
         """ The logout route. """
         response = await Success(request, "Logged out successfully.")
         await remove_cookie(response)
