@@ -69,4 +69,4 @@ class LoginView(HTTPMethodView):
 
                 users_dal.update_user()
 
-                return send_cookie(request, "Logged in successfully.", {"uuid": str(uuid), "email": params.email, "session_id": session_id})
+                return send_cookie(request, "Logged in successfully.", {"uuid": str(uuid), "session_id": session_id})
