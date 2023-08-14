@@ -41,13 +41,21 @@ def get_user(session_id):
     except KeyError:
         return None
 
-def edit_user(session_id, uuid: int, username: str = None, email: str = None, password: str = None, avatar: str = None, last_login: datetime.datetime = None, latest_ip: str = None, signup_ip: str = None, max_sessions: str = None, google_account_identifier: str = None, discord_account_identifier: str = None) -> dict:
+def edit_user(session_id, username: str = None, email: str = None, avatar: str = None, last_login: datetime.datetime = None, latest_ip: str = None, signup_ip: str = None, max_sessions: str = None, google_account_identifier: str = None, discord_account_identifier: str = None) -> dict:
     if email:
         session_data[session_id]["email"] = email
     if username:
         session_data[session_id]["username"] = username
     if avatar:
         session_data[session_id]["avatar"] = avatar
+    if last_login:
+        session_data[session_id]["last_login"] = last_login
+    if latest_ip:
+        session_data[session_id]["latest_ip"] = latest_ip
+    if signup_ip:
+        session_data[session_id]["signup_ip"] = signup_ip
+    if max_sessions:
+        session_data[session_id]["max_sessions"] = max_sessions
     if google_account_identifier:
         session_data[session_id]["google_account_identifier"] = google_account_identifier
     if discord_account_identifier:
