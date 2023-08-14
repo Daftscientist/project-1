@@ -15,6 +15,7 @@ A brief description of your project.
 | X | Fix decorator for authentication. |
 | X | View and edit user data via API. |
 | X | Add create server routes. |
+| X | Replace `sanic_dantic` with my own solution |
 
 ## Table of Contents
 
