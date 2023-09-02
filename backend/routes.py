@@ -3,6 +3,7 @@ from views.auth import create, logout, login
 from views.account.get import GetUserView
 from views.account.edit import avatar, email, password, username
 from views.account.session.get import GetActiveSessionsView
+from views.account.session.delete import DeleteSessionView
 
 routes_v1 = [
     "api/v1", ## route prefix
@@ -24,7 +25,8 @@ routes_v1 = [
         ["/account/edit/avatar", avatar.UpdateAvatarView.as_view()],
 
         # --- SESSIONS --- 
-        ["/account/session/get", GetActiveSessionsView.as_view()]
+        ["/account/session/get", GetActiveSessionsView.as_view()],
+        ["/account/session/delete", DeleteSessionView.as_view()],
 
     ]
 ]

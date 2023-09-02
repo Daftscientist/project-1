@@ -26,11 +26,11 @@ def add_user(max_sessions, last_login, latest_ip, signup_ip, session_id, uuid, e
 
     if not uuid in users_sessions:
         usr_sessions = list()
-        usr_sessions.append({session_id: {"timestamp": datetime.datetime.now(), "latest_ip": latest_ip}})
+        usr_sessions.append({"session_id": session_id, "timestamp": datetime.datetime.now(), "latest_ip": latest_ip})
         users_sessions[uuid] = usr_sessions
     else:
         usr_sessions = users_sessions[uuid]
-        usr_sessions.append({session_id: {"timestamp": datetime.datetime.now(), "latest_ip": latest_ip}})
+        usr_sessions.append({"session_id": session_id, "timestamp": datetime.datetime.now(), "latest_ip": latest_ip})
         users_sessions[uuid] = usr_sessions
 
     return session_data[session_id]
@@ -64,13 +64,15 @@ def edit_user(session_id, username: str = None, email: str = None, avatar: str =
 
 def delete_user(session_id):
     try:
-        del session_data[session_id]
+        print(session_data[session_id])
+        print("ok")
+        session_data.pop(session_id)
     except KeyError:
-        return None
+        return False
     try:
-        del users_sessions[session_data[session_id]["uuid"]]
+        users_sessions.pop(session_data[session_id]["uuid"])
     except KeyError:
-        return None
+        return False
 
 def get_users_sessions(uuid):
     try:

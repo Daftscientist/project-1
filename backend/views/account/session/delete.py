@@ -10,11 +10,11 @@ from sanic_dantic import parse_params, BaseModel
 from core.session import session_data, delete_user
 from core.cookies import get_cookie
 
-class GetActiveSessionsView(HTTPMethodView):
-    """The get active sessions view."""
+class DeleteSessionView(HTTPMethodView):
+    """The delete sessions view."""
 
     class DeleteSessionRequest(BaseModel):
-        """The get active sessions request model."""
+        """The delete sessions request model."""
 
         session_id: str
 
@@ -22,14 +22,17 @@ class GetActiveSessionsView(HTTPMethodView):
     @protected
     @parse_params(body=DeleteSessionRequest)
     async def post(request: Request, params: DeleteSessionRequest):
-        """The get active sessions route."""
-
-        if not params.session_id in session_data:
+        """The delete sessions route."""
+        ##fix this
+        print(params.session_id)
+        print(session_data)
+        print("hi", -params.session_id in list(session_data.keys()))
+        if not str(params.session_id) in list(session_data.keys()):
             raise BadRequest("Session does not exist.")
         
         res = delete_user(params.session_id)
-
-        if res == None:
+        print(res)
+        if res == False:
             raise BadRequest("Session does not exist.")
 
         return await Success(request, "Session deleted successfully.")
