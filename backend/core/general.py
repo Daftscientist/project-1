@@ -1,4 +1,5 @@
 import json
+from typing import Iterable
 from uuid import UUID
 from datetime import date, datetime
 
@@ -16,3 +17,4 @@ class UUIDEncoder(json.JSONEncoder):
 def fix_dict(dict):
     first = json.dumps(dict, cls=UUIDEncoder)
     return json.loads(first)
+

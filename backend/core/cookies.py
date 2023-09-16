@@ -17,8 +17,9 @@ def send_cookie(request, message:str, data: dict):
     response.add_cookie(
         COOKIE_IDENTITY,
         jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM),
-        httponly=False,
-        max_age=86400
+        httponly=True,
+        ## max age 4 weeks
+        max_age=2419200,
     )
     return response
 
