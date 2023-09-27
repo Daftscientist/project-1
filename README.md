@@ -4,8 +4,9 @@
 [![Build Status](https://travis-ci.org/Daftscientist/my-pterodactyl.svg?branch=master)](https://travis-ci.org/Daftscientist/my-pterodactyl)
 [![Coverage Status](https://coveralls.io/repos/github/Daftscientist/my-pterodactyl/badge.svg?branch=master)](https://coveralls.io/github/Daftscientist/my-pterodactyl?branch=master)
 
-A brief description of your project.
-- Kinda decided to not follow the open authorization spec for this one
+A project to replace pterodactyl and be a showcase of my python and react skills.
+
+- This project does not follow Open Authorization spesification. Read the documentation.
 
 ## TODO
 | Done? | Idea |
