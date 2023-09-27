@@ -10,12 +10,14 @@ A brief description of your project.
 ## TODO
 | Done? | Idea |
 | --- | --- |
-| X | Update the session system to not rely on system memory. |
-| X | Move the authentication routes to /auth/... |
-| X | Fix decorator for authentication. |
-| X | View and edit user data via API. |
-| X | Add create server routes. |
-| X | Replace `sanic_dantic` with my own solution |
+| 🖊️ | Update the session system to not rely on system memory. |
+| ✔️ | Move the authentication routes to /auth/... |
+| ✔️ | Decorator for authenticated routes. |
+| 🖊️ | View and edit user data via API. |
+| ❌ | Add create server routes. |
+| ❌ | Replace `sanic_dantic` with my own solution. |
+| ❌ | Add email verification with code/link for signup. |
+| ❌ | Add option to login with email code/link. |
 
 ## Table of Contents
 
