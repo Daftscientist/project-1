@@ -7,7 +7,7 @@ ALGORITHM = "HS256"
 COOKIE_IDENTITY = "session"
 
 def send_cookie(request, message:str, data: dict):
-    """Sends the cookie in the response."""
+    """ Sends a response containing a cookie with the data provided. """
     response = json({
         "success": True,
         "message": message,
@@ -24,7 +24,7 @@ def send_cookie(request, message:str, data: dict):
     return response
 
 async def set_cookie(response, data: dict):
-    """Sets the cookie in the response."""
+    """ Attribiutes a cookie to a given response and returns the new response. """
     response.add_cookie(
         COOKIE_IDENTITY,
         str(jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)),
@@ -39,24 +39,24 @@ async def set_cookie(response, data: dict):
     return response
 
 async def get_user(request):
-    """Gets the user from the cookie."""
+    """ Receives the user data from the cookie session id. """
     decoded = jwt.decode(
         request.cookies.get(COOKIE_IDENTITY), SECRET_KEY, algorithms=[ALGORITHM])
     return fetch_user(decoded["session_id"])
 
 async def get_cookie(request):
-    """Gets the cookie from the request."""
+    """ Fetches the cookie from the request. """
     return jwt.decode(
         request.cookies.get(COOKIE_IDENTITY), SECRET_KEY, algorithms=[ALGORITHM]
     )
 
 
 async def remove_cookie(response):
-    """Removes the cookie from the response."""
+    """ Removes the cookie from the response. """
     response.delete_cookie(COOKIE_IDENTITY)
     return response
 
 
 async def check_if_cookie_is_present(request):
-    """Checks if the cookie is present."""
+    """ Checks if the cookie is present in the request. """
     return COOKIE_IDENTITY in request.cookies
