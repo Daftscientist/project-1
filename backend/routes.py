@@ -25,7 +25,7 @@ routes_v1 = [
         ["/account/edit/avatar", avatar.UpdateAvatarView.as_view()],
 
         # --- SESSIONS --- 
-        ["/account/session/get", GetActiveSessionsView.as_view()],
+        ["/account/session/get/all", GetActiveSessionsView.as_view()],
         ["/account/session/delete", DeleteSessionView.as_view()],
 
     ]

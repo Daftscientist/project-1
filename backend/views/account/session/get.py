@@ -15,7 +15,7 @@ class GetActiveSessionsView(HTTPMethodView):
     async def post(request: Request):
         """The get active sessions route."""
         user = await get_user(request)
-        
+        ## save sessions in order of created [oldest first] (with id)
         sessions = get_users_sessions(user["uuid"])
         sessions = [fix_dict(session) for session in sessions]
 

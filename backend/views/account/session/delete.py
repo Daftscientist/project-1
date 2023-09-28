@@ -23,16 +23,5 @@ class DeleteSessionView(HTTPMethodView):
     @parse_params(body=DeleteSessionRequest)
     async def post(request: Request, params: DeleteSessionRequest):
         """The delete sessions route."""
-        ##fix this
-        print(params.session_id)
-        print(session_data)
-        print("hi", -params.session_id in list(session_data.keys()))
-        if not str(params.session_id) in list(session_data.keys()):
-            raise BadRequest("Session does not exist.")
-        
-        res = delete_user(params.session_id)
-        print(res)
-        if res == False:
-            raise BadRequest("Session does not exist.")
-
+        delete_user(params.session_id)
         return await Success(request, "Session deleted successfully.")
