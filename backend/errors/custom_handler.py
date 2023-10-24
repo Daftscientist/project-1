@@ -10,6 +10,7 @@ class CustomErrorHandler(ErrorHandler):
     ) -> sanic.HTTPResponse:
         """handles errors that have no error handlers assigned"""
         #raise exception
+        #status_code = getattr(exception, "status_code", 500)
         try:
             status_code = exception.status_code
         except AttributeError:
