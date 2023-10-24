@@ -1,4 +1,4 @@
-## Useful to know:
+## Useful to know:  
 
 `main.py` file:
 ```py
@@ -7,7 +7,7 @@ async def main_start(*_):
     await db.init(False)
 ```
 - To create and populate the initial database turn the await db.init function to true on the first run.
-- if done for more than one run it will init the db each time.
+- if done for more than one run it will init the db each time.  
 
 
 `@protected` -> `from core.authentication import protected`
