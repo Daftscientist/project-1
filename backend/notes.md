@@ -1,6 +1,6 @@
 ## Useful to know:
 
-
+`main.py` file:
 ```py
 @app.main_process_start
 async def main_start(*_):
