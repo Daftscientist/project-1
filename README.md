@@ -99,13 +99,13 @@ Windows - PowerShell: venv\Scripts\Activate.ps1
 ```
 Running the backend API with live reloading:
 ```shell
-sanic main --dev
+sanic main --reload
 ```
 Running the backend API in debug mode:
 ```shell
 sanic main --debug
 ```
-You can combine `sanic main --dev --debug` for development.
+You can combine `sanic main --dev` for development.
 
 ## Usage
 
