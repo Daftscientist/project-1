@@ -1,5 +1,15 @@
 ## Useful to know:
 
+
+```py
+@app.main_process_start
+async def main_start(*_):
+    await db.init(False)
+```
+- To create and populate the initial database turn the await db.init function to true on the first run.
+- if done for more than one run it will init the db each time.
+
+
 `@protected` -> `from core.authentication import protected`
     - Protects a route with cookie checking
 
