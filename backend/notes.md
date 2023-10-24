@@ -1,3 +1,5 @@
+## Useful to know:
+
 `@protected` -> `from core.authentication import protected`
     - Protects a route with cookie checking
 
