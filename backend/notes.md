@@ -10,6 +10,7 @@ async def main_start(*_):
 - if done for more than one run it will init the db each time.  
 
 <br/>
+
 `@protected` -> `from core.authentication import protected`
     - Protects a route with cookie checking
 
