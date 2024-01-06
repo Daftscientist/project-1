@@ -4,9 +4,9 @@
 [![Build Status](https://travis-ci.org/Daftscientist/my-pterodactyl.svg?branch=master)](https://travis-ci.org/Daftscientist/my-pterodactyl)
 [![Coverage Status](https://coveralls.io/repos/github/Daftscientist/my-pterodactyl/badge.svg?branch=master)](https://coveralls.io/github/Daftscientist/my-pterodactyl?branch=master)
 
-A project to replace pterodactyl and be a showcase of my python and react skills.
+A project to replace pterodactyl and be a showcase of my Python and React skills.
 
-- This project does not follow Open Authorization spesification. Read the documentation.
+- This project does not follow Open Authorization specification. Read the documentation.
 
 ## TODO
 | Done? | Idea |
@@ -40,7 +40,7 @@ A project to replace pterodactyl and be a showcase of my python and react skills
 ### Plugin system
 - Ingegrated, out-the-box [plugin support](#plugins).
 ### Contributor focused
-- Built with documentation, comments and moduled. This allows for easy contribiution.
+- Built with documentation, comments and moduled. This allows for easy contribution.
 
 ## Installation
 
@@ -137,7 +137,7 @@ print(response.json())
 print(response.cookies.get_dict().session)
 ```
 
-Logging out (cookies from login must be included in request):
+Logging out (cookies from login must be included in the request):
 ```python
 import requests
 
@@ -154,13 +154,13 @@ Example error:
   "error": "Page not found",
   "status": 404,
   "path": "/api/v1/user/nothing",
-  "request_id": "reuqest-id",
+  "request_id": "request-id",
   "timestamp": "May 10, 2023, 12:00:00 AM"
  }
 ```
 
 ## Exceptions in production
-When stumbling across an exception during a production installation of this project, this rarity will be written to the log file. This file, located in `backend/localstorage/exceptions.log`, will provide the error ID (provided to the user in the UI), message, http code and timestamp.
+When stumbling across an exception during a production installation of this project, this rarity will be written to the log file. This file, located in `backend/localstorage/exceptions.log`, will provide the error ID (provided to the user in the UI), message, HTTP code and timestamp.
 #### An excerpt from a real file:
 ```log
 ID: 9ac65dcb-fbe3-4ce0-af0e-5136c70fe2f1 - Message: 'Invalid response type <coroutine object Success at 0x0000024A20732960> (need HTTPResponse)' - Code: 500 - Timestamp: 2023-05-23 20:38:26.521845
