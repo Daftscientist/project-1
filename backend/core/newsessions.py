@@ -18,7 +18,7 @@ class SessionManager:
         ''')
         self.conn.commit()
 
-    def session_cleanup(self) -> None:
+    def session_cleanup(self) -> None: ## decide whether this runs per action or periodically.
         """Removes all expired sessions from the database."""
         self.cursor.execute('DELETE FROM Sessions WHERE expiry <= ?', (time.time(),))
         self.conn.commit()
