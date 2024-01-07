@@ -22,7 +22,7 @@ class CustomErrorHandler(ErrorHandler):
         )
         logf.close()
         #print(str(exception), exception.__class__.__name__)
-        if "argument after ** must be a mapping, not NoneType" in str(exception) and status_code == 500:
+        if "argument after ** must be a mapping, not NoneType" in str(exception) and status_code == 500: #this line is vile
             error_message = "Invalid JSON body"
         else:
             error_message = str(exception)
