@@ -1,89 +1,62 @@
-import datetime
+import sqlite3
+import time
+from sanic.log import logger
 
-from sanic import BadRequest
+class SessionManager:
+    """A session manager that stores sessions in a SQLite database."""
+    def __init__(self, db_path: str):
+        """Initializes the session manager."""
+        self.conn = sqlite3.connect(db_path)
+        self.cursor = self.conn.cursor()
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS Sessions (
+                session_token TEXT PRIMARY KEY,
+                user_identifier TEXT,
+                creation_ip TEXT,                
+                expiry INTEGER,
+                created_at INTEGER DEFAULT (strftime('%s', 'now'))
+            )
+        ''')
+        self.conn.commit()
+        logger.info('Session manager initialized')
 
-"""
+    def session_cleanup(self) -> None:
+        """Removes all expired sessions from the database."""
+        self.cursor.execute('DELETE FROM Sessions WHERE expiry <= ?', (time.time(),))
+        self.conn.commit()
+        logger.info('Session cleanup complete')
+        
 
-Your code doesn't include mechanisms for handling concurrent access to session data. If multiple requests are modifying session data simultaneously, it could lead to unexpected behavior.
+    def add(self, session_token: str, user_identifier: str, creation_ip: str, expiry: int) -> None:
+        """Adds a session to the cache."""
+        if expiry <= time.time():
+            raise ValueError("Expiry must be a future Unix timestamp.")
+        self.cursor.execute('INSERT OR REPLACE INTO Sessions (session_token, user_identifier, creation_ip, expiry) VALUES (?, ?, ?, ?)', 
+                            (session_token, user_identifier, creation_ip, expiry))
+        self.conn.commit()
 
-"""
-
-session_data = {}
-users_sessions = {}
-
-def add_user(max_sessions, last_login, latest_ip, signup_ip, session_id, uuid, email, username, avatar, google_account_identifier, discord_account_identifier, created_at):
-    if uuid in users_sessions:
-        if len(users_sessions[uuid]) >= max_sessions:
-            return None
-    
-    session_data[session_id] = {
-        "uuid": uuid,
-        "username": username,
-        "email": email,
-        "avatar": avatar,
-        "last_login": last_login,
-        "latest_ip": latest_ip,
-        "signup_ip": signup_ip,
-        "max_sessions": max_sessions,
-        "google_account_identifier": google_account_identifier,
-        "discord_account_identifier": discord_account_identifier,
-        "created_at": created_at, 
-        "session_id": session_id
-    }
-
-    if not uuid in users_sessions:
-        usr_sessions = list()
-        usr_sessions.append({"session_id": session_id, "timestamp": datetime.datetime.now(), "latest_ip": latest_ip})
-        users_sessions[uuid] = usr_sessions
-    else:
-        usr_sessions = users_sessions[uuid]
-        usr_sessions.append({"session_id": session_id, "timestamp": datetime.datetime.now(), "latest_ip": latest_ip})
-        users_sessions[uuid] = usr_sessions
-
-    return session_data[session_id]
-
-def get_user(session_id):
-    try:
-        return session_data[session_id]
-    except KeyError:
+    def get(self, session_token: str) -> str|None:
+        """Returns the user identifier of a session if it has not expired."""
+        self.cursor.execute('SELECT user_identifier, expiry FROM Sessions WHERE session_token = ?', (session_token,))
+        row = self.cursor.fetchone()
+        if row is not None:
+            user_identifier, expiry = row
+            if expiry > time.time():
+                return user_identifier
+        self.delete(session_token)
         return None
 
-def edit_user(session_id, username: str = None, email: str = None, avatar: str = None, last_login: datetime.datetime = None, latest_ip: str = None, signup_ip: str = None, max_sessions: str = None, google_account_identifier: str = None, discord_account_identifier: str = None) -> dict:
-    if email:
-        session_data[session_id]["email"] = email
-    if username:
-        session_data[session_id]["username"] = username
-    if avatar:
-        session_data[session_id]["avatar"] = avatar
-    if last_login:
-        session_data[session_id]["last_login"] = last_login
-    if latest_ip:
-        session_data[session_id]["latest_ip"] = latest_ip
-    if signup_ip:
-        session_data[session_id]["signup_ip"] = signup_ip
-    if max_sessions:
-        session_data[session_id]["max_sessions"] = max_sessions
-    if google_account_identifier:
-        session_data[session_id]["google_account_identifier"] = google_account_identifier
-    if discord_account_identifier:
-        session_data[session_id]["discord_account_identifier"] = discord_account_identifier
-    return session_data[session_id]
+    def cocurrent_sessions(self, user_identifier) -> list[tuple[str, str]]:
+        """Returns all sessions of a user."""
+        self.cursor.execute('SELECT session_token, creation_ip, expiry, created_at FROM Sessions WHERE user_identifier = ?', (user_identifier,))
+        return self.cursor.fetchall()
 
-def delete_user(session_id):
-    try:
-        session_data.pop(session_id)
-        users_sessions.pop(session_data[session_id]["uuid"])
-    except KeyError:
-        raise BadRequest("Session does not exist.")
+    def delete(self, session_token: str) -> None:
+        """Deletes a session."""
+        self.cursor.execute('DELETE FROM Sessions WHERE session_token = ?', (session_token,))
+        self.conn.commit()
 
-def get_users_sessions(uuid):
-    try:
-        return users_sessions[uuid]
-    except KeyError:
-        return None
-
-def get_serialized(uuid):
-    try:
-        return session_data[uuid]
-    except KeyError:
-        return None
+    def clear(self) -> None:
+        """Clears all sessions."""
+        self.cursor.execute('DELETE FROM Sessions')
+        self.conn.commit()

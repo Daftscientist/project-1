@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker
-
+from sanic.log import logger
 
 DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
@@ -14,3 +14,5 @@ async def init(dev=False):
         if dev:
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
+            logger.info('Tables dropped and created')
+        logger.info('Database initialized')
