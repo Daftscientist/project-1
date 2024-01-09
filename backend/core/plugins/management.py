@@ -1,5 +1,5 @@
 from yapsy.PluginManager import PluginManager
-
+############ DELETE THIS - MAKE MY OWN
 # Build the manager
 simplePluginManager = PluginManager()
 # Tell it the default place(s) where to find plugins
