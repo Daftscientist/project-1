@@ -1,6 +1,5 @@
 import jwt
 from sanic import json
-from core.session import get_user as fetch_user
 from sanic.request import Request
 
 SECRET_KEY = "23893784023409283964732894790792848932798479012043789247589357838401293890"  ## For testing only. This should be stored in an environment variable.

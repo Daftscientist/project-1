@@ -9,6 +9,7 @@ class CustomErrorHandler(ErrorHandler):
         self, request: sanic.Request, exception: Exception
     ) -> sanic.HTTPResponse:
         """handles errors that have no error handlers assigned"""
+        print(exception)
         #raise exception
         #status_code = getattr(exception, "status_code", 500)
         try:

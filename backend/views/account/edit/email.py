@@ -3,11 +3,9 @@ from core.responses import Success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
-from core.cookies import get_user
 from core.authentication import protected
 from sanic_dantic import parse_params, BaseModel
 from database import db
-from core.session import edit_user
 
 EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
@@ -26,7 +24,7 @@ class UpdateEmailView(HTTPMethodView):
     @parse_params(body=UpdateEmailRequest)
     async def post(request: Request, params: UpdateEmailRequest):
         """The update email route."""
-        user = await get_user(request)
+        user = request.app.ctx.cache.get_user(request)
 
         ## check validity of email
         if not EMAIL_REGEX.fullmatch(params.current_email):
@@ -51,6 +49,6 @@ class UpdateEmailView(HTTPMethodView):
                 
                 await users_dal.update_user(user["uuid"], email=params.new_email)
 
-                edit_user(user["session_id"], email=params.new_email)
+                #edit_user(user["session_id"], email=params.new_email)
 
         return await Success(request, "Email updated successfully.")

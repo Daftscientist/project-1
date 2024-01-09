@@ -2,12 +2,10 @@ from core.responses import Success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
-from core.cookies import get_user
 from core.authentication import protected
 from sanic_dantic import parse_params, BaseModel
 from database import db
 from core.encoder import hash_password, check_password
-from core.session import edit_user
 
 
 class UpdatePasswordView(HTTPMethodView):
@@ -25,7 +23,7 @@ class UpdatePasswordView(HTTPMethodView):
     @parse_params(body=UpdatePasswordRequest)
     async def post(request: Request, params: UpdatePasswordRequest):
         """The update password route."""
-        user = await get_user(request)
+        user = request.app.ctx.cache.get_user(request)
 
         if len(params.new_password) < 8:
             raise BadRequest("Password must be at least 8 characters long.")

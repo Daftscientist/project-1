@@ -1,7 +1,7 @@
 import datetime
 from typing import List, Optional
 
-from sqlalchemy import update
+from sqlalchemy import update, delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
@@ -85,3 +85,7 @@ class UsersDAL():
         if q.scalars().first():
             return True
         return False
+    
+    async def delete_user(self, uuid: int):
+        """Deletes the user with the given uuid."""
+        await self.db_session.execute(delete(User).where(User.uuid == uuid))

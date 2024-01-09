@@ -1,7 +1,7 @@
 from functools import wraps
 from sanic import Unauthorized
 import jwt
-from core.session import session_data
+from sanic import Request
 
 SECRET_KEY = "23893784023409283964732894790792848932798479012043789247589357838401293890"  ## For testing only. This should be stored in an environment variable.
 ALGORITHM = "HS256"
@@ -15,15 +15,14 @@ def check_for_cookie(request):
         return False
     return True
 
-async def check_authorization(request):
+async def check_authorization(request: Request):
     """ Checks if the cookie is present and session is valid. """
     if not check_for_cookie(request):
         raise Unauthorized("Authentication required.")
     cookie = jwt.decode(request.cookies.get(COOKIE_IDENTITY), SECRET_KEY, algorithms=[ALGORITHM])
     if cookie["session_id"] is None:
         raise Unauthorized("Authentication required.")
-    if not cookie["session_id"] in session_data:
-        #attempt ot kill the cookie as it isnt valid or ours
+    if not request.app.ctx.session.check_session_token(cookie["session_id"]):
         raise Unauthorized("Authentication required.")
     return True
 

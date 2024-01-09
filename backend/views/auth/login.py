@@ -36,13 +36,13 @@ class LoginView(HTTPMethodView):
 
         last_login = datetime.datetime.now()
         app = Sanic.get_app()
-
         ## check if cookies are present
         if await check_if_cookie_is_present(request):
+            print("cookies are present")
             raise BadRequest("You are already logged in.")
 
         
-
+        print(params.email)
         ## data validation - is it a real email
         if not EMAIL_REGEX.fullmatch(params.email):
             raise BadRequest("Email must be a valid email address.")
@@ -58,14 +58,6 @@ class LoginView(HTTPMethodView):
                 if not await check_password(params.password.encode('utf-8'), user_info.password):
                     raise BadRequest("Password is incorrect.")
                 
-                session_token = get_session_id(request)
-
-                user_identifier = app.ctx.session.get(session_token)
-                if user_identifier != None and len(app.ctx.session.cocurrent_sessions(session_token)) + 1 > user_info.max_sessions:
-                    raise BadRequest("You have too many sessions open. Please log out of one of your other sessions and try again.")
-
-                if user_identifier != user_info.uuid:
-                    raise BadRequest("Your session tokens have been missmatched. Please try again.")
 
                 uuid = user_info.uuid
                 
@@ -74,9 +66,10 @@ class LoginView(HTTPMethodView):
                 max_sessions = user_info.max_sessions
 
                 user_ip = request.remote_addr or request.ip
-
+                print(session_id, uuid)
+                print(app.ctx.session.add)
                 app.ctx.session.add(session_id, uuid, user_ip, time.time() + app.ctx.SESSION_EXPIRY_IN)
-
+                print("yep")
                 await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
 
                 return send_cookie(request, "Logged in successfully.", {"session_id": session_id})

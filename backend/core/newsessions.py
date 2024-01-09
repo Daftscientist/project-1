@@ -42,6 +42,17 @@ class SessionManager:
         self.delete(session_token)
         return None
 
+    def check_session_token(self, session_token: str) -> bool:
+        """Returns whether a session token is valid."""
+        self.cursor.execute('SELECT expiry FROM Sessions WHERE session_token = ?', (session_token,))
+        row = self.cursor.fetchone()
+        if row is not None:
+            expiry = row[0]
+            if expiry > time.time():
+                return True
+        self.delete(session_token)
+        return False
+
     def cocurrent_sessions(self, user_identifier) -> list[tuple[str, str]]:
         """Returns all sessions of a user."""
         self.cursor.execute('SELECT session_token, creation_ip, expiry, created_at FROM Sessions WHERE user_identifier = ?', (user_identifier,))
