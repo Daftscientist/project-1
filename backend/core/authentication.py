@@ -23,6 +23,7 @@ async def check_authorization(request):
     if cookie["session_id"] is None:
         raise Unauthorized("Authentication required.")
     if not cookie["session_id"] in session_data:
+        #attempt ot kill the cookie as it isnt valid or ours
         raise Unauthorized("Authentication required.")
     return True
 
