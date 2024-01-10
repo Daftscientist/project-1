@@ -12,8 +12,8 @@ A project to replace pterodactyl and be a showcase of my Python and React skills
 | Done? | Idea |
 | --- | --- |
 | ❌ | Rewrite the whole codebase to use global app context for all common functions. |
-| ❌ | Write a cache system - option to use SQLite|Redis. (start with sqlite) |
-| 🖊️ | Implement the use of the new session system. |
+| ✔️ | Write a cache system - option to use SQLite|Redis. (start with sqlite) |
+| ✔️ | Implement the use of the new session system. |
 | ✔️ | Rewrite the session system to not rely on python dictionaries. |
 | ✔️ | Move the authentication routes to /auth/... |
 | ✔️ | Decorator for authenticated routes. |
