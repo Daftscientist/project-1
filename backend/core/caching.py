@@ -24,26 +24,20 @@ class Cache:
         self.conn.commit()
 
     async def add(self,user_info) -> None:
-        """Adds a session to the cache."""
+        """Adds a user to the cache."""
 
         uuid = user_info.uuid
 
-        if uuid is None:
+
+        user = user_info
+
+        if user is None:
             return Unauthorized("Authentication required.")
-        
-        async with db.async_session() as session:
-            async with session.begin():
-                users_dal = UsersDAL(session)
-
-                user = user_info
-
-                if user is None:
-                    return Unauthorized("Authentication required.")
                 
                 
-                self.cursor.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
+        self.cursor.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
                                     (user.uuid.hex, pickle.dumps(user, pickle.HIGHEST_PROTOCOL,)))
-                self.conn.commit()
+        self.conn.commit()
 
     async def get(self, request: sanic.Request):
         app = Sanic.get_app()
