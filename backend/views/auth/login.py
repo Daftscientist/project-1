@@ -65,7 +65,7 @@ class LoginView(HTTPMethodView):
                 user_ip = request.remote_addr or request.ip
 
                 app.ctx.session.add(session_id, uuid, user_ip, time.time() + app.ctx.SESSION_EXPIRY_IN)
-                await app.ctx.cache.add(user_info)
+                await app.ctx.cache.add(user_info) # check for concurrent sessions - could override for no reason - cpu strain 
                 await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
                 
                 return send_cookie(request, "Logged in successfully.", {"session_id": session_id})
