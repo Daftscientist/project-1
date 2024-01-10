@@ -3,8 +3,7 @@ import sqlite3
 from sanic import Sanic
 from sanic import Unauthorized
 import sanic
-from database.dals.user_dal import UsersDAL
-from database import db
+from database.models.user import User
 from core.cookies import get_session_id
 
 class Cache:
@@ -23,23 +22,15 @@ class Cache:
         ''')
         self.conn.commit()
 
-    async def add(self,user_info) -> None:
+    async def add(self, user_info) -> None:
         """Adds a user to the cache."""
-
-        uuid = user_info.uuid
-
-
-        user = user_info
-
-        if user is None:
-            return Unauthorized("Authentication required.")
-                
                 
         self.cursor.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
-                                    (user.uuid.hex, pickle.dumps(user, pickle.HIGHEST_PROTOCOL,)))
+                                    (user_info.uuid.hex, pickle.dumps(user_info, pickle.HIGHEST_PROTOCOL,)))
         self.conn.commit()
 
-    async def get(self, request: sanic.Request):
+    async def get(self, request: sanic.Request) -> User:
+        """Gets a user from the cache."""
         app = Sanic.get_app()
         uuid = app.ctx.session.get(get_session_id(request))
 
@@ -50,9 +41,20 @@ class Cache:
         row = self.cursor.fetchone()
         if row is not None:
             return pickle.loads(row[0])
-                
 
-    async def get_user(self, request: sanic.Request):
+    async def update(self, user_info: User) -> None:
+        """Updates a user in the cache."""
+        self.cursor.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
+                                    (user_info.uuid.hex, pickle.dumps(user_info, pickle.HIGHEST_PROTOCOL,)))
+        self.conn.commit()
+
+    async def remove(self, session_id: str) -> None:
+        """Removes a user from the cache."""
+        self.cursor.execute('DELETE FROM Sessions WHERE user_identifier = ?', (session_id,))
+        self.conn.commit() 
+
+    async def get_user(self, request: sanic.Request) -> dict:
+        """Gets a user from the cache."""
         session_token = get_session_id(request)
         user = await self.get(request)
         return {
