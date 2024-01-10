@@ -30,7 +30,7 @@ class UpdateUsernameView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 if await users_dal.check_if_user_exists_username(params.new_username):
-                    raise BadRequest("Username is taken.", status_code=400)
+                    raise BadRequest("Username is taken.")
                 
                 await users_dal.update_user(user["uuid"], username=params.new_username)
 

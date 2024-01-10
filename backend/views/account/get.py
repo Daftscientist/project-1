@@ -19,8 +19,8 @@ class GetUserView(HTTPMethodView):
     @protected
     async def post(request: Request):
         """The get user route."""
-        #user = await get_user(request)
+        cache = request.app.ctx.cache
 
-        #user = fix_dict(user)
+        user = fix_dict(await cache.get_user(request))
         
-        #return await DataResponse(request, user)
+        return await DataResponse(request, user)

@@ -1,7 +1,7 @@
 from core.responses import Success
 from sanic import Request, Unauthorized, BadRequest
 from sanic.views import HTTPMethodView
-from core.cookies import check_if_cookie_is_present, remove_cookie, get_session_id
+from core.cookies import remove_cookie, get_session_id
 from core.authentication import protected
 
 class LogoutView(HTTPMethodView):
@@ -15,6 +15,6 @@ class LogoutView(HTTPMethodView):
 
         response = await Success(request, "Logged out successfully.")
         await remove_cookie(response)
-        app.ctx.session.remove_session(get_session_id(request))
+        app.ctx.session.remove(get_session_id(request))
         ## delete the session info from cache
         return response

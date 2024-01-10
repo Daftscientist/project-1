@@ -5,7 +5,7 @@ from sanic import json
 async def Success(request, data=None, code=200):
     response = json({
         "success": True,
-        "message": data,
+        "result": data,
         "code": code,
         "request_id": str(request.id)
     }, status=code)
@@ -14,7 +14,7 @@ async def Success(request, data=None, code=200):
 async def DataResponse(request, data=None, code=200):
     response = json({
         "success": True,
-        "data": data,
+        "result": data,
         "code": code,
         "request_id": str(request.id)
     }, status=code)

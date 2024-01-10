@@ -5,28 +5,35 @@ from views.account.edit import avatar, email, password, username
 from views.account.session.get import GetActiveSessionsView
 from views.account.session.delete import DeleteSessionView
 
-routes_v1 = [
-    "api/v1", ## route prefix
-    [
+routes = [
+    [ # This is version 1
         # --- General ---
-        ["/", index.IndexView.as_view()],
-        ["/hello", hello.HelloView.as_view()],
+        ["/", index.IndexView],
+        ["/hello", hello.HelloView],
 
-        # --- AUTH --- 
-        ["/auth/create", create.CreateView.as_view()],
-        ["/auth/login", login.LoginView.as_view()],
-        ["/auth/logout", logout.LogoutView.as_view()],
+        # --- Authentication --- 
+        ["/auth/create", create.CreateView],
+        ["/auth/login", login.LoginView],
+        ["/auth/logout", logout.LogoutView],
 
-        # --- ACCOUNT --- 
-        ["/account/get", GetUserView.as_view()],
-        ["/account/edit/username", username.UpdateUsernameView.as_view()],
-        ["/account/edit/email", email.UpdateEmailView.as_view()],
-        ["/account/edit/password", password.UpdatePasswordView.as_view()],
-        ["/account/edit/avatar", avatar.UpdateAvatarView.as_view()],
+        # --- Account --- 
+        ["/account/get", GetUserView],
+        ["/account/edit/username", username.UpdateUsernameView],
+        ["/account/edit/email", email.UpdateEmailView],
+        ["/account/edit/password", password.UpdatePasswordView],
+        ["/account/edit/avatar", avatar.UpdateAvatarView],
 
-        # --- SESSIONS --- 
-        ["/account/session/get/all", GetActiveSessionsView.as_view()],
-        ["/account/session/delete", DeleteSessionView.as_view()],
+        # --- Sessions --- 
+        ["/account/session/get/all", GetActiveSessionsView],
+        ["/account/session/delete", DeleteSessionView],
 
     ]
 ]
+
+"""
+- Versioning:
+-> To create a new api version, add a new list to the routes list. 
+   This will automatically become one version after the last - while the other can still function as normal.
+-> To add a new route, add a new list to the version list.
+   The first item in the list is the route, the second is the view.
+"""

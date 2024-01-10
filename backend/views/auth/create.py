@@ -48,7 +48,7 @@ class CreateView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 if await users_dal.check_if_user_exists_email(params.email):
-                    raise BadRequest("Email or username is taken.", status_code=400)
+                    raise BadRequest("Email or username is taken.")
 
                 if await users_dal.check_if_user_exists(params.username, params.email):
                     raise BadRequest("Email or username is taken.")

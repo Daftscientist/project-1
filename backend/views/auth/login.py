@@ -38,11 +38,9 @@ class LoginView(HTTPMethodView):
         app = Sanic.get_app()
         ## check if cookies are present
         if await check_if_cookie_is_present(request):
-            print("cookies are present")
             raise BadRequest("You are already logged in.")
 
         
-        print(params.email)
         ## data validation - is it a real email
         if not EMAIL_REGEX.fullmatch(params.email):
             raise BadRequest("Email must be a valid email address.")
@@ -62,14 +60,12 @@ class LoginView(HTTPMethodView):
                 uuid = user_info.uuid
                 
                 session_id = create_session_id()
-
-                max_sessions = user_info.max_sessions
+                # kill old cookie sessions
 
                 user_ip = request.remote_addr or request.ip
-                print(session_id, uuid)
-                print(app.ctx.session.add)
-                app.ctx.session.add(session_id, uuid, user_ip, time.time() + app.ctx.SESSION_EXPIRY_IN)
-                print("yep")
-                await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
 
+                app.ctx.session.add(session_id, uuid, user_ip, time.time() + app.ctx.SESSION_EXPIRY_IN)
+                await app.ctx.cache.add(user_info)
+                await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
+                
                 return send_cookie(request, "Logged in successfully.", {"session_id": session_id})
