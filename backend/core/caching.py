@@ -6,28 +6,30 @@ import sanic
 from database.models.user import User
 from core.cookies import get_session_id
 
+import aiosqlite
+
 class Cache:
     """A caching manager that stores cache in a SQLite database."""
-    def __init__(self, db_path: str):
+    async def __init__(self, db_path: str):
         """Initializes the session manager."""
-        self.db_path = db_path
-        self.conn = sqlite3.connect(db_path)
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Sessions (
-                user_identifier TEXT PRIMARY KEY,
-                data BLOB,
-                cached_at INTEGER DEFAULT (strftime('%s', 'now'))
-            )
-        ''')
-        self.conn.commit()
+        async with aiosqlite.connect(db_path) as db:
+            self.db = db
+
+            await db.execute('''
+                CREATE TABLE IF NOT EXISTS Sessions (
+                    user_identifier TEXT PRIMARY KEY,
+                    data BLOB,
+                    cached_at INTEGER DEFAULT (strftime('%s', 'now'))
+                )
+            ''')
+            await db.commit()
 
     async def add(self, user_info) -> None:
         """Adds a user to the cache."""
                 
-        self.cursor.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
+        await self.db.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
                                     (user_info.uuid.hex, pickle.dumps(user_info, pickle.HIGHEST_PROTOCOL,)))
-        self.conn.commit()
+        await self.db.commit()
 
     async def get(self, request: sanic.Request) -> User:
         """Gets a user from the cache."""
@@ -37,21 +39,21 @@ class Cache:
         if uuid is None:
             return Unauthorized("Authentication required.")
         
-        self.cursor.execute('SELECT data FROM Sessions WHERE user_identifier = ?', (uuid.hex,))
-        row = self.cursor.fetchone()
-        if row is not None:
-            return pickle.loads(row[0])
+        async with self.db.execute('SELECT data FROM Sessions WHERE user_identifier = ?', (uuid.hex,)) as cursor:
+            row = await cursor.fetchone()
+            if row is not None:
+                return pickle.loads(row[0])
 
     async def update(self, user_info: User) -> None:
         """Updates a user in the cache."""
-        self.cursor.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
+        await self.db.execute('INSERT OR REPLACE INTO Sessions (user_identifier, data) VALUES (?, ?)', 
                                     (user_info.uuid.hex, pickle.dumps(user_info, pickle.HIGHEST_PROTOCOL,)))
-        self.conn.commit()
+        await self.conn.commit()
 
     async def remove(self, uuid: str) -> None:
         """Removes a user from the cache."""
-        self.cursor.execute('DELETE FROM Sessions WHERE user_identifier = ?', (uuid.hex,))
-        self.conn.commit() 
+        await self.db.execute('DELETE FROM Sessions WHERE user_identifier = ?', (uuid.hex,))
+        await self.conn.commit() 
 
     async def get_user(self, request: sanic.Request) -> dict:
         """Gets a user from the cache."""
