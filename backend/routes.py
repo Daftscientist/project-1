@@ -4,6 +4,7 @@ from views.account.get import GetUserView
 from views.account.edit import avatar, email, password, username
 from views.account.session.get import GetActiveSessionsView
 from views.account.session.delete import DeleteSessionView
+from views.account.edit.max_sessions import UpdateMaxSessions
 
 routes = [
     [ # This is version 1
@@ -22,6 +23,7 @@ routes = [
         ["/account/edit/email", email.UpdateEmailView],
         ["/account/edit/password", password.UpdatePasswordView],
         ["/account/edit/avatar", avatar.UpdateAvatarView],
+        ["/account/edit/max-sessions", UpdateMaxSessions],
 
         # --- Sessions --- 
         ["/account/session/get/all", GetActiveSessionsView],

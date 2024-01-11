@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from database.models.bannedIPs import BannedIPs
 
-class UsersDAL():
+class BannedIpsDal():
     def __init__(self, db_session: Session):
         self.db_session = db_session
     
