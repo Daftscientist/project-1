@@ -24,7 +24,7 @@ class UpdateEmailView(HTTPMethodView):
     @parse_params(body=UpdateEmailRequest)
     async def post(request: Request, params: UpdateEmailRequest):
         """The update email route."""
-        user = request.app.ctx.cache.get_user(request)
+        user =await request.app.ctx.cache.get_user(request)
 
         ## check validity of email
         if not EMAIL_REGEX.fullmatch(params.current_email):

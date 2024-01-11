@@ -20,7 +20,7 @@ class UpdateUsernameView(HTTPMethodView):
     @parse_params(body=UpdateUsernameRequest)
     async def post(request: Request, params: UpdateUsernameRequest):
         """The update username route."""
-        user = request.app.ctx.cache.get_user(request)
+        user =await request.app.ctx.cache.get_user(request)
 
         ## check validity of email
         if len(params.new_username) < 3:

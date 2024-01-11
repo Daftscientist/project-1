@@ -23,7 +23,7 @@ class UpdatePasswordView(HTTPMethodView):
     @parse_params(body=UpdatePasswordRequest)
     async def post(request: Request, params: UpdatePasswordRequest):
         """The update password route."""
-        user = request.app.ctx.cache.get_user(request)
+        user = await request.app.ctx.cache.get_user(request)
 
         if len(params.new_password) < 8:
             raise BadRequest("Password must be at least 8 characters long.")

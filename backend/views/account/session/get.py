@@ -12,9 +12,8 @@ class GetActiveSessionsView(HTTPMethodView):
     @protected
     async def post(request: Request):
         """The get active sessions route."""
-        user = request.app.ctx.cache.get_user(request)
-        ## save sessions in order of created [oldest first] (with id)
-        sessions = request.app.ctx.session.cocurrent_sessions(user["uuid"])
-        sessions = [fix_dict(session) for session in sessions]
+        user = await request.app.ctx.cache.get(request)
+        
+        sessions = request.app.ctx.session.cocurrent_sessions(user.uuid)
 
         return await DataResponse(request, sessions)

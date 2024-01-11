@@ -22,7 +22,7 @@ class UpdateAvatarView(HTTPMethodView):
     @parse_params(body=UpdateAvatarRequest)
     async def post(request: Request, params: UpdateAvatarRequest):
         """The update avatar route."""
-        user = request.app.ctx.cache.get_user(request)
+        user = await request.app.ctx.cache.get_user(request)
 
         if not URL_REGEX.fullmatch(params.new_avatar):
             raise BadRequest("Avatar must be a valid URL.")

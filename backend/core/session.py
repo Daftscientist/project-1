@@ -11,7 +11,7 @@ class SessionManager:
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS Sessions (
                 session_token TEXT PRIMARY KEY,
-                user_identifier TEXT,
+                uuid TEXT,
                 creation_ip TEXT,                
                 expiry INTEGER,
                 created_at INTEGER DEFAULT (strftime('%s', 'now'))
@@ -24,17 +24,17 @@ class SessionManager:
         self.cursor.execute('DELETE FROM Sessions WHERE expiry <= ?', (time.time(),))
         self.conn.commit()
 
-    def add(self, session_token: str, user_identifier: str, creation_ip: str, expiry: int) -> None:
+    def add(self, session_token: str, user_uuid: str, creation_ip: str, expiry: int) -> None:
         """Adds a session to the cache."""
         if expiry <= time.time():
             raise ValueError("Expiry must be a future Unix timestamp.")
-        self.cursor.execute('INSERT OR REPLACE INTO Sessions (session_token, user_identifier, creation_ip, expiry) VALUES (?, ?, ?, ?)', 
-                            (session_token, user_identifier.hex, creation_ip, expiry))
+        self.cursor.execute('INSERT OR REPLACE INTO Sessions (session_token, uuid, creation_ip, expiry) VALUES (?, ?, ?, ?)', 
+                            (session_token, user_uuid.hex, creation_ip, expiry))
         self.conn.commit()
 
     def check_session_token(self, session_token: str) -> bool:
         """Returns whether a session token is valid."""
-        self.cursor.execute('SELECT expiry FROM Sessions WHERE session_token = ?', (session_token,))
+        self.cursor.execute('SELECT expiry FROM Sessions WHERE session_token = ? ORDER BY created_at ASC', (session_token,))
         row = self.cursor.fetchone()
         if row is not None:
             expiry = row[0]
@@ -45,21 +45,21 @@ class SessionManager:
 
     def get(self, session_token: str) -> str|None:
         """Returns the user identifier of a session if it has not expired."""
-        self.cursor.execute('SELECT user_identifier, expiry FROM Sessions WHERE session_token = ?', (session_token,))
+        self.cursor.execute('SELECT uuid, expiry FROM Sessions WHERE session_token = ?', (session_token,))
         row = self.cursor.fetchone()
         if row is not None:
-            user_identifier, expiry = row
+            user_uuid, expiry = row
             if expiry > time.time():
-                return uuid.UUID(user_identifier)
+                return uuid.UUID(user_uuid)
         self.delete(session_token)
         return None
 
-    def cocurrent_sessions(self, user_identifier) -> list[tuple[str, str]]:
+    def cocurrent_sessions(self, user_uuid) -> list[tuple[str, str]]:
         """Returns all sessions of a user."""
-        if type(user_identifier) == uuid.UUID:
-            user_identifier = user_identifier.hex
-        self.cursor.execute('SELECT session_token, creation_ip, expiry, created_at FROM Sessions WHERE user_identifier = ?', (user_identifier,))
-        return self.cursor.fetchall() ## not hexed uuids
+        if type(user_uuid) == uuid.UUID:
+            user_uuid = user_uuid.hex
+        self.cursor.execute('SELECT session_token, creation_ip, expiry, created_at FROM Sessions WHERE uuid = ?', (user_uuid,))
+        return self.cursor.fetchall() ## hexed uuids
 
     def delete(self, session_token: str) -> None:
         """Deletes a session."""
