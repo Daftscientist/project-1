@@ -10,7 +10,7 @@ class SessionManager:
     
     async def async__init__(self):
         async with aiosqlite.connect(self.db_path) as db:
-            db.execute('''
+            await db.execute('''
                 CREATE TABLE IF NOT EXISTS Sessions (
                     session_token TEXT PRIMARY KEY,
                     uuid TEXT,
@@ -19,8 +19,8 @@ class SessionManager:
                     created_at INTEGER DEFAULT (strftime('%s', 'now'))
                 )
             ''')
-        await db.commit()
-        await self.session_cleanup()
+            await db.commit()
+            await self.session_cleanup()
 
     async def get_all_users(self) -> list[str]:
         """Returns all users in the cache."""
@@ -59,7 +59,7 @@ class SessionManager:
         """Returns the user identifier of a session if it has not expired."""
         async with aiosqlite.connect(self.db_path) as db:
             async with db.execute('SELECT uuid, expiry FROM Sessions WHERE session_token = ?', (session_token,)) as cursor:
-                row = cursor.fetchone()
+                row = await cursor.fetchone()
                 if row is not None:
                     user_uuid, expiry = row
                     if expiry > time.time():

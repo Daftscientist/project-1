@@ -55,8 +55,7 @@ class LoginView(HTTPMethodView):
                 user_info = await users_dal.get_user_by_email(params.email)
                 if not await check_password(params.password.encode('utf-8'), user_info.password):
                     raise BadRequest("Password is incorrect.")
-                print(user_info.__dict__)
-                print(user_info.max_sessions, len(await app.ctx.session.cocurrent_sessions(user_info.uuid)))
+
                 if user_info.max_sessions <= len(await app.ctx.session.cocurrent_sessions(user_info.uuid)):
                     raise BadRequest("You have too many concurrent sessions.")
 

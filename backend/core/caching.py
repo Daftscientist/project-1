@@ -36,7 +36,7 @@ class Cache:
     async def get(self, request: sanic.Request) -> User:
         """Gets a user from the cache."""
         app = Sanic.get_app()
-        uuid = app.ctx.session.get(get_session_id(request))
+        uuid = await app.ctx.session.get(get_session_id(request))
 
         if uuid is None:
             return Unauthorized("Authentication required.")
