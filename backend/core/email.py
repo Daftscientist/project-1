@@ -43,7 +43,6 @@ class Email:
             msg.attach(MIMEText(html_body, "html"))
         else:
             body = self.__format_body__(getattr(self, body_type + "_body"))
-            print(body)
             msg = MIMEText(body, body_type)
         
         msg["Subject"] = subject
