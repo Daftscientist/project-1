@@ -23,7 +23,7 @@ def fix_dict(dict):
 
 async def populate_cache(app):
     ## make a list of every individual user with a session and add them to the cache
-    for user_uuid in app.ctx.session.get_all_users():
+    for user_uuid in await app.ctx.session.get_all_users():
         user_uuid = uuid.UUID(user_uuid[0])
         async with db.async_session() as session:
             async with session.begin():

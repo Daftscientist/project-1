@@ -22,8 +22,8 @@ class DeleteSessionView(HTTPMethodView):
         """The delete sessions route."""
         session = request.app.ctx.session
 
-        if not session.check_session_token(params.session_id):
+        if not await session.check_session_token(params.session_id):
             return await BadRequest(request, "Invalid session token.")
 
-        session.delete(params.session_id)
+        await session.delete(params.session_id)
         return await Success(request, "Session deleted successfully.")

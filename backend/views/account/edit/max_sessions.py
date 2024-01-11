@@ -40,4 +40,4 @@ class UpdateMaxSessions(HTTPMethodView):
                     )
                 )
 
-        return await Success(request, "Avatar updated successfully.")
+        return await Success(request, "Maximum sessions updated successfully.")

@@ -14,7 +14,7 @@ class GetActiveSessionsView(HTTPMethodView):
         """The get active sessions route."""
         user = await request.app.ctx.cache.get(request)
         
-        sessions = request.app.ctx.session.cocurrent_sessions(user.uuid)
+        sessions = await request.app.ctx.session.cocurrent_sessions(user.uuid)
 
         result = []
 

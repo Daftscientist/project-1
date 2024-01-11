@@ -30,10 +30,12 @@ async def main_start(app, loop):
     app.config.update({
         "DEFAULT_MAX_SESSIONS": 3
     })
+    app.config.FALLBACK_ERROR_FORMAT = "json"
     #await db.init(True)
     print("Database initialized.")
     app.ctx.SESSION_EXPIRY_IN = 604800 # 7 days
     app.ctx.cache = Cache("cache.db")
+    await app.ctx.cache.async__init__() ## initialize the cache
     app.ctx.session = SessionManager("sessions.db")
     
     await populate_cache(app)
@@ -46,7 +48,7 @@ async def main_start(app, loop):
 @app.after_server_start
 async def ticker(app, loop):
     app.ctx.scheduler = AsyncIOScheduler()
-    app.ctx.scheduler.add_job(app.ctx.session.session_cleanup, 'interval', seconds=3600) # Runs session cleanup every hour
+    app.ctx.scheduler.add_job(await app.ctx.session.session_cleanup, 'interval', seconds=3600) # Runs session cleanup every hour
     app.ctx.scheduler.start()
 
 

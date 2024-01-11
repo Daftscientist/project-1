@@ -17,13 +17,13 @@ class LogoutView(HTTPMethodView):
 
         user = await cache.get(request)
 
-        if len(session.cocurrent_sessions(user.uuid)) <= 1:
+        if len(await session.cocurrent_sessions(user.uuid)) <= 1:
             # last session
             await cache.remove(user.uuid)
 
         response = await Success(request, "Logged out successfully.")
         response = await remove_cookie(response)
 
-        app.ctx.session.delete(get_session_id(request))
+        await app.ctx.session.delete(get_session_id(request))
         ## delete the session info from cache
         return response
