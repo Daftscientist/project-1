@@ -16,4 +16,14 @@ class GetActiveSessionsView(HTTPMethodView):
         
         sessions = request.app.ctx.session.cocurrent_sessions(user.uuid)
 
-        return await DataResponse(request, sessions)
+        result = []
+
+        for item in sessions:
+            result.append({
+                "session_token": item[0],
+                "creation_ip": item[1],
+                "expiry": item[2],
+                "created_at": item[3]
+            })
+
+        return await DataResponse(request, result)

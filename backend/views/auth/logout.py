@@ -12,9 +12,18 @@ class LogoutView(HTTPMethodView):
     async def post(request: Request):
         """ The logout route. """
         app = request.app
+        cache = request.app.ctx.cache
+        session = app.ctx.session
+
+        user = await cache.get(request)
+
+        if len(session.cocurrent_sessions(user.uuid)) <= 1:
+            # last session
+            await cache.remove(user.uuid)
 
         response = await Success(request, "Logged out successfully.")
-        await remove_cookie(response)
-        app.ctx.session.remove(get_session_id(request))
+        response = await remove_cookie(response)
+
+        app.ctx.session.delete(get_session_id(request))
         ## delete the session info from cache
         return response

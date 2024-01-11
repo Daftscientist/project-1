@@ -48,9 +48,9 @@ class Cache:
                                     (user_info.uuid.hex, pickle.dumps(user_info, pickle.HIGHEST_PROTOCOL,)))
         self.conn.commit()
 
-    async def remove(self, session_id: str) -> None:
+    async def remove(self, uuid: str) -> None:
         """Removes a user from the cache."""
-        self.cursor.execute('DELETE FROM Sessions WHERE user_identifier = ?', (session_id,))
+        self.cursor.execute('DELETE FROM Sessions WHERE user_identifier = ?', (uuid.hex,))
         self.conn.commit() 
 
     async def get_user(self, request: sanic.Request) -> dict:

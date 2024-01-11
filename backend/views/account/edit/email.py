@@ -24,7 +24,8 @@ class UpdateEmailView(HTTPMethodView):
     @parse_params(body=UpdateEmailRequest)
     async def post(request: Request, params: UpdateEmailRequest):
         """The update email route."""
-        user =await request.app.ctx.cache.get_user(request)
+        user = await request.app.ctx.cache.get(request)
+        cache = request.app.ctx.cache
 
         ## check validity of email
         if not EMAIL_REGEX.fullmatch(params.current_email):
@@ -35,7 +36,7 @@ class UpdateEmailView(HTTPMethodView):
             raise BadRequest("Email must be a valid email address.")
         
         ## check if email is already in use
-        if not user["email"] == params.current_email:
+        if not user.email == params.current_email:
             raise BadRequest("Current email is incorrect.")
         
         if params.new_email != params.repeated_new_email:
@@ -47,8 +48,12 @@ class UpdateEmailView(HTTPMethodView):
                 if await users_dal.check_if_user_exists_email(params.new_email):
                     raise BadRequest("Email is taken.")
                 
-                await users_dal.update_user(user["uuid"], email=params.new_email)
+                await users_dal.update_user(user.uuid, email=params.new_email)
 
-                #edit_user(user["session_id"], email=params.new_email)
+                await cache.update(
+                    await users_dal.get_user_by_uuid(
+                        user.uuid
+                    )
+                )
 
         return await Success(request, "Email updated successfully.")

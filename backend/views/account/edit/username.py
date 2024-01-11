@@ -20,7 +20,8 @@ class UpdateUsernameView(HTTPMethodView):
     @parse_params(body=UpdateUsernameRequest)
     async def post(request: Request, params: UpdateUsernameRequest):
         """The update username route."""
-        user =await request.app.ctx.cache.get_user(request)
+        user = await request.app.ctx.cache.get(request)
+        cache = request.app.ctx.cache
 
         ## check validity of email
         if len(params.new_username) < 3:
@@ -32,8 +33,12 @@ class UpdateUsernameView(HTTPMethodView):
                 if await users_dal.check_if_user_exists_username(params.new_username):
                     raise BadRequest("Username is taken.")
                 
-                await users_dal.update_user(user["uuid"], username=params.new_username)
+                await users_dal.update_user(user.uuid, username=params.new_username)
 
-                #edit_user(user["session_id"], username=params.new_username)
+                await cache.update(
+                    await users_dal.get_user_by_uuid(
+                        user.uuid
+                    )
+                )
 
         return await Success(request, "Username updated successfully.")

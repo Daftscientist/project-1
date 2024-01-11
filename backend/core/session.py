@@ -18,6 +18,12 @@ class SessionManager:
             )
         ''')
         self.conn.commit()
+        self.session_cleanup()
+
+    def get_all_users(self) -> list[str]:
+        """Returns all users in the cache."""
+        self.cursor.execute('SELECT uuid FROM Sessions')
+        return list(set([row for row in self.cursor.fetchall()]))
 
     def session_cleanup(self) -> None: ## decide whether this runs per action or periodically.
         """Removes all expired sessions from the database."""

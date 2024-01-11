@@ -20,5 +20,10 @@ class DeleteSessionView(HTTPMethodView):
     @parse_params(body=DeleteSessionRequest)
     async def post(request: Request, params: DeleteSessionRequest):
         """The delete sessions route."""
-        #delete_user(params.session_id)
+        session = request.app.ctx.session
+
+        if not session.check_session_token(params.session_id):
+            return await BadRequest(request, "Invalid session token.")
+
+        session.delete(params.session_id)
         return await Success(request, "Session deleted successfully.")

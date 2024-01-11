@@ -22,7 +22,8 @@ class UpdateAvatarView(HTTPMethodView):
     @parse_params(body=UpdateAvatarRequest)
     async def post(request: Request, params: UpdateAvatarRequest):
         """The update avatar route."""
-        user = await request.app.ctx.cache.get_user(request)
+        user = await request.app.ctx.cache.get(request)
+        cache = request.app.ctx.cache
 
         if not URL_REGEX.fullmatch(params.new_avatar):
             raise BadRequest("Avatar must be a valid URL.")
@@ -33,8 +34,12 @@ class UpdateAvatarView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 
-                await users_dal.update_user(user["uuid"], avatar=params.new_avatar)
+                await users_dal.update_user(user.uuid, avatar=params.new_avatar)
 
-                #edit_user(user["session_id"], avatar=params.new_avatar)
+                await cache.update(
+                    await users_dal.get_user_by_uuid(
+                        user.uuid
+                    )
+                )
 
         return await Success(request, "Avatar updated successfully.")
