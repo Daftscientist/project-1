@@ -1,6 +1,5 @@
 import re
-from core.responses import Success
-from core.responses import DataResponse
+from core.responses import success
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
 from core.authentication import protected
@@ -26,4 +25,4 @@ class DeleteSessionView(HTTPMethodView):
             return await BadRequest(request, "Invalid session token.")
 
         await session.delete(params.session_id)
-        return await Success(request, "Session deleted successfully.")
+        return await success(request, "Session deleted successfully.")

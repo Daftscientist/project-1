@@ -1,4 +1,4 @@
-from core.responses import Success
+from core.responses import success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
@@ -41,4 +41,4 @@ class UpdateUsernameView(HTTPMethodView):
                     )
                 )
 
-        return await Success(request, "Username updated successfully.")
+        return await success(request, "Username updated successfully.")

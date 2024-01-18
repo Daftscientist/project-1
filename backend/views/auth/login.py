@@ -3,7 +3,7 @@ import re
 import time
 from sanic import Sanic
 from sanic_dantic import parse_params, BaseModel
-from core.responses import Success
+from core.responses import success
 from sanic import Request, BadRequest
 from sanic.views import HTTPMethodView
 from core.cookies import check_if_cookie_is_present, send_cookie, get_session_id

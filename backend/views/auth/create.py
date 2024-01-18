@@ -5,12 +5,12 @@ from database.dals.user_dal import UsersDAL
 from sanic_dantic import parse_params, BaseModel
 from database import db
 from core import encoder
-from core.responses import Success
+from core.responses import success
 from core.cookies import check_if_cookie_is_present
 
 EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
-from core.responses import Success
+from core.responses import success
 from sanic import Request, BadRequest
 from sanic.views import HTTPMethodView
 from core.cookies import check_if_cookie_is_present, remove_cookie
@@ -62,4 +62,4 @@ class CreateView(HTTPMethodView):
                     ip, ip
                 )
 
-        return await Success(request, "User created successfully.")
+        return await success(request, "User created successfully.")

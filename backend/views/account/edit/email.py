@@ -1,5 +1,5 @@
 import re
-from core.responses import Success
+from core.responses import success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
@@ -56,4 +56,4 @@ class UpdateEmailView(HTTPMethodView):
                     )
                 )
 
-        return await Success(request, "Email updated successfully.")
+        return await success(request, "Email updated successfully.")

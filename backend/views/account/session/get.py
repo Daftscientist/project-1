@@ -1,5 +1,5 @@
 import re
-from core.responses import DataResponse
+from core.responses import data_response
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
 from core.authentication import protected
@@ -26,4 +26,4 @@ class GetActiveSessionsView(HTTPMethodView):
                 "created_at": item[3]
             })
 
-        return await DataResponse(request, result)
+        return await data_response(request, result)

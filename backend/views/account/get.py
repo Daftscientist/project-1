@@ -1,6 +1,6 @@
 import json
 import re
-from core.responses import DataResponse
+from core.responses import data_response
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
 from core.authentication import protected
@@ -23,4 +23,4 @@ class GetUserView(HTTPMethodView):
 
         user = fix_dict(await cache.get_user(request))
         
-        return await DataResponse(request, user)
+        return await data_response(request, user)

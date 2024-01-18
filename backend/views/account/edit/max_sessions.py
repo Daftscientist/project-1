@@ -1,5 +1,5 @@
 import re
-from core.responses import Success
+from core.responses import success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
@@ -40,4 +40,4 @@ class UpdateMaxSessions(HTTPMethodView):
                     )
                 )
 
-        return await Success(request, "Maximum sessions updated successfully.")
+        return await success(request, "Maximum sessions updated successfully.")

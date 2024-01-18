@@ -1,0 +1,21 @@
+server:
+  host: 'localhost'
+  port: 8080
+  debug: true # - Enable exception stack traces in console
+  reload: true # - Reload the server when code changes
+routing:
+  contextPath: /api # - Base path for all API endpoints
+  enabled_versions: [1] # - List of enabled API versions
+database:
+  url: 'sqlite+aiosqlite:///./test.db'
+  create_tables: true
+session:
+  cookie_identifier: 'session' # - Name of the cookie used to store the session ID
+  user_max_sessions: 3 # - Maximum number of sessions a user can have at the same time
+  session_max_age: 604800 # - Amount of time a session will last for (in seconds)
+  session_purge_interval: 3600 # - Clear expired sessions every hour
+  cookie_secure: false # - Only send cookies over HTTPS
+core:
+  encryption_key: 'secret' # - Key used to encrypt sensitive data
+  password_salt: 'salt' # - Salt used to hash passwords
+  cookie_secret: 'secret' # - Secret used to sign cookies

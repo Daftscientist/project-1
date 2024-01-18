@@ -1,13 +1,22 @@
+"""
+Module docstring goes here.
+"""
+
 import re
-from core.responses import Success
-from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
+from sanic_dantic import parse_params
+from sanic_dantic.models import BaseModel
+# pylint: disable=import-error
 from core.authentication import protected
-from sanic_dantic import parse_params, BaseModel
+from core.responses import success
+from database.dals.user_dal import UsersDAL
 from database import db
 
-URL_REGEX = re.compile(r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
+URL_REGEX = re.compile(
+    r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}"
+    r"\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+)
 
 class UpdateAvatarView(HTTPMethodView):
     """The update avatar view."""
@@ -21,7 +30,19 @@ class UpdateAvatarView(HTTPMethodView):
     @protected
     @parse_params(body=UpdateAvatarRequest)
     async def post(request: Request, params: UpdateAvatarRequest):
-        """The update avatar route."""
+        """
+        Update the avatar of the user.
+
+        Args:
+            request (Request): The request object.
+            params (UpdateAvatarRequest): The request parameters.
+
+        Raises:
+            BadRequest: If the new avatar URL is invalid or not an image URL.
+
+        Returns:
+            Response: The response object indicating the success of the operation.
+        """
         user = await request.app.ctx.cache.get(request)
         cache = request.app.ctx.cache
 
@@ -29,11 +50,11 @@ class UpdateAvatarView(HTTPMethodView):
             raise BadRequest("Avatar must be a valid URL.")
         if not params.new_avatar.endswith((".png", ".jpg", ".jpeg", ".gif")):
             raise BadRequest("Avatar must be a valid image URL.")
-        
+
         async with db.async_session() as session:
             async with session.begin():
                 users_dal = UsersDAL(session)
-                
+
                 await users_dal.update_user(user.uuid, avatar=params.new_avatar)
 
                 await cache.update(
@@ -42,4 +63,4 @@ class UpdateAvatarView(HTTPMethodView):
                     )
                 )
 
-        return await Success(request, "Avatar updated successfully.")
+        return await success(request, "Avatar updated successfully.")

@@ -1,20 +1,31 @@
-from sqlalchemy import Column, Integer, String, Uuid, DateTime, Boolean
+"""
+This module contains the Server model.
+"""
+import datetime
 import uuid
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Uuid,
+    DateTime,
+    Boolean,
+)
+# pylint: disable=import-error
 from database.db import Base
-from sqlalchemy.sql import func
-
 
 class Server(Base):
+    """
+    Represents a server in the Servers table.
+    """
     __tablename__ = "Server"
 
     identifier = Column(Integer, nullable=False, autoincrement=True)
     uuid = Column(Uuid, nullable=False, primary_key=True, default=uuid.uuid4())
     name = Column(String, nullable=False)
     node_identifier = Column(Integer, nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
-    updated_at = Column(
-        DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now()
-    )
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
 
     cpu_limit = Column(Integer, nullable=False)
     memory_limit = Column(Integer, nullable=False)

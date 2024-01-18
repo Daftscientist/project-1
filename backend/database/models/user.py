@@ -1,16 +1,33 @@
-from sqlalchemy import Column, Integer, String, Uuid, DateTime
-import uuid
-from database.db import Base
-from sqlalchemy.sql import func
+"""
+This module contains the User model.
+"""
 import datetime
-#import sanic
+import uuid
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Uuid,
+    DateTime,
+)
+# pylint: disable=import-error
+from database.db import Base
 
 def generate_uuid():
+    """
+    Generate a random UUID.
+
+    Returns:
+        str: A string representation of the generated UUID.
+    """
     return str(uuid.uuid4())
 
-#app = sanic.Sanic.get_app()
 
 class User(Base):
+    """
+    Represents a user in the users table.
+    """
+
     __tablename__ = 'User'
 
     identifier = Column(Integer, nullable=False, autoincrement=True, unique=True, primary_key=True)
@@ -26,4 +43,4 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
     google_account_identifier = Column(String(255), nullable=True, default=None)
     discord_account_identifier = Column(String(18), nullable=True, default=None)
-
+    #servers = relationship("Server", back_populates="user")

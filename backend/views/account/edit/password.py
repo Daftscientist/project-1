@@ -1,4 +1,4 @@
-from core.responses import Success
+from core.responses import success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
@@ -43,4 +43,4 @@ class UpdatePasswordView(HTTPMethodView):
                     user.uuid, password=await hash_password(params.new_password.encode('utf-8'))
                 )
 
-        return await Success(request, "Password updated successfully.")
+        return await success(request, "Password updated successfully.")
