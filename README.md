@@ -11,7 +11,7 @@ A project to replace pterodactyl and be a showcase of my Python and React skills
 ## TODO
 | Done? | Idea |
 | --- | --- |
-| ❌ | Make it possible when @inject_user is called user.session and user.cache are attributes |
+| ❌ | Make it possible when `@inject_user` is called `user.session` and ``user.cache` are attributes |
 | ❌ | Rewrite the whole codebase to use global app context for all common functions. |
 | ✔️ | Write a cache system - option to use SQLite|Redis. (start with sqlite) |
 | ✔️ | Implement the use of the new session system. |
