@@ -5,6 +5,8 @@ import json
 from uuid import UUID
 from datetime import date, datetime
 import uuid
+
+import yaml
 # pylint: disable=import-error
 from database.dals.user_dal import UsersDAL
 from database import db
@@ -54,3 +56,19 @@ async def populate_cache(app):
                 users_dal = UsersDAL(session)
                 db_user = await users_dal.get_user_by_uuid(user_uuid)
                 await app.ctx.cache.add(db_user)
+
+def load_config(file_path: str = "config.yaml"):
+    """
+    Loads a yaml config file.
+
+    Args:
+        file_path (str): The path to the config file.
+
+    Returns:
+        dict: The config file.
+    """
+    with open(file_path) as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
