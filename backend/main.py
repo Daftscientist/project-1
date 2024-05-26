@@ -32,7 +32,7 @@ async def main_start(app, loop):
     load_dotenv(".env")
     print(os.getenv("APPLICATION_CONFIG_COOKIE_SESSION_NAME"))
     print("Loading .env file...")
-    print(app.config.DATABASE_URL)
+    #print(app.config.DATABASE_URL)
     app.config.FALLBACK_ERROR_FORMAT = "json"
     await db.init(True)
     print("Database initialized.")
