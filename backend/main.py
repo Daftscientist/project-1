@@ -17,14 +17,13 @@ from core.general import populate_cache
 from dotenv import load_dotenv
 import os
 
-
 app = sanic.Sanic("backend", env_prefix='APPLICATION_CONFIG_')
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 
 app.config.CORS_ORIGINS = "http://127.0.0.1:5173"
 app.config.CORS_SUPPORTS_CREDENTIALS = True
 app.config.CORS_ALLOW_HEADERS = ["Content-Type", "Authorization"]
-Extend(app)
+Extend(app) 
 
 
 @app.before_server_start
