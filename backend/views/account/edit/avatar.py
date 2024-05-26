@@ -6,7 +6,7 @@ import re
 from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
 from sanic_dantic import parse_params
-from sanic_dantic.models import BaseModel
+from sanic_dantic import BaseModel
 # pylint: disable=import-error
 from core.authentication import protected
 from core.responses import success

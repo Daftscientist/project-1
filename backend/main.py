@@ -1,6 +1,5 @@
 import uuid
 import sanic
-from core.cors import setup_cors
 import routes
 from database import db
 from errors import custom_handler
