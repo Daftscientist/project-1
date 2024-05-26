@@ -6,7 +6,7 @@ from errors import custom_handler
 from database.models.allocation import Allocation
 from database.models.server import Server
 from database.models.user import User
-from backend.database.models.banned_ips import BannedIPs
+from database.models.banned_ips import BannedIPs
 from database.dals.user_dal import UsersDAL
 from core import session
 from sanic_ext import Extend
