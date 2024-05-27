@@ -3,13 +3,12 @@ from sanic import Request, response, Sanic
 
 CLIENT_ID = Sanic.get_app("app").config["oauth"]["discord"]["client_id"]
 CLIENT_SECRET = Sanic.get_app("app").config["oauth"]["discord"]["client_secret"]
-REDIRECT_URI = Sanic.get_app("app").config["oauth"]["discord"]["redirect_uri"]
 
 API_BASE_URL = "https://discord.com/api"
 AUTHORIZATION_BASE_URL = API_BASE_URL + "/oauth2/authorize"
 TOKEN_URL = API_BASE_URL + "/oauth2/token"
 
-def make_session(*, token: dict = None, state: dict = None, token_updater = None) -> OAuth2Session:
+def make_session(*, token: dict = None, state: dict = None, token_updater = None, redirect_uri) -> OAuth2Session:
     """
     Creates an OAuth2Session object for Discord authentication.
 
@@ -17,6 +16,7 @@ def make_session(*, token: dict = None, state: dict = None, token_updater = None
         token (dict, optional): The token dictionary to initialize the session with. Defaults to None.
         state (dict, optional): The state dictionary to initialize the session with. Defaults to None.
         token_updater (callable, optional): A callable function to update the token. Defaults to None.
+        redirect_uri (str): The redirect URI.
 
     Returns:
         OAuth2Session: The initialized OAuth2Session object.
@@ -26,14 +26,14 @@ def make_session(*, token: dict = None, state: dict = None, token_updater = None
         client_id=CLIENT_ID,
         token=token,
         state=state,
-        redirect_uri=REDIRECT_URI,
+        redirect_uri=redirect_uri,
         scope=["identify"],
         auto_refresh_kwargs={"client_id": CLIENT_ID, "client_secret": CLIENT_SECRET},
         token_updater=token_updater,
         auto_refresh_url=TOKEN_URL,
     )
 
-def generate_oauth_url() -> str:
+def generate_oauth_url(redirect_uri) -> str:
     """
     Generates the OAuth URL for Discord authentication.
 
@@ -41,9 +41,9 @@ def generate_oauth_url() -> str:
         str: The OAuth URL.
 
     """
-    return make_session().authorization_url(AUTHORIZATION_BASE_URL)[0]
+    return make_session(redirect_uri=redirect_uri).authorization_url(AUTHORIZATION_BASE_URL)[0]
 
-def handle_callback(request: Request) -> dict:
+def handle_callback(request: Request, redirect_uri) -> dict:
     """
     Handles the callback from Discord authentication.
 
@@ -54,11 +54,11 @@ def handle_callback(request: Request) -> dict:
         dict: The token dictionary.
 
     """
-    session = make_session(state=request.args["state"])
+    session = make_session(state=request.args["state"], redirect_uri=redirect_uri)
     token = session.fetch_token(TOKEN_URL, client_secret=CLIENT_SECRET, authorization_response=request.url)
     return token
 
-def get_user_info(token: dict) -> dict:
+def get_user_info(token: dict, redirect_uri) -> dict:
     """
     Gets the user information from Discord.
 
@@ -69,7 +69,7 @@ def get_user_info(token: dict) -> dict:
         dict: The user information.
 
     """
-    session = make_session(token=token)
+    session = make_session(token=token, redirect_uri=redirect_uri)
     user_info = session.get(API_BASE_URL + "/users/@me").json()
     return user_info
 

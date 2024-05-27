@@ -25,4 +25,5 @@ oauth:
     enabled: true # - Enable Discord OAuth
     client_id: '' # - Discord OAuth client ID
     client_secret: '' # - Discord OAuth client secret
-    redirect_uri: 'http://localhost:8080/api/v1/oauth/callback/discord' # - Redirect URI for Discord OAuth
+    login_redirect_uri: 'http://localhost:8080/api/v1/auth/oauth/callback/discord' # - Redirect URI for logging in with Discord OAuth
+    link_redirect_uri: 'http://localhost:8080/api/v1/account/link/callback/discord' # - Redirect URI for linking Discord OAuth to a user account
