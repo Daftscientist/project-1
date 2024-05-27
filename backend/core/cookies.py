@@ -31,11 +31,11 @@ def send_cookie(request: Request, message:str, data: dict):
         "request_id": str(request.id)
     }, status=200)
     response.add_cookie(
-        request.app.config.COOKIE_SESSION_NAME,
+        request.app.ctx.config['session']['cookie_identifier'],
         jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM),
         httponly=True,
         ## max age 4 weeks
-        max_age=request.app.ctx.SESSION_EXPIRY_IN,
+        max_age=request.app.ctx.config['session']['session_max_age'],
     )
     return response
 
@@ -74,7 +74,7 @@ def get_session_id(request):
         jwt.exceptions.DecodeError: If the session ID cannot be decoded from the cookie.
     """
     decoded = jwt.decode(
-        request.cookies.get(request.app.config.COOKIE_SESSION_NAME),
+        request.cookies.get(request.app.ctx.config['session']['cookie_identifier']),
         SECRET_KEY,
         algorithms=[ALGORITHM]
     )
@@ -93,7 +93,7 @@ async def get_cookie(request):
     """
     app = Sanic.get_app()
     return jwt.decode(
-        request.cookies.get(app.config.COOKIE_SESSION_NAME), SECRET_KEY, algorithms=[ALGORITHM]
+        request.cookies.get(app.ctx.config['session']['cookie_identifier']), SECRET_KEY, algorithms=[ALGORITHM]
     )
 
 
@@ -108,7 +108,7 @@ async def remove_cookie(response):
         sanic.response.HTTPResponse: The updated response object.
     """
     app = Sanic.get_app()
-    response.delete_cookie(app.config.COOKIE_SESSION_NAME)
+    response.delete_cookie(app.ctx.config['session']['cookie_identifier'])
     return response
 
 
@@ -123,4 +123,4 @@ async def check_if_cookie_is_present(request):
         bool: True if the cookie is present, False otherwise.
     """
     app = Sanic.get_app()
-    return app.config.COOKIE_SESSION_NAME in request.cookies
+    return app.ctx.config['session']['cookie_identifier'] in request.cookies

@@ -23,7 +23,7 @@ def check_for_cookie(request):
     """
     if request.cookies is None:
         return False
-    if not request.app.config.COOKIE_SESSION_NAME in request.cookies:
+    if not request.app.ctx.config['session']['cookie_identifier'] in request.cookies:
         return False
     return True
 
@@ -43,7 +43,7 @@ async def check_authorization(request: Request):
     if not check_for_cookie(request):
         raise Unauthorized("Authentication required.")
     cookie = jwt.decode(
-        request.cookies.get(request.app.config.COOKIE_SESSION_NAME),
+        request.cookies.get(request.app.ctx.config['session']['cookie_identifier']),
         SECRET_KEY,
         algorithms=[ALGORITHM]
     )

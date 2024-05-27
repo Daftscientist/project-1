@@ -13,9 +13,7 @@ from sanic_ext import Extend
 from core.session import SessionManager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from core.caching import Cache
-from core.general import populate_cache
-from dotenv import load_dotenv
-import os
+from core.general import populate_cache, load_config
 
 app = sanic.Sanic("backend", env_prefix='APPLICATION_CONFIG_')
 app.config.FALLBACK_ERROR_FORMAT = "auto"
@@ -28,39 +26,36 @@ Extend(app)
 
 @app.before_server_start
 async def main_start(app, loop):
-    # Load .env file
-    load_dotenv(".env")
-    print(os.getenv("APPLICATION_CONFIG_COOKIE_SESSION_NAME"))
-    print("Loading .env file...")
-    #print(app.config.DATABASE_URL)
+    print("Loading yaml config file...")
+    app.ctx.config = load_config("config.yml")
+    print(f"Config with name {app.ctx.config['customization']['title']} loaded.")
+
     app.config.FALLBACK_ERROR_FORMAT = "json"
-    await db.init(True)
+
+    await db.init(app.ctx.config["server"]["reset_on_reload"])
     print("Database initialized.")
-    app.ctx.SESSION_EXPIRY_IN = 604800 # 7 days
+
+    app.ctx.SESSION_EXPIRY_IN = app.ctx.config["session"]["session_max_age"]
+
     app.ctx.cache = Cache("cache.db")
-    await app.ctx.cache.async__init__() ## initialize the cache
+    await app.ctx.cache.async__init__() 
     app.ctx.session = SessionManager("sessions.db")
     await app.ctx.session.async__init__()
     
     await populate_cache(app)
 
-    
-
-    #app.error_handler = custom_handler.CustomErrorHandler()
-
-
 @app.after_server_start
 async def ticker(app, loop):
     app.ctx.scheduler = AsyncIOScheduler()
-    app.ctx.scheduler.add_job(app.ctx.session.session_cleanup, 'interval', seconds=3600) # Runs session cleanup every hour
+    app.ctx.scheduler.add_job(app.ctx.session.session_cleanup, 'interval', seconds=app.ctx.config["session"]["session_cleanup_interval"])
     app.ctx.scheduler.start()
-
-
 
 # Sanic exceptions - https://github.com/sanic-org/sanic/blob/main/sanic/exceptions.py
 
 for index_version, api_routes in enumerate(routes.routes):
+    print(f"Adding routes for version {index_version + 1}")
     for route in api_routes:
+        print(f"Adding route {route[0]}")
         app.add_route(
             handler=route[1].as_view(),
             uri=f"/{route[0]}",
