@@ -3,25 +3,23 @@ server:
   port: 8080
   debug: true # - Enable exception stack traces in console
   reload: true # - Reload the server when code changes
-  reset_on_reload: false # - Reset the database when the server reloads
 customization:
   title: 'API' # - Title of the API
   description: 'API description' # - Description of the API
 routing:
-  contextPath: /api # - Base path for all API endpoints
+  context_path: /api # - Base path for all API endpoints
   enabled_versions: [1] # - List of enabled API versions
 database:
   url: 'sqlite+aiosqlite:///./test.db'
-  create_tables: true
+  create_tables: false # - Create tables on startup/reload
 session:
   cookie_identifier: 'session' # - Name of the cookie used to store the session ID
   user_max_sessions: 3 # - Maximum number of sessions a user can have at the same time
   session_max_age: 604800 # - Amount of time a session will last for (in seconds)
   session_cleanup_interval: 3600 # - Clear expired sessions every hour
   cookie_secure: true # - Only send cookies over HTTPS
-  secret: '23893784023409283964732894790792848932798479012043789247589357838401293890' # - Secret used to sign the session token
-  algorithm: 'HS256' # - Algorithm used to sign the session token
 core:
   encryption_key: 'secret' # - Key used to encrypt sensitive data
   password_salt: 'salt' # - Salt used to hash passwords
   cookie_secret: 'secret' # - Secret used to sign cookies
+  cookie_algorithm: 'HS256' # - Algorithm used to sign cookies

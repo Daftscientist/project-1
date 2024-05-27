@@ -2,6 +2,7 @@
 This module contains the User model.
 """
 import datetime
+import os
 import uuid
 from sqlalchemy import (
     Column,
@@ -10,6 +11,7 @@ from sqlalchemy import (
     Uuid,
     DateTime,
 )
+import yaml
 # pylint: disable=import-error
 from database.db import Base
 
@@ -22,6 +24,21 @@ def generate_uuid():
     """
     return str(uuid.uuid4())
 
+def load_config(file_path: str = os.getcwd() + "/config.yml"):
+    """
+    Loads the configuration file.
+
+    Args:
+        file_path (str): The path to the configuration file. Default is "config.yaml".
+
+    Returns:
+        dict: The configuration dictionary.
+    """
+    with open(file_path) as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
 
 class User(Base):
     """
@@ -39,7 +56,7 @@ class User(Base):
     last_login = Column(DateTime(timezone=True), nullable=True, default=None)
     latest_ip = Column(String(255), nullable=False, default=None)
     signup_ip = Column(String(255), nullable=False, default=None)
-    max_sessions = Column(Integer, nullable=False, default=3)##app.ctx.config['session']['cookie_identifier']
+    max_sessions = Column(Integer, nullable=False, default=load_config()['session']['user_max_sessions'])
     created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
     google_account_identifier = Column(String(255), nullable=True, default=None)
     discord_account_identifier = Column(String(18), nullable=True, default=None)

@@ -27,8 +27,8 @@ def send_cookie(request: Request, message:str, data: dict):
     response.add_cookie(
         request.app.ctx.config['session']['cookie_identifier'],
         jwt.encode(data, 
-            request.app.ctx.config['session']['secret'],
-            algorithm=request.app.ctx.config['session']['algorithm']
+            request.app.ctx.config["core"]["cookie_secret"],
+            algorithm=request.app.ctx.config["core"]["cookie_algorithm"]
         ),
         httponly=request.app.ctx.config['session']['cookie_secure'],
         ## max age 4 weeks
@@ -51,8 +51,8 @@ def get_session_id(request):
     """
     decoded = jwt.decode(
         request.cookies.get(request.app.ctx.config['session']['cookie_identifier']),
-        request.app.ctx.config['session']['secret'],
-        algorithms=[request.app.ctx.config['session']['algorithm']]
+        request.app.ctx.config["core"]["cookie_secret"],
+        algorithms=[request.app.ctx.config["core"]["cookie_algorithm"]]
     )
     return decoded["session_id"]
 
@@ -71,8 +71,8 @@ async def get_cookie(request):
     return jwt.decode(
         request.cookies.get(
             app.ctx.config['session']['cookie_identifier']),
-            request.app.ctx.config['session']['secret'],
-            algorithms=[request.app.ctx.config['session']['algorithm']]
+            request.app.ctx.config["core"]["cookie_secret"],
+            algorithms=[request.app.ctx.config["core"]["cookie_algorithm"]]
     )
 
 

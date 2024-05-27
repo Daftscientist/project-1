@@ -42,7 +42,7 @@ async def main_start(app, loop):
 
     app.config.FALLBACK_ERROR_FORMAT = "json"
 
-    await db.init(app.ctx.config["server"]["reset_on_reload"]) # if true then need to delete cache stuff
+    await db.init(app.ctx.config["database"]["create_tables"]) # if true then need to delete cache stuff
     print("Database initialized.")
 
     app.ctx.SESSION_EXPIRY_IN = app.ctx.config["session"]["session_max_age"]
@@ -73,14 +73,14 @@ async def ticker(app, loop):
 # Sanic exceptions - https://github.com/sanic-org/sanic/blob/main/sanic/exceptions.py
 
 for index_version, api_routes in enumerate(routes.routes):
-    if (index_version + 1) in load_config("config.yml")["routing"]["enabled_versions"]:
+    config = load_config("config.yml")
+    if (index_version + 1) in config["routing"]["enabled_versions"]:
         for route in api_routes:
-            print(f"Adding route {route[0]} with version {index_version + 1}")
             app.add_route(
                 handler=route[1].as_view(),
                 uri=f"/{route[0]}",
                 version=index_version + 1, 
-                version_prefix="/api/v"
+                version_prefix=config["routing"]["context_path"] + "/v"
             )
 
 # disable access log

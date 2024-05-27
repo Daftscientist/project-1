@@ -39,8 +39,8 @@ async def check_authorization(request: Request):
         raise Unauthorized("Authentication required.")
     cookie = jwt.decode(
         request.cookies.get(request.app.ctx.config['session']['cookie_identifier']),
-        request.app.ctx.config['session']['secret'],
-        algorithms=[request.app.ctx.config['session']['algorithm']]
+        request.app.ctx.config["core"]["cookie_secret"],
+        algorithms=[request.app.ctx.config["core"]["cookie_algorithm"]]
     )
     if cookie["session_id"] is None:
         raise Unauthorized("Authentication required.")
