@@ -32,7 +32,7 @@ async def main_start(app, loop):
     Function to initialize the server before it starts.
 
     Args:
-        app: The Flask application object.
+        app: The sanic application object.
         loop: The event loop.
 
     Returns:
