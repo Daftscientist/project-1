@@ -23,5 +23,5 @@ core:
 oauth:
   discord:
     enabled: true # - Enable Discord OAuth
-    client_id: '1244677410675490940' # - Discord OAuth client ID
-    client_secret: 'pOxVlabwCLYE6NrH1JVfCS_r2BiJnqOj' # - Discord OAuth client secret
+    client_id: '' # - Discord OAuth client ID
+    client_secret: '' # - Discord OAuth client secret
