@@ -20,3 +20,8 @@ core:
   password_salt: 'salt' # - Salt used to hash passwords
   cookie_secret: 'secret' # - Secret used to sign cookies
   cookie_algorithm: 'HS256' # - Algorithm used to sign cookies
+oauth:
+  discord:
+    enabled: true # - Enable Discord OAuth
+    client_id: '1244677410675490940' # - Discord OAuth client ID
+    client_secret: 'pOxVlabwCLYE6NrH1JVfCS_r2BiJnqOj' # - Discord OAuth client secret
