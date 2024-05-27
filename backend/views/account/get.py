@@ -22,5 +22,4 @@ class GetUserView(HTTPMethodView):
         cache = request.app.ctx.cache
 
         user = fix_dict(await cache.get_user(request))
-        
         return await data_response(request, user)

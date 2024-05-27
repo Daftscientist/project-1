@@ -1,3 +1,4 @@
+import os
 import uuid
 import sanic
 import routes
@@ -42,7 +43,13 @@ async def main_start(app, loop):
 
     app.config.FALLBACK_ERROR_FORMAT = "json"
 
-    await db.init(app.ctx.config["database"]["create_tables"]) # if true then need to delete cache stuff
+    if app.ctx.config["database"]["create_tables"]:
+        if os.path.exists("cache.db"):
+            os.remove("cache.db")
+        if os.path.exists("sessions.db"):
+            os.remove("sessions.db")
+    
+    await db.init(app.ctx.config["database"]["create_tables"]) 
     print("Database initialized.")
 
     app.ctx.SESSION_EXPIRY_IN = app.ctx.config["session"]["session_max_age"]
