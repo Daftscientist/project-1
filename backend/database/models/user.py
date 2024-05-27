@@ -32,7 +32,7 @@ def load_config(file_path: str = os.getcwd() + "/config.yml"):
     Loads the configuration file.
 
     Args:
-        file_path (str): The path to the configuration file. Default is "config.yaml".
+        file_path (str): The path to the configuration file. Default is "config.yml".
 
     Returns:
         dict: The configuration dictionary.
