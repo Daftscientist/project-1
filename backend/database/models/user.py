@@ -14,6 +14,9 @@ from sqlalchemy import (
 import yaml
 # pylint: disable=import-error
 from database.db import Base
+from sqlalchemy_utils import EncryptedType, StringEncryptedType
+from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
+
 
 def generate_uuid():
     """
@@ -40,6 +43,20 @@ def load_config(file_path: str = os.getcwd() + "/config.yml"):
         except yaml.YAMLError as exc:
             print(exc)
 
+config_data = load_config()
+
+def get_encryption_key():
+    """
+    Retrieves the encryption key used for encrypting sensitive data.
+
+    Returns:
+        bytes: The encryption key as bytes.
+    """
+    return bytes(
+        config_data["core"]["encryption_key"],
+        "utf-8"
+    )
+
 class User(Base):
     """
     Represents a user in the users table.
@@ -49,15 +66,52 @@ class User(Base):
 
     identifier = Column(Integer, nullable=False, autoincrement=True, unique=True, primary_key=True)
     uuid = Column(Uuid, nullable=False, default=uuid.uuid4())
-    username = Column(String, nullable=False) #
-    email = Column(String, nullable=False) #
+    username = Column(String, nullable=False)
+    email = Column(
+        StringEncryptedType(
+            String,
+            get_encryption_key(),
+            AesEngine
+        ), nullable=False
+    )
     password = Column(String, nullable=False) #
-    avatar = Column(String, nullable=True, default=None) #
+    avatar = Column(
+        StringEncryptedType( ## future-proofing with string storage of encrypted data
+            String,
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     last_login = Column(DateTime(timezone=True), nullable=True, default=None)
-    latest_ip = Column(String(255), nullable=False, default=None)
-    signup_ip = Column(String(255), nullable=False, default=None)
-    max_sessions = Column(Integer, nullable=False, default=load_config()['session']['user_max_sessions'])
+    latest_ip = Column(
+        StringEncryptedType(
+            String(225),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=False, default=None
+    )
+    signup_ip = Column(
+        StringEncryptedType(
+            String(225),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=False, default=None
+    )
+    max_sessions = Column(Integer, nullable=False, default=config_data['session']['user_max_sessions'])
     created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
-    google_account_identifier = Column(String(255), nullable=True, default=None)
-    discord_account_identifier = Column(String(18), nullable=True, default=None)
+    google_account_identifier = Column(
+        StringEncryptedType(
+            String(255),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    
+    )
+    discord_account_identifier = Column(
+        StringEncryptedType(
+            String(18),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     #servers = relationship("Server", back_populates="user")
