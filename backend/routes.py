@@ -5,6 +5,9 @@ from views.account.edit import avatar, email, password, username
 from views.account.session.get import GetActiveSessionsView
 from views.account.session.delete import DeleteSessionView
 from views.account.edit.max_sessions import UpdateMaxSessions
+from views.auth.oauth.discord import DiscordOauthView
+from views.auth.callback import discord
+
 
 routes = [
     [ # This is version 1
@@ -15,6 +18,7 @@ routes = [
         # --- Authentication --- 
         ["/auth/create", create.CreateView],
         ["/auth/login", login.LoginView],
+        ["/auth/oauth/discord", DiscordOauthView],
         ["/auth/logout", logout.LogoutView],
 
         # --- Account --- 
@@ -28,6 +32,10 @@ routes = [
         # --- Sessions --- 
         ["/account/session/get/all", GetActiveSessionsView],
         ["/account/session/delete", DeleteSessionView],
+
+        # --- Callback ---
+        ["/auth/oauth/callback/discord", discord.DiscordOauthCallbackView]
+
 
     ]
 ]

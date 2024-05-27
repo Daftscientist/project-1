@@ -15,6 +15,7 @@ from core.session import SessionManager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from core.caching import Cache
 from core.general import populate_cache, load_config
+from core.oauth.discord import make_session, generate_oauth_url, handle_callback, get_user_info, get_user_avatar, get_user_email, get_user_id
 
 app = sanic.Sanic("backend", env_prefix='APPLICATION_CONFIG_')
 app.config.FALLBACK_ERROR_FORMAT = "auto"
@@ -60,6 +61,16 @@ async def main_start(app, loop):
     await app.ctx.session.async__init__()
     
     await populate_cache(app)
+
+    app.ctx.discord.make_session = make_session
+    app.ctx.discord.generate_oauth_url = generate_oauth_url
+    app.ctx.discord.handle_callback = handle_callback
+    app.ctx.discord.get_user_info = get_user_info
+    app.ctx.discord.get_user_avatar = get_user_avatar
+    app.ctx.discord.get_user_email = get_user_email
+    app.ctx.discord.get_user_id = get_user_id
+
+
 
 @app.after_server_start
 async def ticker(app, loop):
