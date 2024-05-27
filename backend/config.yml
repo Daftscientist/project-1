@@ -1,11 +1,8 @@
 server:
-  host: 'localhost'
-  port: 8080
   debug: true # - Enable exception stack traces in console
   reload: true # - Reload the server when code changes
 customization:
   title: 'API' # - Title of the API
-  description: 'API description' # - Description of the API
 routing:
   context_path: /api # - Base path for all API endpoints
   enabled_versions: [1] # - List of enabled API versions
