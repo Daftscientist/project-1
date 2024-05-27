@@ -6,7 +6,9 @@ from views.account.session.get import GetActiveSessionsView
 from views.account.session.delete import DeleteSessionView
 from views.account.edit.max_sessions import UpdateMaxSessions
 from views.auth.oauth.discord import DiscordOauthView
-from views.auth.callback import discord
+from views.auth.oauth.callback.discord import DiscordOauthCallbackView
+from views.account.link.discord import DiscordOauthLinkingView
+from views.account.link.callback.discord import DiscordOauthCallbackView
 
 
 routes = [
@@ -33,9 +35,14 @@ routes = [
         ["/account/session/get/all", GetActiveSessionsView],
         ["/account/session/delete", DeleteSessionView],
 
-        # --- Callback ---
-        ["/auth/oauth/callback/discord", discord.DiscordOauthCallbackView]
+        # --- Linking ---
+        ["/account/link/discord", DiscordOauthLinkingView],
 
+        # --- Linking Callback ---
+        ["/account/link/discord/callback", DiscordOauthCallbackView],
+
+        # --- Authentication Callback ---
+        ["/auth/oauth/callback/discord", DiscordOauthCallbackView]
 
     ]
 ]

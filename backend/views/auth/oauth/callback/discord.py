@@ -37,7 +37,7 @@ class DiscordOauthCallbackView(HTTPMethodView):
             async with session.begin():
                 users_dal = UsersDAL(session)
                 
-                user_info = await users_dal.get_user_by_email(discord_user_info["email"])
+                user_info = await users_dal.get_user_by_discord_id(discord_user_info["id"])
 
                 if discord_user_info["id"] != user_info.discord_account_identifier:
                     raise BadRequest("Account does not exist.")

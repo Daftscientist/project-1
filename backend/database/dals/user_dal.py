@@ -57,6 +57,20 @@ class UsersDAL():
         q = await self.db_session.execute(select(User).where(User.uuid == uuid))
         return q.scalars().first()
 
+    async def get_user_by_discord_id(self, discord_id: str) -> User:
+        """
+        Retrieve a user from the database based on their discord id.
+
+        Args:
+            id (str): The id of the user to retrieve.
+
+        Returns:
+            User: The user object corresponding to the given email, or None if no user is found.
+        """
+
+        q = await self.db_session.execute(select(User).where(User.discord_account_identifier == discord_id))
+        return q.scalars().first()
+
     async def get_user_by_email(self, email: str) -> User:
         """
         Retrieve a user from the database based on their email.
