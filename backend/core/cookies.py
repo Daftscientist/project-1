@@ -28,7 +28,7 @@ def send_cookie(request: Request, message:str, data: dict):
         request.app.ctx.config['session']['cookie_identifier'],
         jwt.encode(data, 
             request.app.ctx.config['session']['secret'],
-            algorithms=[request.app.ctx.config['session']['algorithm']]
+            algorithm=request.app.ctx.config['session']['algorithm']
         ),
         httponly=request.app.ctx.config['session']['cookie_secure'],
         ## max age 4 weeks

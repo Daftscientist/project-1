@@ -26,13 +26,23 @@ Extend(app)
 
 @app.before_server_start
 async def main_start(app, loop):
+    """
+    Function to initialize the server before it starts.
+
+    Args:
+        app: The Flask application object.
+        loop: The event loop.
+
+    Returns:
+        None
+    """
     print("Loading yaml config file...")
     app.ctx.config = load_config("config.yml")
     print(f"Config with name {app.ctx.config['customization']['title']} loaded.")
 
     app.config.FALLBACK_ERROR_FORMAT = "json"
 
-    await db.init(app.ctx.config["server"]["reset_on_reload"])
+    await db.init(app.ctx.config["server"]["reset_on_reload"]) # if true then need to delete cache stuff
     print("Database initialized.")
 
     app.ctx.SESSION_EXPIRY_IN = app.ctx.config["session"]["session_max_age"]
@@ -46,6 +56,16 @@ async def main_start(app, loop):
 
 @app.after_server_start
 async def ticker(app, loop):
+    """
+    Starts a scheduler to periodically clean up sessions.
+
+    Parameters:
+    - app: The Quart application object.
+    - loop: The event loop.
+
+    Returns:
+    None
+    """
     app.ctx.scheduler = AsyncIOScheduler()
     app.ctx.scheduler.add_job(app.ctx.session.session_cleanup, 'interval', seconds=app.ctx.config["session"]["session_cleanup_interval"])
     app.ctx.scheduler.start()
@@ -53,14 +73,14 @@ async def ticker(app, loop):
 # Sanic exceptions - https://github.com/sanic-org/sanic/blob/main/sanic/exceptions.py
 
 for index_version, api_routes in enumerate(routes.routes):
-    print(f"Adding routes for version {index_version + 1}")
-    for route in api_routes:
-        print(f"Adding route {route[0]}")
-        app.add_route(
-            handler=route[1].as_view(),
-            uri=f"/{route[0]}",
-            version=index_version + 1, 
-            version_prefix="/api/v"
-        )
+    if (index_version + 1) in load_config("config.yml")["routing"]["enabled_versions"]:
+        for route in api_routes:
+            print(f"Adding route {route[0]} with version {index_version + 1}")
+            app.add_route(
+                handler=route[1].as_view(),
+                uri=f"/{route[0]}",
+                version=index_version + 1, 
+                version_prefix="/api/v"
+            )
 
 # disable access log

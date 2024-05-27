@@ -3,7 +3,7 @@ server:
   port: 8080
   debug: true # - Enable exception stack traces in console
   reload: true # - Reload the server when code changes
-  reset_on_reload: true # - Reset all the databases when the server reloads
+  reset_on_reload: false # - Reset the database when the server reloads
 customization:
   title: 'API' # - Title of the API
   description: 'API description' # - Description of the API
