@@ -1,8 +1,9 @@
 from async_oauthlib import OAuth2Session
 from sanic import Request, response, Sanic
+from core.general import load_config
 
-CLIENT_ID = Sanic.get_app("app").config["oauth"]["discord"]["client_id"]
-CLIENT_SECRET = Sanic.get_app("app").config["oauth"]["discord"]["client_secret"]
+CLIENT_ID = load_config()["oauth"]["discord"]["client_id"]
+CLIENT_SECRET = load_config()["oauth"]["discord"]["client_secret"]
 
 API_BASE_URL = "https://discord.com/api"
 AUTHORIZATION_BASE_URL = API_BASE_URL + "/oauth2/authorize"

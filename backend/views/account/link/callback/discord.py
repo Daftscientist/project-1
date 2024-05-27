@@ -5,8 +5,8 @@ from database import db
 from core.cookies import check_if_cookie_is_present, send_cookie
 from core.authentication import protected
 
-class DiscordOauthCallbackView(HTTPMethodView):
-    """The discord oauth callback view."""
+class DiscordOauthLinkCallbackView(HTTPMethodView):
+    """The discord oauth link callback view."""
 
     @staticmethod
     @protected

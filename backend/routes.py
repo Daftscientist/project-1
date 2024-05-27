@@ -8,7 +8,7 @@ from views.account.edit.max_sessions import UpdateMaxSessions
 from views.auth.oauth.discord import DiscordOauthView
 from views.auth.oauth.callback.discord import DiscordOauthCallbackView
 from views.account.link.discord import DiscordOauthLinkingView
-from views.account.link.callback.discord import DiscordOauthCallbackView
+from views.account.link.callback.discord import DiscordOauthLinkCallbackView
 
 
 routes = [
@@ -39,7 +39,7 @@ routes = [
         ["/account/link/discord", DiscordOauthLinkingView],
 
         # --- Linking Callback ---
-        ["/account/link/discord/callback", DiscordOauthCallbackView],
+        ["/account/link/discord/callback", DiscordOauthLinkCallbackView],
 
         # --- Authentication Callback ---
         ["/auth/oauth/callback/discord", DiscordOauthCallbackView]

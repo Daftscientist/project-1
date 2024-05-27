@@ -57,7 +57,7 @@ async def populate_cache(app):
                 db_user = await users_dal.get_user_by_uuid(user_uuid)
                 await app.ctx.cache.add(db_user)
 
-def load_config(file_path: str = "config.yaml"):
+def load_config(file_path: str = "config.yml"):
     """
     Loads a yaml config file.
 

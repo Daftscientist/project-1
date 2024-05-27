@@ -22,7 +22,7 @@ core:
   cookie_algorithm: 'HS256' # - Algorithm used to sign cookies
 oauth:
   discord:
-    enabled: true # - Enable Discord OAuth
+    enabled: false # - Enable Discord OAuth
     client_id: '' # - Discord OAuth client ID
     client_secret: '' # - Discord OAuth client secret
     login_redirect_uri: 'http://localhost:8080/api/v1/auth/oauth/callback/discord' # - Redirect URI for logging in with Discord OAuth
