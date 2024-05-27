@@ -2,16 +2,29 @@
 This module contains the database configuration and initialization code.
 """
 
-#import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sanic.log import logger
+import yaml
+import os
 
-#DATABASE_URL = os.getenv("APPLICATION_CONFIG_COOKIE_SESSION_NAME")
+def load_config(file_path: str = os.getcwd() + "/config.yml"):
+    """
+    Loads the configuration file.
 
-#print(DATABASE_URL)
+    Args:
+        file_path (str): The path to the configuration file. Default is "config.yaml".
 
-engine = create_async_engine('sqlite+aiosqlite:///./test.db', future=True, echo=True)
+    Returns:
+        dict: The configuration dictionary.
+    """
+    with open(file_path) as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+engine = create_async_engine(load_config()["database"]["url"], future=True, echo=True)
 async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()
 
