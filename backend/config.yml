@@ -16,7 +16,7 @@ session:
   session_cleanup_interval: 3600 # - Clear expired sessions every hour
   cookie_secure: true # - Only send cookies over HTTPS
 core:
-  encryption_key: 'secret' # - Key used to encrypt sensitive data
+  encryption_key: 'wLtgFX0SyIB6V2gMTEmHIxEQNac5wpVuxlqIApGz7NM=' # - Key used to encrypt sensitive data
   password_salt: 'salt' # - Salt used to hash passwords
   cookie_secret: 'secret' # - Secret used to sign cookies
   cookie_algorithm: 'HS256' # - Algorithm used to sign cookies
