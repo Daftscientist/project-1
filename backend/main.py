@@ -72,7 +72,7 @@ async def ticker(app, loop):
     Starts a scheduler to periodically clean up sessions.
 
     Parameters:
-    - app: The Quart application object.
+    - app: The Sanic application object.
     - loop: The event loop.
 
     Returns:
