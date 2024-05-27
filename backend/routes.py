@@ -9,7 +9,7 @@ from views.auth.oauth.discord import DiscordOauthView
 from views.auth.oauth.callback.discord import DiscordOauthCallbackView
 from views.account.link.discord import DiscordOauthLinkingView
 from views.account.link.callback.discord import DiscordOauthLinkCallbackView
-
+from views.account.verify.email import VerifyEmailView
 
 routes = [
     [ # This is version 1
@@ -25,6 +25,7 @@ routes = [
 
         # --- Account --- 
         ["/account/get", GetUserView],
+        ["/account/verify/email/<identifier>", VerifyEmailView],
         ["/account/edit/username", username.UpdateUsernameView],
         ["/account/edit/email", email.UpdateEmailView],
         ["/account/edit/password", password.UpdatePasswordView],

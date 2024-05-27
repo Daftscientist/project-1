@@ -74,6 +74,14 @@ class User(Base):
             AesEngine
         ), nullable=False
     )
+    email_verified = Column(Integer, nullable=False, default=True)
+    email_verification_code = Column(
+        StringEncryptedType(
+            String,
+            get_encryption_key(),
+            AesEngine
+        ), nullable=False
+    )
     password = Column(String, nullable=False) #
     avatar = Column(
         StringEncryptedType( ## future-proofing with string storage of encrypted data

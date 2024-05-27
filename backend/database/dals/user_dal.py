@@ -18,7 +18,7 @@ class UsersDAL():
     async def create_user(
         self, username: str,
         email: str, password: str,
-        latest_ip: str, signup_ip: str
+        latest_ip: str, signup_ip: str, email_verification_code: str
     ):
         """
         Creates a new user.
@@ -29,6 +29,7 @@ class UsersDAL():
             password (str): The password of the user.
             latest_ip (str): The latest IP address of the user.
             signup_ip (str): The IP address used during signup.
+            email_verification_code (str): The email verification code for the user.
 
         Returns:
             None
@@ -38,7 +39,8 @@ class UsersDAL():
             email=email,
             password=password,
             latest_ip=latest_ip,
-            signup_ip=signup_ip
+            signup_ip=signup_ip,
+            email_verification_code=email_verification_code
         )
         self.db_session.add(new_user)
         await self.db_session.flush()
@@ -101,6 +103,8 @@ class UsersDAL():
             uuid: int,
             username: Optional[str] = None,
             email: Optional[str] = None,
+            email_verified: Optional[bool] = None,
+            email_verification_code: Optional[str] = None,
             password: Optional[str] = None,
             avatar: Optional[str] = None,
             last_login: Optional[datetime.datetime] = None,
@@ -117,6 +121,10 @@ class UsersDAL():
             uuid (int): The unique identifier of the user.
             username (str, optional): The new username for the user. Defaults to None.
             email (str, optional): The new email for the user. Defaults to None.
+            email_verified (bool, optional): The new email verification status for the user.
+                Defaults to None.
+            email_verification_code (str, optional): The new email verification code for the user.
+                Defaults to None.
             password (str, optional): The new password for the user. Defaults to None.
             avatar (str, optional): The new avatar for the user. Defaults to None.
             last_login (datetime.datetime, optional): The new last login timestamp for the user.
@@ -136,6 +144,10 @@ class UsersDAL():
             q = q.values(username=username)
         if email:
             q = q.values(email=email)
+        if email_verified:
+            q = q.values(email_verified=email_verified)
+        if email_verification_code:
+            q = q.values(email_verification_code=email_verification_code)
         if password:
             q = q.values(password=password)
         if avatar:
