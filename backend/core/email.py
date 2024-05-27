@@ -101,5 +101,5 @@ class Email:
 
     def public_method(self):
         """
-        This is a public method.
+        This is a public method created to please the linter. :)
         """
