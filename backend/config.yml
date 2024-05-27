@@ -18,7 +18,9 @@ session:
   user_max_sessions: 3 # - Maximum number of sessions a user can have at the same time
   session_max_age: 604800 # - Amount of time a session will last for (in seconds)
   session_cleanup_interval: 3600 # - Clear expired sessions every hour
-  cookie_secure: false # - Only send cookies over HTTPS
+  cookie_secure: true # - Only send cookies over HTTPS
+  secret: '23893784023409283964732894790792848932798479012043789247589357838401293890' # - Secret used to sign the session token
+  algorithm: 'HS256' # - Algorithm used to sign the session token
 core:
   encryption_key: 'secret' # - Key used to encrypt sensitive data
   password_salt: 'salt' # - Salt used to hash passwords

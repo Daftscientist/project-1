@@ -6,12 +6,6 @@ import jwt
 from sanic import json, Sanic
 from sanic.request import Request
 
-SECRET_KEY = (
-    "hi my name is leo lmaoo"
-    ## For testing only. This should be stored in an environment variable.
-)
-ALGORITHM = "HS256"
-
 def send_cookie(request: Request, message:str, data: dict):
     """
     Sends a cookie with the specified message and data in the response.
@@ -32,32 +26,14 @@ def send_cookie(request: Request, message:str, data: dict):
     }, status=200)
     response.add_cookie(
         request.app.ctx.config['session']['cookie_identifier'],
-        jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM),
-        httponly=True,
+        jwt.encode(data, 
+            request.app.ctx.config['session']['secret'],
+            algorithms=[request.app.ctx.config['session']['algorithm']]
+        ),
+        httponly=request.app.ctx.config['session']['cookie_secure'],
         ## max age 4 weeks
         max_age=request.app.ctx.config['session']['session_max_age'],
     )
-    return response
-
-async def set_cookie(response, data: dict):
-    """
-    Sets a cookie with the specified data in the response.
-    
-    Args:
-        response: The response object.
-        data (dict): The data to encode in the cookie.
-    
-    Returns:
-        response: The response object with the cookie set.
-    """
-    app = Sanic.get_app()
-    response.add_cookie(
-        app.config.COOKIE_SESSION_NAME,
-        str(jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)),
-        #domain='',
-        httponly=True,
-    )
-
     return response
 
 def get_session_id(request):
@@ -75,8 +51,8 @@ def get_session_id(request):
     """
     decoded = jwt.decode(
         request.cookies.get(request.app.ctx.config['session']['cookie_identifier']),
-        SECRET_KEY,
-        algorithms=[ALGORITHM]
+        request.app.ctx.config['session']['secret'],
+        algorithms=[request.app.ctx.config['session']['algorithm']]
     )
     return decoded["session_id"]
 
@@ -93,7 +69,10 @@ async def get_cookie(request):
     """
     app = Sanic.get_app()
     return jwt.decode(
-        request.cookies.get(app.ctx.config['session']['cookie_identifier']), SECRET_KEY, algorithms=[ALGORITHM]
+        request.cookies.get(
+            app.ctx.config['session']['cookie_identifier']),
+            request.app.ctx.config['session']['secret'],
+            algorithms=[request.app.ctx.config['session']['algorithm']]
     )
 
 

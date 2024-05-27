@@ -6,11 +6,6 @@ This module provides functions for authentication and authorization in the appli
 from sanic import Unauthorized, Request
 import jwt
 
-SECRET_KEY = (
-    "23893784023409283964732894790792848932798479012043789247589357838401293890"
-)  ## For testing only. This should be stored in an environment variable.
-ALGORITHM = "HS256"
-
 def check_for_cookie(request):
     """
     Check if the request contains a valid cookie session.
@@ -44,8 +39,8 @@ async def check_authorization(request: Request):
         raise Unauthorized("Authentication required.")
     cookie = jwt.decode(
         request.cookies.get(request.app.ctx.config['session']['cookie_identifier']),
-        SECRET_KEY,
-        algorithms=[ALGORITHM]
+        request.app.ctx.config['session']['secret'],
+        algorithms=[request.app.ctx.config['session']['algorithm']]
     )
     if cookie["session_id"] is None:
         raise Unauthorized("Authentication required.")
