@@ -18,7 +18,7 @@ class UsersDAL():
     async def create_user(
         self, username: str,
         email: str, password: str,
-        latest_ip: str, signup_ip: str, email_verification_code: str
+        latest_ip: str, signup_ip: str
     ):
         """
         Creates a new user.
@@ -29,18 +29,17 @@ class UsersDAL():
             password (str): The password of the user.
             latest_ip (str): The latest IP address of the user.
             signup_ip (str): The IP address used during signup.
-            email_verification_code (str): The email verification code for the user.
 
         Returns:
             None
         """
+        
         new_user = User(
             username=username,
             email=email,
             password=password,
             latest_ip=latest_ip,
             signup_ip=signup_ip,
-            email_verification_code=email_verification_code
         )
         self.db_session.add(new_user)
         await self.db_session.flush()

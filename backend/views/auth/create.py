@@ -1,3 +1,4 @@
+import uuid
 from sanic import Request, BadRequest
 import re
 import sanic
@@ -61,5 +62,9 @@ class CreateView(HTTPMethodView):
                     await encoder.hash_password(params.password.encode('utf-8')),
                     ip, ip
                 )
+
+                if not request.app.ctx.config["core"]["email_verification"]:
+                    user = await users_dal.get_user_by_email(params.email)
+                    await users_dal.update_user(email_verified=True, uuid=user.uuid)
 
         return await success(request, "User created successfully.")

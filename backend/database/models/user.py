@@ -20,12 +20,12 @@ from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
 
 def generate_uuid():
     """
-    Generate a random UUID.
+    Generate a unique UUID.
 
     Returns:
-        str: A string representation of the generated UUID.
+        uuid: A generated UUID.
     """
-    return str(uuid.uuid4())
+    return uuid.uuid4()
 
 def load_config(file_path: str = os.getcwd() + "/config.yml"):
     """
@@ -65,7 +65,7 @@ class User(Base):
     __tablename__ = 'User'
 
     identifier = Column(Integer, nullable=False, autoincrement=True, unique=True, primary_key=True)
-    uuid = Column(Uuid, nullable=False, default=uuid.uuid4())
+    uuid = Column(Uuid, nullable=False, default=generate_uuid())
     username = Column(String, nullable=False)
     email = Column(
         StringEncryptedType(
@@ -74,13 +74,13 @@ class User(Base):
             AesEngine
         ), nullable=False
     )
-    email_verified = Column(Integer, nullable=False, default=True)
+    email_verified = Column(Integer, nullable=False, default=False)
     email_verification_code = Column(
         StringEncryptedType(
-            String,
+            Uuid,
             get_encryption_key(),
             AesEngine
-        ), nullable=False
+        ), nullable=True, default=generate_uuid()
     )
     password = Column(String, nullable=False) #
     avatar = Column(
@@ -90,7 +90,13 @@ class User(Base):
             AesEngine
         ), nullable=True, default=None
     )
-    last_login = Column(DateTime(timezone=True), nullable=True, default=None)
+    last_login = Column(
+        StringEncryptedType(
+            DateTime(timezone=True),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     latest_ip = Column(
         StringEncryptedType(
             String(225),
