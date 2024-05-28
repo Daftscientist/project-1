@@ -2,6 +2,7 @@ import uuid
 from sanic import Request, BadRequest
 import re
 import sanic
+from core.general import send_verification_email, send_welcome_email
 from database.dals.user_dal import UsersDAL
 from sanic_dantic import parse_params, BaseModel
 from database import db
@@ -63,8 +64,14 @@ class CreateView(HTTPMethodView):
                     ip, ip
                 )
 
-                if not request.app.ctx.config["core"]["email_verification"]:
+                if not request.app.ctx.config["email"]["verification_email"]["enabled"]:
                     user = await users_dal.get_user_by_email(params.email)
                     await users_dal.update_user(email_verified=True, uuid=user.uuid)
+                
+                if request.app.ctx.config["email"]["verification_email"]["enabled"]:
+                    await send_verification_email(request)
+                
+                if request.app.ctx.config["email"]["welcome_email"]["enabled"]:
+                    await send_welcome_email(request)
 
         return await success(request, "User created successfully.")

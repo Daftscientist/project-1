@@ -15,12 +15,37 @@ session:
   session_max_age: 604800 # - Amount of time a session will last for (in seconds)
   session_cleanup_interval: 3600 # - Clear expired sessions every hour
   cookie_secure: true # - Only send cookies over HTTPS
+
+email:
+  host: 'smtp.gmail.com' # - SMTP server host
+  port: 587 # - SMTP server port
+  username: '' # - SMTP server username
+  password: '' # - SMTP server password
+  sender: '' # - Email address to send emails from
+  welcome_email:
+    enabled: false # - Enable welcome emails
+    subject: 'Welcome to the API' # - Subject of the welcome email
+    plain_body: 'Welcome to the API!' # - Plain text body of the welcome email
+    html_body_file: 'welcome_email.html' # - HTML body of the welcome email
+  verification_email:
+    enabled: false # - Enable email verification
+    subject: 'Verify your email address' # - Subject of the verification email
+    plain_body: 'Click the following link to verify your email address: {verification_url}' # - Plain text body of the verification email
+    html_body_file: 'verification_email.html' # - HTML body of the verification email
+  password_reset_email:
+    enabled: false # - Enable password reset emails
+    subject: 'Reset your password' # - Subject of the password reset email
+    plain_body: 'Click the following link to reset your password: {reset_url}' # - Plain text body of the password reset email
+    html_body_file: 'password_reset_email.html' # - HTML body of the password reset email
+
 core:
+  frontend_url: 'http://000.00.00:00'
   encryption_key: 'wLtgFX0SyIB6V2gMTEmHIxEQNac5wpVuxlqIApGz7NM=' # - Key used to encrypt sensitive data
   password_salt: 'salt' # - Salt used to hash passwords
   cookie_secret: 'secret' # - Secret used to sign cookies
   cookie_algorithm: 'HS256' # - Algorithm used to sign cookies
-  email_verification: false # - Require email verification for new accounts
+  default_avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' # - Default avatar URL for new users
+  password_min_length: 8 # - Minimum length of a users password
 oauth:
   discord:
     enabled: false # - Enable Discord OAuth

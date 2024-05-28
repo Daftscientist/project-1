@@ -83,6 +83,13 @@ class User(Base):
         ), nullable=True, default=generate_uuid()
     )
     password = Column(String, nullable=False) #
+    password_reset_code = Column(
+        StringEncryptedType(
+            Uuid,
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     avatar = Column(
         StringEncryptedType( ## future-proofing with string storage of encrypted data
             String,

@@ -1,5 +1,6 @@
 from sanic.views import HTTPMethodView
 from sanic import BadRequest, Request
+from core.responses import success
 from database.dals.user_dal import UsersDAL
 from database import db
 from core.authentication import protected
@@ -30,3 +31,5 @@ class VerifyEmailView(HTTPMethodView):
                 await users_dal.update_user(uuid=user_info.uuid, email_verified=True)
                 user_info.email_verified = True
                 await cache.update(user_info)
+
+                return await success(request, "Email verified successfully.")

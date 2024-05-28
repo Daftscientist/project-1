@@ -10,6 +10,7 @@ import yaml
 # pylint: disable=import-error
 from database.dals.user_dal import UsersDAL
 from database import db
+from core import email
 
 
 class UUIDEncoder(json.JSONEncoder):
@@ -72,3 +73,97 @@ def load_config(file_path: str = "config.yml"):
             return yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
+
+def send_welcome_email(request):
+    """
+    Sends a welcome email to the user's email address.
+
+    Args:
+        request: The request object containing the application context.
+
+    Returns:
+        None
+    """
+    app = request.app
+    config = app.ctx.config
+    user = app.ctx.cache.get(request.ctx.user.uuid)
+
+    welcome_email = email.Email(
+        host=config["email"]["host"],
+        port=config["email"]["port"],
+        plain_body=config["email"]["welcome_email"]["plain_body"],
+        html_body="email/" + config["email"]["welcome_email"]["html_body_file"],
+        format_variables={
+            "username": user.username,
+            "avatar": user.avatar if user.avatar else config["core"]["default_avatar"],
+        }
+    )
+    welcome_email.send(
+        sender=config["email"]["sender"],
+        recipient=user.email,
+        subject=config["email"]["welcome_email"]["subject"]
+    )
+
+def send_verification_email(request):
+    """
+    Sends a verification email to the user's email address.
+
+    Args:
+        request: The request object containing the application context.
+
+    Returns:
+        None
+    """
+    app = request.app
+    config = app.ctx.config
+    user = app.ctx.cache.get(request.ctx.user.uuid)
+
+    verification_email = email.Email(
+        host=config["email"]["host"],   
+        port=config["email"]["port"],
+        plain_body=config["email"]["verification_email"]["plain_body"],
+        html_body="email/" + config["email"]["verification_email"]["html_body_file"],
+        format_variables={
+            "username": user.username,
+            "verification_code": user.email_verification_code,
+            "verification_url": app.url_for('VerifyEmailView', identifier=user.email_verification_code, _external=True),
+            "avatar": user.avatar if user.avatar else config["core"]["default_avatar"],
+        }
+    )
+    verification_email.send(
+        sender=config["email"]["sender"],
+        recipient=user.email,
+        subject=config["email"]["verification_email"]["subject"]
+    )
+
+def send_password_reset_email(request, user):
+    """
+    Sends a password reset email to the user's email address.
+
+    Args:
+        request: The request object containing the application context.
+        user: The user object.
+
+    Returns:
+        None
+    """
+    app = request.app
+    config = app.ctx.config
+
+    password_reset_email = email.Email(
+        host=config["email"]["host"],
+        port=config["email"]["port"],
+        plain_body=config["email"]["password_reset_email"]["plain_body"],
+        html_body="email/" + config["email"]["password_reset_email"]["html_body_file"],
+        format_variables={
+            "username": user.username,
+            "password_reset_code": user.password_reset_code,
+            "password_reset_url": app.url_for('ResetPasswordView', identifier=user.password_reset_code, _external=True),
+            "avatar": user.avatar if user.avatar else config["core"]["default_avatar"],
+        }
+    )
+    password_reset_email.send(
+        sender=config["email"]["sender"],
+        recipient=user.email,
+        subject=config["email"]["password_reset_email"]["subject"]
+    )

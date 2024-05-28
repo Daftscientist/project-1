@@ -4,7 +4,7 @@ This module provides functionality for managing users in the database.
 import datetime
 from typing import List, Optional
 
-from sqlalchemy import update, delete
+from sqlalchemy import update, delete, Uuid
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 # pylint: disable=import-error
@@ -103,15 +103,16 @@ class UsersDAL():
             username: Optional[str] = None,
             email: Optional[str] = None,
             email_verified: Optional[bool] = None,
-            email_verification_code: Optional[str] = None,
+            email_verification_code: Optional[Uuid] = None,
             password: Optional[str] = None,
+            password_reset_code: Optional[Uuid] = None,
             avatar: Optional[str] = None,
             last_login: Optional[datetime.datetime] = None,
             latest_ip: Optional[str] = None,
             signup_ip: Optional[str] = None,
-            max_sessions: Optional[str] = None,
+            max_sessions: Optional[int] = None,
             google_account_identifier: Optional[str] = None,
-            discord_account_identifier: Optional[str] = None
+            discord_account_identifier: Optional[int] = None
         ):
         """
         Updates the user with the given uuid.
@@ -149,6 +150,8 @@ class UsersDAL():
             q = q.values(email_verification_code=email_verification_code)
         if password:
             q = q.values(password=password)
+        if password_reset_code:
+            q = q.values(password_reset_code=password_reset_code)
         if avatar:
             q = q.values(avatar=avatar)
         if last_login:

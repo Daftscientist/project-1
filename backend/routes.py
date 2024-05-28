@@ -10,6 +10,8 @@ from views.auth.oauth.callback.discord import DiscordOauthCallbackView
 from views.account.link.discord import DiscordOauthLinkingView
 from views.account.link.callback.discord import DiscordOauthLinkCallbackView
 from views.account.verify.email import VerifyEmailView
+from views.auth.reset.password import ResetPasswordView
+from views.auth.reset.callback.password import ResetPasswordCallbackView
 
 routes = [
     [ # This is version 1
@@ -22,6 +24,7 @@ routes = [
         ["/auth/login", login.LoginView],
         ["/auth/oauth/discord", DiscordOauthView],
         ["/auth/logout", logout.LogoutView],
+        ["auth/reset/password", ResetPasswordView],
 
         # --- Account --- 
         ["/account/get", GetUserView],
@@ -31,19 +34,18 @@ routes = [
         ["/account/edit/password", password.UpdatePasswordView],
         ["/account/edit/avatar", avatar.UpdateAvatarView],
         ["/account/edit/max-sessions", UpdateMaxSessions],
+        ["/account/link/discord", DiscordOauthLinkingView],
 
         # --- Sessions --- 
         ["/account/session/get/all", GetActiveSessionsView],
-        ["/account/session/delete", DeleteSessionView],
+        ["/account/session/delete", DeleteSessionView],        
 
-        # --- Linking ---
-        ["/account/link/discord", DiscordOauthLinkingView],
-
-        # --- Linking Callback ---
+        # --- Account Callback ---
         ["/account/link/discord/callback", DiscordOauthLinkCallbackView],
 
         # --- Authentication Callback ---
-        ["/auth/oauth/callback/discord", DiscordOauthCallbackView]
+        ["/auth/oauth/callback/discord", DiscordOauthCallbackView],
+        ["/auth/reset/callback/password", ResetPasswordCallbackView],
 
     ]
 ]
