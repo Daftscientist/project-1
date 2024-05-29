@@ -129,7 +129,10 @@ class UsersDAL():
             signup_ip: Optional[str] = None,
             max_sessions: Optional[int] = None,
             google_account_identifier: Optional[str] = None,
-            discord_account_identifier: Optional[int] = None
+            discord_account_identifier: Optional[int] = None,
+            two_factor_authentication_enabled: Optional[bool] = None,
+            two_factor_authentication_secret: Optional[str] = None,
+            setting_up_two_factor_authentication: Optional[bool] = None
         ):
         """
         Updates the user with the given uuid.
@@ -156,6 +159,12 @@ class UsersDAL():
                 Defaults to None.
             discord_account_identifier (str, optional): The Discord account identifier for the user.
                 Defaults to None.
+            two_factor_authentication_enabled (bool, optional): The new two-factor authentication status
+                for the user. Defaults to None.
+            two_factor_authentication_secret (str, optional): The new two-factor authentication secret
+                for the user. Defaults to None.
+            setting_up_two_factor_authentication (bool, optional): The new two-factor authentication setup
+                status for the user. Defaults to None.
         """
 
         q = update(User).where(User.uuid == uuid)
@@ -191,6 +200,12 @@ class UsersDAL():
             q = q.values(google_account_identifier=google_account_identifier)
         if discord_account_identifier:
             q = q.values(discord_account_identifier=discord_account_identifier)
+        if two_factor_authentication_enabled:
+            q = q.values(two_factor_authentication_enabled=two_factor_authentication_enabled)
+        if two_factor_authentication_secret:
+            q = q.values(two_factor_authentication_secret=two_factor_authentication_secret)
+        if setting_up_two_factor_authentication:
+            q = q.values(setting_up_two_factor_authentication=setting_up_two_factor_authentication)
         q.execution_options(synchronize_session="fetch")
         await self.db_session.execute(q)
 

@@ -15,6 +15,17 @@ session:
   session_max_age: 604800 # - Amount of time a session will last for (in seconds)
   session_cleanup_interval: 3600 # - Clear expired sessions every hour
   cookie_secure: true # - Only send cookies over HTTPS
+2fa:
+  enabled: true # - Allow users to choose to enable 2FA
+  forced: false # - Force users to enable 2FA
+  issuer_name: 'API' # - Name of the issuer for 2FA tokens
+  digits: 6 # - Number of digits in a 2FA token
+  period: 30 # - Time period for 2FA tokens (in seconds)
+
+  recovery_codes: 5 # - Number of recovery codes to generate
+  recovery_code_length: 16 # - Length of each recovery code
+  recovery_code_expiry: 604800 # - Amount of time a recovery code will last for (in seconds)
+
 
 email:
   host: 'smtp.gmail.com' # - SMTP server host

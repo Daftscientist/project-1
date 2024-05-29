@@ -29,6 +29,7 @@ class LoginView(HTTPMethodView):
 
         email: str
         password: str
+        two_factor_authentication_otp_code: str = None
 
     @parse_params(body=LoginRequest)
     async def post(self, request: Request, params: LoginRequest):
@@ -51,7 +52,7 @@ class LoginView(HTTPMethodView):
 
                 if not await users_dal.check_if_user_exists_email(params.email):
                     raise BadRequest("Account does not exist.")
-                
+
                 user_info = await users_dal.get_user_by_email(params.email)
                 if not await check_password(params.password.encode('utf-8'), user_info.password):
                     raise BadRequest("Password is incorrect.")
@@ -64,6 +65,13 @@ class LoginView(HTTPMethodView):
                 session_id = create_session_id()
 
                 user_ip = request.remote_addr or request.ip
+
+                if request.app.ctx.config["2fa"]["enabled"]: ## 2fa :)
+                    if user_info.two_factor_authentication_enabled:
+                        if len(params.two_factor_authentication_otp_code) is not request.app.ctx.config["2fa"]["digits"]:
+                            raise BadRequest("Invalid OTP code.")
+                        if not user_info.verify_two_factor_auth(params.two_factor_authentication_otp_code):
+                            raise BadRequest("Invalid OTP code.")
 
                 await app.ctx.session.add(session_id, uuid, user_ip, time.time() + app.ctx.SESSION_EXPIRY_IN)
                 if not len(await app.ctx.session.cocurrent_sessions(user_info.uuid)) > 1:

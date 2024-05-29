@@ -4,6 +4,7 @@ This module contains the User model.
 import datetime
 import os
 import uuid
+import pyotp
 from sqlalchemy import (
     Column,
     Integer,
@@ -160,7 +161,49 @@ class User(Base):
             AesEngine
         ), nullable=True, default=None
     )
+    two_factor_authentication_enabled = Column(Boolean, nullable=False, default=False)
+    two_factor_authentication_secret = Column(
+        StringEncryptedType(
+            String(255),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=False, default=pyotp.random_base32()
+    )
+    setting_up_two_factor_authentication = Column(Boolean, nullable=False, default=False)
     #servers = relationship("Server", back_populates="user")
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+            """
+            Converts the User object to a dictionary.
+
+            Returns:
+                dict: A dictionary representation of the User object.
+            """
+            return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def get_two_factor_auth_setup_uri(self):
+        """
+        Generates the setup URI for two-factor authentication.
+        Returns:
+            str: The setup URI for two-factor authentication.
+        """
+        return pyotp.totp.TOTP(
+            s=self.secret_token,
+            interval=config_data["2fa"]["period"],
+            digits=config_data["2fa"]["digits"],
+        ).provisioning_uri(
+            name=self.email, issuer_name=config_data["2fa"]["issuer_name"]
+        )
+    
+    def verify_two_factor_auth(self, user_otp):
+            """
+            Verifies the user's one-time password (OTP) for two-factor authentication.
+
+            Args:
+                user_otp (str): The one-time password entered by the user.
+
+            Returns:
+                bool: True if the OTP is valid, False otherwise.
+            """
+            totp = pyotp.parse_uri(self.get_authentication_setup_uri())
+            return totp.verify(user_otp)
