@@ -3,6 +3,7 @@ import re
 import time
 from sanic import Sanic
 from sanic_dantic import parse_params, BaseModel
+from backend.database.dals.mfa_backup_codes_dal import Mfa_backup_codes_DAL
 from core.responses import success
 from sanic import Request, BadRequest
 from sanic.views import HTTPMethodView
@@ -30,6 +31,7 @@ class LoginView(HTTPMethodView):
         email: str
         password: str
         two_factor_authentication_otp_code: str = None
+        two_factor_authentication_backup_code: str = None
 
     @parse_params(body=LoginRequest)
     async def post(self, request: Request, params: LoginRequest):
@@ -60,18 +62,31 @@ class LoginView(HTTPMethodView):
                 if user_info.max_sessions <= len(await app.ctx.session.cocurrent_sessions(user_info.uuid)):
                     raise BadRequest("You have too many concurrent sessions.")
 
+                if (params.two_factor_authentication_otp_code is not None) and (params.two_factor_authentication_backup_code is not None):
+                    raise BadRequest("You cannot use both OTP and backup code to login.")
+                
+
                 uuid = user_info.uuid
                 
                 session_id = create_session_id()
 
                 user_ip = request.remote_addr or request.ip
 
-                if request.app.ctx.config["2fa"]["enabled"]: ## 2fa :)
-                    if user_info.two_factor_authentication_enabled:
-                        if len(params.two_factor_authentication_otp_code) is not request.app.ctx.config["2fa"]["digits"]:
-                            raise BadRequest("Invalid OTP code.")
-                        if not user_info.verify_two_factor_auth(params.two_factor_authentication_otp_code):
-                            raise BadRequest("Invalid OTP code.")
+                if params.two_factor_authentication_backup_code == None and params.two_factor_authentication_otp_code != None:
+                    if request.app.ctx.config["2fa"]["enabled"]: ## 2fa :)
+                        if user_info.two_factor_authentication_enabled:
+                            if len(params.two_factor_authentication_otp_code) is not request.app.ctx.config["2fa"]["digits"]:
+                                raise BadRequest("Invalid OTP code.")
+                            if not user_info.verify_two_factor_auth(params.two_factor_authentication_otp_code):
+                                raise BadRequest("Invalid OTP code.")
+                
+                if params.two_factor_authentication_backup_code != None and params.two_factor_authentication_otp_code == None:
+                    if request.app.ctx.config["2fa"]["enabled"]: ## allows backup code login
+                        if user_info.two_factor_authentication_enabled:
+                            mfa_backup_codes_dal = Mfa_backup_codes_DAL(session)
+                            if not await mfa_backup_codes_dal.check_if_code_exists(user_info.uuid, params.two_factor_authentication_backup_code):
+                                raise BadRequest("Invalid backup code.")
+                            await users_dal.delete_backup_code(user_info.uuid, params.two_factor_authentication_backup_code)
 
                 await app.ctx.session.add(session_id, uuid, user_ip, time.time() + app.ctx.SESSION_EXPIRY_IN)
                 if not len(await app.ctx.session.cocurrent_sessions(user_info.uuid)) > 1:

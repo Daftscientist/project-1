@@ -1,3 +1,6 @@
+from views.account.disable.two_factor_authentication import DisableTwoFaView
+from views.account.enable.two_factor_authentication import TwoFaSetupView
+from views.account.verify.two_factor_authentication import TwoFaSetupVerificationView
 from views.auth.oauth.callback.email import EmailAuthenticationCallbackView
 from views.auth.oauth.email import EmailAuthenticationView
 from views import index, hello
@@ -25,19 +28,22 @@ routes = [
         ["/auth/create", create.CreateView],
         ["/auth/login", login.LoginView],
         ["/auth/logout", logout.LogoutView],
-        ["auth/reset/password", ResetPasswordView],
+        ["/auth/reset/password", ResetPasswordView],
         ["/auth/oauth/discord", DiscordOauthView],
         ["/auth/oauth/email/", EmailAuthenticationView],
 
         # --- Account --- 
         ["/account/get", GetUserView],
-        ["/account/verify/email/<identifier>", VerifyEmailView],
         ["/account/edit/username", username.UpdateUsernameView],
         ["/account/edit/email", email.UpdateEmailView],
         ["/account/edit/password", password.UpdatePasswordView],
         ["/account/edit/avatar", avatar.UpdateAvatarView],
         ["/account/edit/max-sessions", UpdateMaxSessions],
         ["/account/link/discord", DiscordOauthLinkingView],
+        ["/account/verify/email/<identifier>", VerifyEmailView],
+        ["/account/enable/two-factor-authentication", TwoFaSetupView],
+        ["/account/verify/two-factor-authentication", TwoFaSetupVerificationView],
+        ["/account/disable/two-factor-authentication", DisableTwoFaView],
 
         # --- Sessions --- 
         ["/account/session/get/all", GetActiveSessionsView],

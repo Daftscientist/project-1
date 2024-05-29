@@ -23,7 +23,7 @@ A project to replace pterodactyl and be a showcase of my Python and React skills
 | ❌ | Replace `sanic_dantic` with my own solution. |
 | ✔️ | Add email verification with code/link for signup. |
 | ✔️ | Add option to login with email code/link. |
-| 🖊️ | Add 2FA and Oauth2 |
+| ✔️ | Add 2FA and Oauth2 |
 | ❌ | Create the entire plugin system from scratch. |
 
 ## Table of Contents

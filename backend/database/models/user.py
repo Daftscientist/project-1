@@ -192,7 +192,7 @@ class User(Base):
             interval=config_data["2fa"]["period"],
             digits=config_data["2fa"]["digits"],
         ).provisioning_uri(
-            name=self.email, issuer_name=config_data["2fa"]["issuer_name"]
+            name=self.uuid, issuer_name=config_data["2fa"]["issuer_name"]
         )
     
     def verify_two_factor_auth(self, user_otp):

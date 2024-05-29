@@ -1,5 +1,6 @@
 from sanic import Request, BadRequest, redirect
 from sanic.views import HTTPMethodView
+from database.dals.mfa_backup_codes_dal import Mfa_backup_codes_DAL
 from core.responses import data_response
 from database.dals.user_dal import UsersDAL
 from core.cookies import check_if_cookie_is_present
@@ -9,6 +10,7 @@ from io import BytesIO
 import qrcode
 from base64 import b64encode
 from database import db
+from core.general import generate_backup_code
 
 def get_b64encoded_qr_image(data):
     print(data)
@@ -43,7 +45,9 @@ class TwoFaSetupView(HTTPMethodView):
                 ## generate qr code
                 qr_image = get_b64encoded_qr_image(setup_uri) # use in href as src="data:image/png;base64,{{ qr_image }}"
                 
+                data_to_return = {"qr_image": qr_image, "setup_uri": setup_uri, "secret_token": db_user.two_factor_authentication_secret}
+
                 users_dal.update_user(user.uuid, setting_up_two_factor_authentication=True)
                 request.app.ctx.cache.update(await users_dal.get_user_by_uuid(user.uuid))
 
-                return data_response(request, {"qr_image": qr_image, "setup_uri": setup_uri, "secret_token": db_user.two_factor_authentication_secret})
+                return data_response(request, data_to_return)

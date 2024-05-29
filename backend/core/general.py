@@ -13,7 +13,17 @@ import yaml
 from database.dals.user_dal import UsersDAL
 from database import db
 from core import email
+import secrets
 
+def generate_backup_code(length):
+    """
+    Generates a backup code.
+
+    Returns:
+        str: The generated backup code.
+    """
+
+    return secrets.token_hex(int(length / 2)) # prevent odd numbers
 
 def inject_cached_user():
     """
