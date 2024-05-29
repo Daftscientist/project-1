@@ -6,7 +6,7 @@ from core.authentication import protected
 from sanic_dantic import parse_params, BaseModel
 from database import db
 from core.encoder import hash_password, check_password
-from core.general import inject_cached_user
+from core.general import inject_cached_user, restricted_to_verified
 
 
 class UpdatePasswordView(HTTPMethodView):
@@ -22,6 +22,7 @@ class UpdatePasswordView(HTTPMethodView):
     @staticmethod
     @protected
     @inject_cached_user()
+    @restricted_to_verified()
     @parse_params(body=UpdatePasswordRequest)
     async def post(request: Request, user, params: UpdatePasswordRequest):
         """The update password route."""

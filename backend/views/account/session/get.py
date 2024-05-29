@@ -4,7 +4,7 @@ from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
 from core.authentication import protected
 from core.general import fix_dict
-from core.general import inject_cached_user
+from core.general import inject_cached_user, restricted_to_verified
 
 class GetActiveSessionsView(HTTPMethodView):
     """The get active sessions view."""
@@ -12,6 +12,7 @@ class GetActiveSessionsView(HTTPMethodView):
     @staticmethod
     @protected
     @inject_cached_user()
+    @restricted_to_verified()
     async def post(request: Request, user):
         """The get active sessions route."""
         

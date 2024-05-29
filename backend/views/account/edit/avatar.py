@@ -12,7 +12,7 @@ from core.authentication import protected
 from core.responses import success
 from database.dals.user_dal import UsersDAL
 from database import db
-from core.general import inject_cached_user
+from core.general import inject_cached_user, restricted_to_verified
 
 URL_REGEX = re.compile(
     r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}"
@@ -30,6 +30,7 @@ class UpdateAvatarView(HTTPMethodView):
     @staticmethod
     @protected
     @inject_cached_user()
+    @restricted_to_verified()
     @parse_params(body=UpdateAvatarRequest)
     async def post(request: Request, user, params: UpdateAvatarRequest):
         """

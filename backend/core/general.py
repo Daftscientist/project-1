@@ -7,6 +7,7 @@ from uuid import UUID
 from datetime import date, datetime
 import uuid
 
+from sanic import BadRequest, Unauthorized
 import yaml
 # pylint: disable=import-error
 from database.dals.user_dal import UsersDAL
@@ -15,11 +16,51 @@ from core import email
 
 
 def inject_cached_user():
+    """
+    Decorator function that injects the cached user into the decorated function.
+
+    This decorator retrieves the user from the cache based on the request and injects it as an argument
+    into the decorated function. The decorated function can then access the user object.
+
+    Args:
+        request: The request object.
+        *args: Variable length argument list.
+        **kwargs: Arbitrary keyword arguments.
+
+    Returns:
+        The decorated function.
+
+    """
     def decorator(f):
         @wraps(f)
         async def decorated_function(request, *args, **kwargs):
             user = await request.app.ctx.cache.get(request)
             return await f(request, user, *args, **kwargs)
+        return decorated_function
+    return decorator
+
+def restricted_to_verified():
+    """
+    Decorator function that restricts access to verified users only.
+
+    This decorator checks if the user is verified and raises an error if they are not.
+
+    Args:
+        request: The request object.
+        *args: Variable length argument list.
+        **kwargs: Arbitrary keyword arguments.
+
+    Returns:
+        The decorated function.
+
+    """
+    def decorator(f):
+        @wraps(f)
+        async def decorated_function(request, *args, **kwargs):
+            user = await request.app.ctx.cache.get(request)
+            if not user.email_verified:
+                raise BadRequest("Email not verified.")
+            return await f(request, *args, **kwargs)
         return decorated_function
     return decorator
 

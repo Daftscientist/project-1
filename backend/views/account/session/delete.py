@@ -5,6 +5,7 @@ from sanic import Request, BadRequest
 from core.authentication import protected
 from sanic_dantic import parse_params, BaseModel
 from core.cookies import get_cookie
+from core.general import restricted_to_verified
 
 class DeleteSessionView(HTTPMethodView):
     """The delete sessions view."""
@@ -16,6 +17,7 @@ class DeleteSessionView(HTTPMethodView):
 
     @staticmethod
     @protected
+    @restricted_to_verified()
     @parse_params(body=DeleteSessionRequest)
     async def post(request: Request, params: DeleteSessionRequest):
         """The delete sessions route."""

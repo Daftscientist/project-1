@@ -4,7 +4,8 @@ from database.dals.user_dal import UsersDAL
 from database import db
 from core.cookies import check_if_cookie_is_present, send_cookie
 from core.authentication import protected
-from core.general import inject_cached_user
+from core.general import inject_cached_user, restricted_to_verified
+
 
 class DiscordOauthLinkCallbackView(HTTPMethodView):
     """The discord oauth link callback view."""
@@ -12,6 +13,7 @@ class DiscordOauthLinkCallbackView(HTTPMethodView):
     @staticmethod
     @protected
     @inject_cached_user()
+    @restricted_to_verified()
     async def get(request: Request, user):
         """ The discord oauth callback route. """
 

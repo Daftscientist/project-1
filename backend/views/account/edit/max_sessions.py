@@ -1,5 +1,5 @@
 import re
-from core.general import inject_cached_user
+from core.general import inject_cached_user, restricted_to_verified
 from core.responses import success
 from database.dals.user_dal import UsersDAL
 from sanic.views import HTTPMethodView
@@ -21,6 +21,7 @@ class UpdateMaxSessions(HTTPMethodView):
     @staticmethod
     @protected
     @inject_cached_user()
+    @restricted_to_verified()
     @parse_params(body=UpdateMaxSessionsRequest)
     async def post(request: Request, user, params: UpdateMaxSessionsRequest):
         """The update avatar route."""
