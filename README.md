@@ -11,8 +11,8 @@ A project to replace pterodactyl and be a showcase of my Python and React skills
 ## TODO
 | Done? | Idea |
 | --- | --- |
-| ❌ | Make it possible when `@inject_user` is called `user.session` and ``user.cache` are attributes |
-| ❌ | Rewrite the whole codebase to use global app context for all common functions. |
+| ✔️ | Make it possible when `@inject_user` is called `user.cache` are attributes |
+| ✔️ | Rewrite the whole codebase to use global app context for all common functions. |
 | ✔️ | Write a cache system - option to use SQLite|Redis. (start with sqlite) |
 | ✔️ | Implement the use of the new session system. |
 | ✔️ | Rewrite the session system to not rely on python dictionaries. |
@@ -21,7 +21,7 @@ A project to replace pterodactyl and be a showcase of my Python and React skills
 | 🖊️ | View and edit user data via API. |
 | ❌ | Add create server routes. |
 | ❌ | Replace `sanic_dantic` with my own solution. |
-| ❌ | Add email verification with code/link for signup. |
+| ✔️ | Add email verification with code/link for signup. |
 | ❌ | Add option to login with email code/link. |
 | ❌ | Add 2FA and Oauth2 |
 | ❌ | Create the entire plugin system from scratch. |
