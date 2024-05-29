@@ -20,7 +20,7 @@ class DiscordOauthLinkCallbackView(HTTPMethodView):
         if not request.app.ctx.config["oauth"]["discord"]["enabled"]:
             raise BadRequest("Discord OAuth is not enabled on this server.")
 
-        token = request.app.ctx.discord.handle_callback(request, redirect_uri=request.app.ctx.config["oauth"]["discord"]["link_redirect_uri"])
+        token = await request.app.ctx.discord.handle_callback(request, redirect_uri=request.app.ctx.config["oauth"]["discord"]["link_redirect_uri"])
         discord_user_info = request.app.ctx.discord.get_user_info(token, redirect_uri=request.app.ctx.config["oauth"]["discord"]["link_redirect_uri"])
 
         async with db.async_session() as session:

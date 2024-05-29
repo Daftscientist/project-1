@@ -1,3 +1,5 @@
+from functools import partial
+from typing import Union
 from async_oauthlib import OAuth2Session
 from sanic import Request, response, Sanic
 from core.general import load_config
@@ -34,7 +36,21 @@ def make_session(*, token: dict = None, state: dict = None, token_updater = None
         auto_refresh_url=TOKEN_URL,
     )
 
-def generate_oauth_url(redirect_uri) -> str:
+def token_updater(request: Request, token: dict) -> None:
+    """
+    Updates the Discord OAuth2 token in the session.
+
+    Args:
+        request (Request): The request object.
+        token (dict): The updated token dictionary.
+
+    Returns:
+        None
+    """
+    # has to be made into a partial function before use
+    request.ctx.session["discord_oauth2_token"] = token
+
+async def generate_oauth_url(redirect_uri, request) -> str:
     """
     Generates the OAuth URL for Discord authentication.
 
@@ -42,9 +58,14 @@ def generate_oauth_url(redirect_uri) -> str:
         str: The OAuth URL.
 
     """
-    return make_session(redirect_uri=redirect_uri).authorization_url(AUTHORIZATION_BASE_URL)[0]
 
-def handle_callback(request: Request, redirect_uri) -> dict:
+    discord = make_session(token_updater=partial(token_updater, request), redirect_uri=redirect_uri)
+    url, state = discord.authorization_url(AUTHORIZATION_BASE_URL)
+    request.ctx.session["discord_oauth2_state"] = state
+    return url
+
+
+async def handle_callback(request: Request, redirect_uri) -> dict:
     """
     Handles the callback from Discord authentication.
 
@@ -55,8 +76,16 @@ def handle_callback(request: Request, redirect_uri) -> dict:
         dict: The token dictionary.
 
     """
-    session = make_session(state=request.args["state"], redirect_uri=redirect_uri)
-    token = session.fetch_token(TOKEN_URL, client_secret=CLIENT_SECRET, authorization_response=request.url)
+    if request.args.get("error"):
+        return False
+
+    discord = make_session(
+        state=request.ctx.session.get("discord_oauth2_state"),
+        token_updater=partial(token_updater, request),
+    )
+    token = await discord.fetch_token(
+        TOKEN_URL, client_secret=CLIENT_SECRET, authorization_response=request.url
+    )
     return token
 
 def get_user_info(token: dict, redirect_uri) -> dict:
@@ -112,3 +141,8 @@ def get_user_email(user_info: dict) -> str:
 
     """
     return user_info["email"]
+
+def check_logged_in(request: Request) -> Union[dict, bool]:
+    """Returns the user's token if they finished authentication with discord, else return False."""
+    token = request.ctx.session.get("discord_oauth2_token")
+    return token if token else False

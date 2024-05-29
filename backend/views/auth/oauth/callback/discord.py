@@ -29,7 +29,7 @@ class DiscordOauthCallbackView(HTTPMethodView):
         if await check_if_cookie_is_present(request):
             raise BadRequest("You are already logged in.")
         
-        token = request.app.ctx.discord.handle_callback(request, redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"])
+        token = await request.app.ctx.discord.handle_callback(request, redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"])
         discord_user_info = request.app.ctx.discord.get_user_info(token, redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"])
         
         async with db.async_session() as session:

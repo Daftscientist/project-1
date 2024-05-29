@@ -16,4 +16,4 @@ class DiscordOauthView(HTTPMethodView):
         if await check_if_cookie_is_present(request):
             raise BadRequest("You are already logged in.")
         
-        return redirect(request.app.ctx.discord.generate_oauth_url(redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"]))
+        return redirect(request.app.ctx.discord.generate_oauth_url(redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"], request=request))

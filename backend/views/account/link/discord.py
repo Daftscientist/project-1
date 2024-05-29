@@ -17,4 +17,4 @@ class DiscordOauthLinkingView(HTTPMethodView):
         if not request.app.ctx.config["oauth"]["discord"]["enabled"]:
             raise BadRequest("Discord OAuth is not enabled on this server.")
         
-        return redirect(request.app.ctx.discord.generate_oauth_url(redirect_uri=request.app.ctx.config["oauth"]["discord"]["link_redirect_uri"]))
+        return redirect(request.app.ctx.discord.generate_oauth_url(redirect_uri=request.app.ctx.config["oauth"]["discord"]["link_redirect_uri"], request=request))
