@@ -1,6 +1,7 @@
 """
 This module provides general utility functions.
 """
+from functools import wraps
 import json
 from uuid import UUID
 from datetime import date, datetime
@@ -13,6 +14,16 @@ from database import db
 from core import email
 
 
+def inject_cached_user():
+    def decorator(f):
+        @wraps(f)
+        async def decorated_function(request, *args, **kwargs):
+            user = await request.app.ctx.cache.get(request)
+            return await f(request, user, *args, **kwargs)
+        return decorated_function
+    return decorator
+
+
 class UUIDEncoder(json.JSONEncoder):
     """
     JSON encoder that handles UUID, date, and datetime objects.
@@ -23,6 +34,8 @@ class UUIDEncoder(json.JSONEncoder):
             return str(o)
         if isinstance(o, (date, datetime)):
             return o.isoformat()
+        if isinstance(o, bytes):
+            return o.decode('utf-8')  # or 'latin-1' or 'iso-8859-1' depending on your data - we use utf-8 (if it is changed, change here)
 
         return super().default(o)
 

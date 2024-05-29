@@ -39,7 +39,7 @@ email:
     html_body_file: 'password_reset_email.html' # - HTML body of the password reset email
 
 core:
-  frontend_url: 'http://000.00.00:00'
+  frontend_url: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev'
   encryption_key: 'wLtgFX0SyIB6V2gMTEmHIxEQNac5wpVuxlqIApGz7NM=' # - Key used to encrypt sensitive data
   password_salt: 'salt' # - Salt used to hash passwords
   cookie_secret: 'secret' # - Secret used to sign cookies

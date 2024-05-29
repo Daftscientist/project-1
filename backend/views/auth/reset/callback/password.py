@@ -27,7 +27,8 @@ class ResetPasswordCallbackView(HTTPMethodView):
             raise BadRequest("Both new password fields must be the same.")
         
         if len(params.new_password) < request.app.config["core"]["password_min_length"]:
-            raise BadRequest(f"Password must be at least {request.app.config["core"]["password_min_length"]} characters long.")
+            min_length = request.app.config["core"]["password_min_length"]
+            raise BadRequest(f"Password must be at least {min_length} characters long.")
 
         if not identifier:
             raise BadRequest("No password reset code present in the request.", status_code=400)

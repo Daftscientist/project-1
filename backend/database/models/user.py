@@ -10,11 +10,12 @@ from sqlalchemy import (
     String,
     Uuid,
     DateTime,
+    Boolean
 )
 import yaml
 # pylint: disable=import-error
 from database.db import Base
-from sqlalchemy_utils import EncryptedType, StringEncryptedType
+from sqlalchemy_utils import EncryptedType, StringEncryptedType, UUIDType
 from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
 
 
@@ -25,7 +26,9 @@ def generate_uuid():
     Returns:
         uuid: A generated UUID.
     """
-    return uuid.uuid4()
+
+    ouruuid = uuid.uuid4()
+    return ouruuid
 
 def load_config(file_path: str = os.getcwd() + "/config.yml"):
     """
@@ -52,6 +55,7 @@ def get_encryption_key():
     Returns:
         bytes: The encryption key as bytes.
     """
+
     return bytes(
         config_data["core"]["encryption_key"],
         "utf-8"
@@ -74,10 +78,10 @@ class User(Base):
             AesEngine
         ), nullable=False
     )
-    email_verified = Column(Integer, nullable=False, default=False)
+    email_verified = Column(Boolean, nullable=False, default=False)
     email_verification_code = Column(
         StringEncryptedType(
-            Uuid,
+            UUIDType(binary=False),
             get_encryption_key(),
             AesEngine
         ), nullable=True, default=generate_uuid()
@@ -85,7 +89,7 @@ class User(Base):
     password = Column(String, nullable=False) #
     password_reset_code = Column(
         StringEncryptedType(
-            Uuid,
+            UUIDType(binary=False),
             get_encryption_key(),
             AesEngine
         ), nullable=True, default=None
@@ -136,3 +140,6 @@ class User(Base):
         ), nullable=True, default=None
     )
     #servers = relationship("Server", back_populates="user")
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
