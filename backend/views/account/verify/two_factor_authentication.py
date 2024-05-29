@@ -9,6 +9,7 @@ from database import db
 from sanic_dantic import parse_params
 from sanic_dantic import BaseModel
 from core.general import generate_backup_code
+from core import encoder
 
 class TwoFaSetupVerificationView(HTTPMethodView):
     """The 2fa otp verification for setup view."""
@@ -40,16 +41,17 @@ class TwoFaSetupVerificationView(HTTPMethodView):
                 if not db_user.verify_two_factor_auth(params.two_factor_authentication_otp_code):
                     raise BadRequest("Invalid OTP code.")
 
-                data_to_return = {}
+                data_to_return = []
 
                 if not db_user.two_factor_authentication_enabled:
                     mfa_backup_codes_dal = Mfa_backup_codes_DAL(session)
                     await mfa_backup_codes_dal.delete_users_codes(user.uuid)
                     for _ in range(request.app.ctx.config["2fa"]["backup_codes"]):
-                        await mfa_backup_codes_dal.create_backup_code(user.uuid, generate_backup_code(request.app.ctx.config["2fa"]["backup_code_length"]))
-                    data_to_return["backup_codes"] = [x.code for x in await mfa_backup_codes_dal.get_users_codes(user.uuid)]
+                        generated_code = generate_backup_code(request.app.ctx.config["2fa"]["backup_code_length"])
+                        data_to_return.append(generated_code)
+                        await mfa_backup_codes_dal.create_backup_code(user.uuid, await encoder.hash_password(generated_code.encode('utf-8')))
 
                 users_dal.update_user(user.uuid, setting_up_two_factor_authentication=False, two_factor_authentication_enabled=True)
                 request.app.ctx.cache.update(await users_dal.get_user_by_uuid(user.uuid))
 
-                return data_response(request, data_to_return)
+                return data_response(request, {"backup_codes": data_to_return}) ## Codes are hashed - please save them

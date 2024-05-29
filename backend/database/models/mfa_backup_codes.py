@@ -18,7 +18,7 @@ class Mfa_backup_codes(Base):
     """
     Represents a set of mfa backup codes in the Mfa backup codes table.
     """
-    __tablename__ = "Server"
+    __tablename__ = "Mfa_backup_codes"
 
     identifier = Column(Integer, nullable=False, autoincrement=True, primary_key=True, unique=True)
     owner_uuid = Column(Uuid, nullable=False)
