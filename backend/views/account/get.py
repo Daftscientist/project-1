@@ -20,6 +20,5 @@ class GetUserView(HTTPMethodView):
     @inject_cached_user()
     async def post(request: Request, user):
         """The get user route."""
-        print(user.email_verified)
         user_data = fix_dict(user.to_dict())
         return await data_response(request, user_data)
