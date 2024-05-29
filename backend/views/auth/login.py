@@ -85,9 +85,17 @@ class LoginView(HTTPMethodView):
                         if user_info.two_factor_authentication_enabled:
                             mfa_backup_codes_dal = Mfa_backup_codes_DAL(session)
                             
+                            if not len(await mfa_backup_codes_dal.get_users_codes(user_info.uuid)) > 0:
+                                raise BadRequest("No backup codes available.")
+
+                            # ----- Janky (will be fixed in the future) -----
+                            found = False
                             for code in await mfa_backup_codes_dal.get_users_codes(user_info.uuid): ## Codes are hashed - can't be seen
-                                if not check_password(params.two_factor_authentication_backup_code.encode('utf-8'), code.code):
-                                    raise BadRequest("Invalid backup code.")
+                                if check_password(params.two_factor_authentication_backup_code.encode('utf-8'), code.code):
+                                    found = True
+                            if not found:
+                                raise BadRequest("Invalid backup code.")
+                            # ------------------------------------------------
 
                             await users_dal.delete_backup_code(user_info.uuid, params.two_factor_authentication_backup_code)
 
