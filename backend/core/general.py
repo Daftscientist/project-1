@@ -190,6 +190,37 @@ def send_verification_email(request):
         subject=config["email"]["verification_email"]["subject"]
     )
 
+def send_login_email(request, user):
+    """
+    Sends a login email to the user's email address.
+
+    Args:
+        request: The request object containing the application context.
+        user: The user object.
+
+    Returns:
+        None
+    """
+    app = request.app
+    config = app.ctx.config
+
+    login_email = email.Email(
+        host=config["email"]["host"],
+        port=config["email"]["port"],
+        plain_body=config["email"]["login_email"]["plain_body"],
+        html_body="email/" + config["email"]["login_email"]["html_body_file"],
+        format_variables={
+            "username": user.username,
+            "avatar": user.avatar if user.avatar else config["core"]["default_avatar"],
+            "login_url": app.url_for('EmailLoginView', identifier=user.login_email_code, _external=True),
+        }
+    )
+    login_email.send(
+        sender=config["email"]["sender"],
+        recipient=user.email,
+        subject=config["email"]["login_email"]["subject"]
+    )
+
 def send_password_reset_email(request, user):
     """
     Sends a password reset email to the user's email address.

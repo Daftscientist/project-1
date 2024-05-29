@@ -41,8 +41,14 @@ class ResetPasswordView(HTTPMethodView):
 
                 users_dal.update_user(uuid=user.uuid, password_reset_code=uuid.uuid4(), password_reset_code_expiration=expire_time)
 
+                updated_user = await users_dal.get_user_by_uuid(user.uuid)
+
+                request.app.ctx.cache.update(
+                    updated_user
+                )
+
                 ## send the email
-                send_password_reset_email(request, user)
+                send_password_reset_email(request, updated_user)
 
                 return await success(request, "Password reset code sent.")
                 

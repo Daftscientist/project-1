@@ -58,6 +58,20 @@ class UsersDAL():
         q = await self.db_session.execute(select(User).where(User.uuid == uuid))
         return q.scalars().first()
 
+    async def get_user_by_email_login_identifier(self, email_login_identifier: str) -> User:
+        """
+        Retrieve a user from the database based on their email login identifier.
+
+        Args:
+            email_login_identifier (str): The email login identifier of the user to retrieve.
+
+        Returns:
+            User: The user object corresponding to the given email login identifier, or None if no user is found.
+        """
+
+        q = await self.db_session.execute(select(User).where(User.login_email_code == email_login_identifier))
+        return q.scalars().first()
+
     async def get_user_by_discord_id(self, discord_id: str) -> User:
         """
         Retrieve a user from the database based on their discord id.
@@ -104,6 +118,8 @@ class UsersDAL():
             email: Optional[str] = None,
             email_verified: Optional[bool] = None,
             email_verification_code: Optional[int] = None,
+            login_email_code: Optional[str] = None,
+            login_email_code_expiration: Optional[datetime.datetime] = None,
             password: Optional[str] = None,
             password_reset_code: Optional[str] = None,
             password_reset_code_expiration: Optional[datetime.datetime] = None,
@@ -126,6 +142,8 @@ class UsersDAL():
                 Defaults to None.
             email_verification_code (str, optional): The new email verification code for the user.
                 Defaults to None.
+            login_email_code (str, optional): The new login email code for the user. Defaults to None.
+            login_email_code_expiration (datetime.datetime, optional): The new login email code expiration
             password (str, optional): The new password for the user. Defaults to None.
             avatar (str, optional): The new avatar for the user. Defaults to None.
             last_login (datetime.datetime, optional): The new last login timestamp for the user.
@@ -149,6 +167,10 @@ class UsersDAL():
             q = q.values(email_verified=email_verified)
         if email_verification_code:
             q = q.values(email_verification_code=email_verification_code)
+        if login_email_code:
+            q = q.values(login_email_code=login_email_code)
+        if login_email_code_expiration:
+            q = q.values(login_email_code_expiration=login_email_code_expiration)
         if password:
             q = q.values(password=password)
         if password_reset_code:

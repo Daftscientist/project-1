@@ -1,3 +1,5 @@
+from views.auth.oauth.callback.email import EmailAuthenticationCallbackView
+from views.auth.oauth.email import EmailAuthenticationView
 from views import index, hello
 from views.auth import create, logout, login
 from views.account.get import GetUserView
@@ -22,9 +24,10 @@ routes = [
         # --- Authentication --- 
         ["/auth/create", create.CreateView],
         ["/auth/login", login.LoginView],
-        ["/auth/oauth/discord", DiscordOauthView],
         ["/auth/logout", logout.LogoutView],
         ["auth/reset/password", ResetPasswordView],
+        ["/auth/oauth/discord", DiscordOauthView],
+        ["/auth/oauth/email/", EmailAuthenticationView],
 
         # --- Account --- 
         ["/account/get", GetUserView],
@@ -41,10 +44,11 @@ routes = [
         ["/account/session/delete", DeleteSessionView],        
 
         # --- Account Callback ---
-        ["/account/link/discord/callback", DiscordOauthLinkCallbackView],
+        ["/account/link/callback/discord", DiscordOauthLinkCallbackView],
 
         # --- Authentication Callback ---
         ["/auth/oauth/callback/discord", DiscordOauthCallbackView],
+        ["/auth/oauth/callback/email/<identifier>", EmailAuthenticationCallbackView],
         ["/auth/reset/callback/password", ResetPasswordCallbackView],
 
     ]

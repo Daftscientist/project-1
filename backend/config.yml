@@ -32,6 +32,10 @@ email:
     subject: 'Verify your email address' # - Subject of the verification email
     plain_body: 'Click the following link to verify your email address: {verification_url}' # - Plain text body of the verification email
     html_body_file: 'verification_email.html' # - HTML body of the verification email
+  login_email:
+    subject: 'Login to your API account!' # - Subject of the login email
+    plain_body: 'Please click the following link to login to your account: {login_url}' # - Plain text body of the login email
+    html_body_file: 'login_email.html' # - HTML body of the login email
   password_reset_email:
     enabled: false # - Enable password reset emails
     subject: 'Reset your password' # - Subject of the password reset email
@@ -48,9 +52,15 @@ core:
   password_min_length: 8 # - Minimum length of a users password
   password_reset_code_expiry: 18000 # - Amount of time a password reset code will last for (in seconds)
 oauth:
+  email:
+    enabled: false # - Enable email OAuth
+    expiry: 1800 # - Amount of time an email OAuth code will last for (in seconds)
+    # Further configuration for email OAuth in Email section
   discord:
     enabled: false # - Enable Discord OAuth
     client_id: '' # - Discord OAuth client ID
     client_secret: '' # - Discord OAuth client secret
     login_redirect_uri: 'http://localhost:8080/api/v1/auth/oauth/callback/discord' # - Redirect URI for logging in with Discord OAuth
     link_redirect_uri: 'http://localhost:8080/api/v1/account/link/callback/discord' # - Redirect URI for linking Discord OAuth to a user account
+    scopes: ['identify', 'email'] # - Discord OAuth scopes
+  

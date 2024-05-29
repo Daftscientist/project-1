@@ -51,4 +51,8 @@ class ResetPasswordCallbackView(HTTPMethodView):
                     password=await encoder.hash_password(params.new_password.encode('utf-8'))
                 )
 
+                request.app.ctx.cache.update(
+                    await users_dal.get_user_by_uuid(user.uuid)
+                )
+
                 return await success(request, "Password reset code is valid, password updated successfully.")

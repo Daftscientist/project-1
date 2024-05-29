@@ -14,35 +14,35 @@ def create_session_id():
     """
     return secrets.token_urlsafe(16) 
 
-class DiscordOauthCallbackView(HTTPMethodView):
-    """The discord oauth callback view."""
+class EmailAuthenticationCallbackView(HTTPMethodView):
+    """The email authentication callback view."""
 
     @staticmethod
-    async def get(request: Request):
-        """ The discord oauth callback route. """
+    async def get(request: Request, identifier: str):
+        """ The email authentication callback route. """
 
         last_login = datetime.datetime.now()
 
-        if not request.app.ctx.config["oauth"]["discord"]["enabled"]:
-            raise BadRequest("Discord OAuth is not enabled on this server.")
+        if not request.app.ctx.config["oauth"]["email"]["enabled"]:
+            raise BadRequest("Email authentication is not enabled on this server.")
 
         if await check_if_cookie_is_present(request):
             raise BadRequest("You are already logged in.")
-        
-        token = request.app.ctx.discord.handle_callback(request, redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"])
-        discord_user_info = request.app.ctx.discord.get_user_info(token, redirect_uri=request.app.ctx.config["oauth"]["discord"]["login_redirect_uri"])
         
         async with db.async_session() as session:
             async with session.begin():
                 users_dal = UsersDAL(session)
                 
-                user_info = await users_dal.get_user_by_discord_id(discord_user_info["id"])
+                user_info = await users_dal.get_user_by_email_login_identifier(identifier)
 
-                if discord_user_info["id"] != user_info.discord_account_identifier:
-                    raise BadRequest("Account does not exist.")
+                if not user_info:
+                    raise BadRequest("Invalid email authentication code.")
 
                 if user_info.max_sessions <= len(await request.app.ctx.session.cocurrent_sessions(user_info.uuid)):
                     raise BadRequest("You have too many concurrent sessions.")
+
+                if user_info.login_email_code_expiration < time.time():
+                    raise BadRequest("Email authentication code has expired.")
 
                 uuid = user_info.uuid
                 
@@ -54,9 +54,6 @@ class DiscordOauthCallbackView(HTTPMethodView):
                 if not len(await request.app.ctx.session.cocurrent_sessions(user_info.uuid)) > 1:
                     await request.app.ctx.cache.update(user_info)
                 await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
-
-                if not user_info.avatar:
-                    await users_dal.update_user(uuid=uuid, avatar=request.app.ctx.discord.get_user_avatar(discord_user_info["id"]))
                 
                 request.app.ctx.cache.update(
                     await users_dal.get_user_by_uuid(uuid)

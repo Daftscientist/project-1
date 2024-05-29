@@ -86,6 +86,20 @@ class User(Base):
             AesEngine
         ), nullable=True, default=generate_uuid()
     )
+    login_email_code = Column(
+        StringEncryptedType(
+            UUIDType(binary=False),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
+    login_email_code_expiration = Column(
+        StringEncryptedType(
+            DateTime(timezone=True),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     password = Column(String, nullable=False) #
     password_reset_code = Column(
         StringEncryptedType(
