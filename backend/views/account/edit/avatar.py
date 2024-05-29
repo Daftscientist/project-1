@@ -12,6 +12,7 @@ from core.authentication import protected
 from core.responses import success
 from database.dals.user_dal import UsersDAL
 from database import db
+from core.general import inject_cached_user
 
 URL_REGEX = re.compile(
     r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}"
@@ -28,8 +29,9 @@ class UpdateAvatarView(HTTPMethodView):
 
     @staticmethod
     @protected
+    @inject_cached_user()
     @parse_params(body=UpdateAvatarRequest)
-    async def post(request: Request, params: UpdateAvatarRequest):
+    async def post(request: Request, user, params: UpdateAvatarRequest):
         """
         Update the avatar of the user.
 
@@ -43,7 +45,6 @@ class UpdateAvatarView(HTTPMethodView):
         Returns:
             Response: The response object indicating the success of the operation.
         """
-        user = await request.app.ctx.cache.get(request)
         cache = request.app.ctx.cache
 
         if not URL_REGEX.fullmatch(params.new_avatar):

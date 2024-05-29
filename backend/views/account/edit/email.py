@@ -6,6 +6,7 @@ from sanic import Request, BadRequest
 from core.authentication import protected
 from sanic_dantic import parse_params, BaseModel
 from database import db
+from core.general import inject_cached_user
 
 EMAIL_REGEX = re.compile(r"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$")
 
@@ -21,10 +22,10 @@ class UpdateEmailView(HTTPMethodView):
 
     @staticmethod
     @protected
+    @inject_cached_user()
     @parse_params(body=UpdateEmailRequest)
-    async def post(request: Request, params: UpdateEmailRequest):
+    async def post(request: Request, user, params: UpdateEmailRequest):
         """The update email route."""
-        user = await request.app.ctx.cache.get(request)
         cache = request.app.ctx.cache
 
         ## check validity of email

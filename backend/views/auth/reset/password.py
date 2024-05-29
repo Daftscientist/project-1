@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import re
 import uuid
 from sanic.views import HTTPMethodView
@@ -35,8 +36,10 @@ class ResetPasswordView(HTTPMethodView):
                 user = await users_dal.get_user_by_email(params.email)
                 if not user:
                     raise BadRequest("Account does not exist.")
-                
-                users_dal.update_user(uuid=user.uuid, password_reset_code=uuid.uuid4())
+
+                expire_time = datetime.now() + timedelta(seconds=request.app.ctx.config["core"]["password_reset_code_expiry"])
+
+                users_dal.update_user(uuid=user.uuid, password_reset_code=uuid.uuid4(), password_reset_code_expiration=expire_time)
 
                 ## send the email
                 send_password_reset_email(request, user)

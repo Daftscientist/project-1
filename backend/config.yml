@@ -46,6 +46,7 @@ core:
   cookie_algorithm: 'HS256' # - Algorithm used to sign cookies
   default_avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' # - Default avatar URL for new users
   password_min_length: 8 # - Minimum length of a users password
+  password_reset_code_expiry: 18000 # - Amount of time a password reset code will last for (in seconds)
 oauth:
   discord:
     enabled: false # - Enable Discord OAuth

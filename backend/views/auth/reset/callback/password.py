@@ -1,3 +1,4 @@
+from datetime import datetime
 from sanic.views import HTTPMethodView
 from sanic import BadRequest, Request
 from core.cookies import check_if_cookie_is_present
@@ -40,10 +41,14 @@ class ResetPasswordCallbackView(HTTPMethodView):
                 if not user:
                     raise BadRequest("Invalid password reset code.", status_code=400)
                 
+                if user.password_reset_code_expiration < datetime.now():
+                    raise BadRequest("Password reset code has expired.", status_code=400)
+
                 await users_dal.update_user(
                     uuid=user.uuid,
-                    password_reset_code=None, 
+                    password_reset_code=None,
+                    password_reset_code_expiration=None,
                     password=await encoder.hash_password(params.new_password.encode('utf-8'))
                 )
 
-                return await success(request, "Password reset code is valid.")
+                return await success(request, "Password reset code is valid, password updated successfully.")

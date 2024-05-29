@@ -105,7 +105,8 @@ class UsersDAL():
             email_verified: Optional[bool] = None,
             email_verification_code: Optional[int] = None,
             password: Optional[str] = None,
-            password_reset_code: Optional[int] = None,
+            password_reset_code: Optional[str] = None,
+            password_reset_code_expiration: Optional[datetime.datetime] = None,
             avatar: Optional[str] = None,
             last_login: Optional[datetime.datetime] = None,
             latest_ip: Optional[str] = None,
@@ -152,6 +153,8 @@ class UsersDAL():
             q = q.values(password=password)
         if password_reset_code:
             q = q.values(password_reset_code=password_reset_code)
+        if password_reset_code_expiration:
+            q = q.values(password_reset_code_expiration=password_reset_code_expiration)
         if avatar:
             q = q.values(avatar=avatar)
         if last_login:

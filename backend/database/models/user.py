@@ -94,6 +94,13 @@ class User(Base):
             AesEngine
         ), nullable=True, default=None
     )
+    password_reset_code_expiration = Column(
+        StringEncryptedType(
+            DateTime(timezone=True),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     avatar = Column(
         StringEncryptedType( ## future-proofing with string storage of encrypted data
             String,

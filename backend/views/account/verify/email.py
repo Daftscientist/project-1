@@ -4,17 +4,19 @@ from core.responses import success
 from database.dals.user_dal import UsersDAL
 from database import db
 from core.authentication import protected
+from core.general import inject_cached_user
 
 class VerifyEmailView(HTTPMethodView):
     """The get user view."""
 
     @staticmethod
     @protected
-    async def get(request: Request, identifier: str):
+    @inject_cached_user()
+    async def get(request: Request, user, identifier: str):
         """The email verification route."""
         cache = request.app.ctx.cache
 
-        user_info = await cache.get_user(request)
+        user_info = user
 
         if user_info.email_verified:
             raise BadRequest("Email already verified.", status_code=400)
