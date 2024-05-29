@@ -6,6 +6,7 @@ from core.authentication import protected
 from sanic_dantic import parse_params, BaseModel
 from database import db
 from core.encoder import hash_password, check_password
+from core.general import inject_cached_user
 
 
 class UpdatePasswordView(HTTPMethodView):
@@ -20,10 +21,10 @@ class UpdatePasswordView(HTTPMethodView):
 
     @staticmethod
     @protected
+    @inject_cached_user()
     @parse_params(body=UpdatePasswordRequest)
-    async def post(request: Request, params: UpdatePasswordRequest):
+    async def post(request: Request, user, params: UpdatePasswordRequest):
         """The update password route."""
-        user = await request.app.ctx.cache.get(request)
 
         if len(params.new_password) < 8:
             raise BadRequest("Password must be at least 8 characters long.")

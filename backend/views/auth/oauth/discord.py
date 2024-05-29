@@ -7,7 +7,6 @@ class DiscordOauthView(HTTPMethodView):
     """The discord oauth view."""
 
     @staticmethod
-    @protected
     async def get(request: Request):
         """ The discord oauth route. """
 

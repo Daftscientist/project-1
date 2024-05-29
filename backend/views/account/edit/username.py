@@ -18,9 +18,8 @@ class UpdateUsernameView(HTTPMethodView):
     @staticmethod
     @protected
     @parse_params(body=UpdateUsernameRequest)
-    async def post(request: Request, params: UpdateUsernameRequest):
+    async def post(request: Request, user, params: UpdateUsernameRequest):
         """The update username route."""
-        user = await request.app.ctx.cache.get(request)
         cache = request.app.ctx.cache
 
         ## check validity of email

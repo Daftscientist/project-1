@@ -4,15 +4,16 @@ from sanic.views import HTTPMethodView
 from sanic import Request, BadRequest
 from core.authentication import protected
 from core.general import fix_dict
+from core.general import inject_cached_user
 
 class GetActiveSessionsView(HTTPMethodView):
     """The get active sessions view."""
 
     @staticmethod
     @protected
-    async def post(request: Request):
+    @inject_cached_user()
+    async def post(request: Request, user):
         """The get active sessions route."""
-        user = await request.app.ctx.cache.get(request)
         
         sessions = await request.app.ctx.session.cocurrent_sessions(user.uuid)
 
