@@ -33,6 +33,7 @@ def send_cookie(request: Request, message:str, data: dict):
         httponly=request.app.ctx.config['session']['cookie_secure'],
         ## max age 4 weeks
         max_age=request.app.ctx.config['session']['session_max_age'],
+        path="/"
     )
     return response
 

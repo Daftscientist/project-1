@@ -3,7 +3,7 @@ import re
 import time
 from sanic import Sanic
 from sanic_dantic import parse_params, BaseModel
-from backend.database.dals.mfa_backup_codes_dal import Mfa_backup_codes_DAL
+from database.dals.mfa_backup_codes_dal import Mfa_backup_codes_DAL
 from core.responses import success
 from sanic import Request, BadRequest
 from sanic.views import HTTPMethodView

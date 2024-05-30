@@ -62,20 +62,6 @@ def protected(myfunc):
         Unauthorized: If authentication is required.
     """
     async def wrapper_func(request, *args, **kwargs):
-        """ 
-        Wrapper for routes to check if authentication is present. 
-
-        Args:
-            request: The request object.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-
-        Raises:
-            Unauthorized: If authentication is required.
-
-        Returns:
-            The response from the wrapped function.
-        """
         is_authenticated = await check_authorization(request)
         if not is_authenticated:
             raise Unauthorized("Authentication required.")

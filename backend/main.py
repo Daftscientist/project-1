@@ -1,6 +1,7 @@
 import os
 import uuid
 import sanic
+from sanic_cors import CORS
 import routes
 from database import db
 from errors import custom_handler
@@ -20,11 +21,19 @@ from core.oauth import discord as discord_oauth_handler
 app = sanic.Sanic("backend", env_prefix='APPLICATION_CONFIG_')
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 
-app.config.CORS_ORIGINS = "http://127.0.0.1:5173"
-app.config.CORS_SUPPORTS_CREDENTIALS = True
-app.config.CORS_ALLOW_HEADERS = ["Content-Type", "Authorization"]
+CORS(
+    app, automatic_options=True, allow_headers="*",
+    resources={
+        r"/*": {
+            "origins": [
+                "http://127.0.0.1:5173",
+                "http://localhost:5173"  # Add this line
+            ]
+        }
+    },
+    supports_credentials=True
+)
 Extend(app) 
-
 
 @app.before_server_start
 async def main_start(app, loop):
