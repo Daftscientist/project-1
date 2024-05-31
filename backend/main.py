@@ -22,18 +22,29 @@ app = sanic.Sanic("backend", env_prefix='APPLICATION_CONFIG_')
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 
 CORS(
-    app, automatic_options=True, allow_headers="*",
+    app, automatic_options=True, allow_headers="application/json", expose_headers="application/json",
     resources={
         r"/*": {
             "origins": [
+                "http://localhost:5173/",
+                "http://localhost:5173",
+                "http://127.0.0.1:5173/",
                 "http://127.0.0.1:5173",
-                "http://localhost:5173"  # Add this line
+                "127.0.0.1:5173",
+                "localhost:5173",
             ]
         }
     },
     supports_credentials=True
 )
 Extend(app) 
+
+@app.middleware('response')
+async def set_cors(request, response):
+    response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:5173"
+    response.headers["Access-Control-Allow-Headers"] = "application/json"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
 
 @app.before_server_start
 async def main_start(app, loop):
@@ -103,5 +114,10 @@ for index_version, api_routes in enumerate(routes.routes):
                 version=index_version + 1, 
                 version_prefix=config["routing"]["context_path"] + "/v"
             )
+
+# serve static files without overriding the predefined routes above
+app.static("/", "./static")
+## serve them
+
 
 # disable access log

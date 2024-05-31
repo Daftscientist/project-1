@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900">
+    <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">User information:</h2>
+    <ul id="data" class="max-w-md space-y-1 text-gray-500 list-disc list-inside text-gray-200">
+        
+    </ul>
+
+    <script>
+        const url = "/api/v1/account/get";
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.withCredentials = true;
+        xhr.onreadystatechange = function() {
+            if (xhr.status == 200) {
+                const data = JSON.parse(xhr.responseText).result;
+                for (const key in data) {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<b>${key}</b>: ${data[key]}`;
+                    document.getElementById("data").appendChild(li);
+                }
+            } else {
+                window.location.href = "/login.html";
+            }
+        }
+        xhr.send();
+    </script>    
+</body>
+</html>
