@@ -33,77 +33,44 @@ class SessionManager:
                     uuid TEXT,
                     creation_ip TEXT,                
                     expiry INTEGER,
-                    discord_oauth_token BLOB DEFAULT NULL,
-                    discord_oauth_state TEXT DEFAULT NULL,
+                    authenticating_currently_using_two_factor_authentication BOOLEAN DEFAULT FALSE,
                     created_at INTEGER DEFAULT (strftime('%s', 'now'))
                 )
             ''')
             await db.commit()
             await self.session_cleanup()
 
-    async def set_users_discord_oauth_state(self, user_uuid: str, state: str) -> None:
+    async def change_twofactor_auth_state(self, session_token: str, state: bool) -> None:
         """
-        Sets the Discord OAuth state for a user.
+        Changes the two-factor authentication state of a session.
 
         Args:
-            user_uuid (str): The UUID of the user.
-            state (str): The OAuth state.
+            session_token (str): The session token.
+            state (bool): The new two-factor authentication state.
         """
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
-                'UPDATE Sessions SET discord_oauth_state = ? WHERE uuid = ?',
-                (state, user_uuid)
+                'UPDATE Sessions SET authenticating_currently_using_two_factor_authentication = ? WHERE session_token = ?',
+                (state, session_token)
             )
             await db.commit()
     
-    async def get_users_discord_oauth_state(self, user_uuid: str) -> str:
+    async def get_twofactor_auth_state(self, session_token: str) -> bool:
         """
-        Returns the Discord OAuth state for a user.
+        Returns the two-factor authentication state of a session.
 
         Args:
-            user_uuid (str): The UUID of the user.
+            session_token (str): The session token.
 
         Returns:
-            str: The OAuth state.
+            bool: True if the session is currently authenticating using two-factor authentication, False otherwise.
         """
         async with aiosqlite.connect(self.db_path) as db:
-            async with db.execute('SELECT discord_oauth_state FROM Sessions WHERE uuid = ?', (user_uuid,)) as cursor:
-                return await cursor.fetchone()
-    
-    async def set_users_discord_oauth_token(self, user_uuid: str, token: dict) -> None:
-        """
-        Sets the Discord OAuth token for a user.
-
-        Args:
-            user_uuid (str): The UUID of the user.
-            token (dict): The OAuth token.
-        """
-
-        fixed_token = pickle.dumps(token, 0)
-
-        async with aiosqlite.connect(self.db_path) as db:
-            await db.execute(
-                'UPDATE Sessions SET discord_oauth_token = ? WHERE uuid = ?',
-                (fixed_token, user_uuid)
-            )
-            await db.commit()
-    
-    async def get_users_discord_oauth_token(self, user_uuid: str) -> dict:
-        """
-        Returns the Discord OAuth token for a user.
-
-        Args:
-            user_uuid (str): The UUID of the user.
-
-        Returns:
-            dict: The OAuth token.
-        """
-        async with aiosqlite.connect(self.db_path) as db:
-            async with db.execute('SELECT discord_oauth_token FROM Sessions WHERE uuid = ?', (user_uuid,)) as cursor:
+            async with db.execute('SELECT authenticating_currently_using_two_factor_authentication FROM Sessions WHERE session_token = ?', (session_token,)) as cursor:
                 row = await cursor.fetchone()
                 if row is not None:
-                    return pickle.loads(row[0])
-                return None
+                    return row[0]
+                return False
 
     async def get_all_users(self) -> list[str]:
         """

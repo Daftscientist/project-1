@@ -59,4 +59,8 @@ class EmailAuthenticationCallbackView(HTTPMethodView):
                     await users_dal.get_user_by_uuid(uuid)
                 )
                 
-                return send_cookie(request, "Logged in successfully.", {"session_id": session_id})
+                if user_info.two_factor_authentication_enabled is True & request.app.ctx.config["2fa"]["enabled"] is True:
+                    await request.app.ctx.session.change_twofactor_auth_state(session_id, True)
+                    return send_cookie(request, "Logged in successfully. Your access is limited until you confirm your 2fa code.", {"session_id": session_id})
+                else:
+                    return send_cookie(request, "Logged in successfully.", {"session_id": session_id})

@@ -195,7 +195,7 @@ class User(Base):
             name=self.uuid, issuer_name=config_data["2fa"]["issuer_name"]
         )
     
-    def verify_two_factor_auth(self, user_otp):
+    def verify_two_factor_auth(self, user_otp:str):
             """
             Verifies the user's one-time password (OTP) for two-factor authentication.
 

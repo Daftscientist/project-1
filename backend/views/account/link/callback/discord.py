@@ -53,6 +53,7 @@ class DiscordOauthLinkCallbackView(HTTPMethodView):
         _id = discord_user_info.get("id")
         _hash = discord_user_info.get("avatar")
         _verified = discord_user_info.get("verified")
+        mfa_enabled = discord_user_info.get("mfa_enabled")
 
         if email is None or _id is None:
             raise BadRequest("Failed to fetch discord account information.")

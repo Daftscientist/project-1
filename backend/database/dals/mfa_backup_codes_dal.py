@@ -65,6 +65,10 @@ class Mfa_backup_codes_DAL():
         Args:
             owner_uuid: The UUID of the user to delete the backup codes for.
         """
+        ## check if the user exists
+        if not self.db_session.execute(select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid)).scalar():
+            return False
+
         q = select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid)
         self.db_session.execute(q).delete()
         self.db_session.commit()

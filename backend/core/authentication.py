@@ -3,8 +3,12 @@
 This module provides functions for authentication and authorization in the application.
 """
 
-from sanic import Unauthorized, Request
+from sanic import BadRequest, Unauthorized, Request
 import jwt
+import sanic
+import sanic.request
+
+from core.cookies import get_session_id
 
 def check_for_cookie(request):
     """
@@ -61,7 +65,35 @@ def protected(myfunc):
     Raises:
         Unauthorized: If authentication is required.
     """
-    async def wrapper_func(request, *args, **kwargs):
+    async def wrapper_func(request: sanic.Request, *args, **kwargs):
+
+        is_authenticated = await check_authorization(request)
+        if not is_authenticated:
+            raise Unauthorized("Authentication required.")
+
+        if request.app.ctx.config["2fa"]["enabled"] is True:
+            session_id = get_session_id(request)
+            if request.app.ctx.session.get_twofactor_auth_state(session_id) is True:
+                raise Unauthorized("Two-factor authentication verification required prior to accessing any protected routes.")
+
+        response = await myfunc(request, *args, **kwargs)
+        return response
+    return wrapper_func
+
+def protected_skip_2fa(myfunc):
+    """
+    Decorator function to protect routes by checking if authentication is present and skip 2FA.
+
+    Args:
+        myfunc: The function to be wrapped.
+
+    Returns:
+        The wrapped function.
+
+    Raises:
+        Unauthorized: If authentication is required.
+    """
+    async def wrapper_func(request: sanic.Request, *args, **kwargs):
         is_authenticated = await check_authorization(request)
         if not is_authenticated:
             raise Unauthorized("Authentication required.")

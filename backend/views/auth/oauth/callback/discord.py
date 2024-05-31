@@ -56,11 +56,13 @@ class DiscordOauthCallbackView(HTTPMethodView):
             discord_user_info = details.json()
         except Exception:
             raise BadRequest("Failed to fetch discord account information.")
-
+        print(discord_user_info)
         email = discord_user_info.get("email")
         _id = discord_user_info.get("id")
         _hash = discord_user_info.get("avatar")
         _verified = discord_user_info.get("verified")
+        mfa_enabled = discord_user_info.get("mfa_enabled")
+
 
         if email is None or _id is None:
             raise BadRequest("Failed to fetch discord account information.")
@@ -95,13 +97,18 @@ class DiscordOauthCallbackView(HTTPMethodView):
                 await request.app.ctx.session.add(session_id, uuid, user_ip, time.time() + request.app.ctx.SESSION_EXPIRY_IN)
                 if not len(await request.app.ctx.session.cocurrent_sessions(user_info.uuid)) > 1:
                     await request.app.ctx.cache.update(user_info)
+
                 await users_dal.update_user(uuid=uuid, last_login=last_login, latest_ip=user_ip)
 
-                request.app.ctx.cache.update(
+                await request.app.ctx.cache.update(
                     await users_dal.get_user_by_uuid(uuid)
                 )
 
-                response = send_cookie(request, "Logged in successfully.", {"session_id": session_id})
+                if user_info.two_factor_authentication_enabled is True & mfa_enabled != True & request.app.ctx.config["2fa"]["enabled"] is True:
+                    await request.app.ctx.session.change_twofactor_auth_state(session_id, True)
+                    response = send_cookie(request, "Logged in successfully. Your access is limited until you confirm your 2fa code.", {"session_id": session_id})
+                else:
+                    response = send_cookie(request, "Logged in successfully.", {"session_id": session_id})
 
                 ## delete the cookie
                 response = del_oauth_cookie(response, "discord_oauth")
