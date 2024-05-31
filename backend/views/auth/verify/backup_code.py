@@ -22,7 +22,7 @@ class BackupCodeVerificationView(HTTPMethodView):
     @protected_skip_2fa
     @inject_cached_user()
     @parse_params(body=BackupCodeVerificationRequest)
-    async def post(self, request: Request, user, params: BackupCodeVerificationRequest):
+    async def post(request: Request, user, params: BackupCodeVerificationRequest):
         """ The verify two factor authentication backup code route. """
         app = request.app
         session = app.ctx.session

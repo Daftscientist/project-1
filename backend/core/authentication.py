@@ -94,6 +94,9 @@ def protected_skip_2fa(myfunc):
         Unauthorized: If authentication is required.
     """
     async def wrapper_func(request: sanic.Request, *args, **kwargs):
+        if not isinstance(request, sanic.Request):
+            raise TypeError("Expected request to be an instance of sanic.Request")
+
         is_authenticated = await check_authorization(request)
         if not is_authenticated:
             raise Unauthorized("Authentication required.")

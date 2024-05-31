@@ -68,8 +68,11 @@ class SessionManager:
         async with aiosqlite.connect(self.db_path) as db:
             async with db.execute('SELECT authenticating_currently_using_two_factor_authentication FROM Sessions WHERE session_token = ?', (session_token,)) as cursor:
                 row = await cursor.fetchone()
+                print(row)
                 if row is not None:
-                    return row[0]
+                    if row[0] == 1:
+                        return True
+                    return False
                 return False
 
     async def get_all_users(self) -> list[str]:

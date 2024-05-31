@@ -1,3 +1,5 @@
+from views.auth.verify.backup_code import BackupCodeVerificationView
+from views.auth.verify.otp_code import TwoFaVerifyLoginView
 from views.account.disable.two_factor_authentication import DisableTwoFaView
 from views.account.enable.two_factor_authentication import TwoFaSetupView
 from views.account.verify.two_factor_authentication import TwoFaSetupVerificationView
@@ -31,6 +33,10 @@ routes = [
         ["/auth/reset/password", ResetPasswordView],
         ["/auth/oauth/discord", DiscordOauthView],
         ["/auth/oauth/email/", EmailAuthenticationView],
+
+        # --- Authentication Verify ---
+        ["/auth/verify/backup-code", BackupCodeVerificationView],
+        ["/auth/verify/otp-code", TwoFaVerifyLoginView],
 
         # --- Account --- 
         ["/account/get", GetUserView],

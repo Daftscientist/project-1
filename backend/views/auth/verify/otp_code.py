@@ -17,18 +17,19 @@ class TwoFaVerifyLoginView(HTTPMethodView):
 
         otp_code: str
 
+    @staticmethod
     @protected_skip_2fa
     @inject_cached_user()
     @parse_params(body=TwoFaVerifyLoginRequest)
-    async def post(self, request: Request, user, params: TwoFaVerifyLoginRequest):
+    async def post(request: Request, user, params: TwoFaVerifyLoginRequest):
         """ The verify two factor authentication route. """
         app = request.app
-        session = app.ctx.session
+        internal_session = app.ctx.session
 
         if not request.app.ctx.config["2fa"]["enabled"]:
             raise BadRequest("Two-factor authentication is not enabled on this server.")
 
-        if not session.get_twofactor_auth_state(get_session_id(request)):
+        if not internal_session.get_twofactor_auth_state(get_session_id(request)):
             raise BadRequest("You are not required to verify two-factor authentication.")
 
         if not user.two_factor_authentication_enabled:
@@ -48,6 +49,6 @@ class TwoFaVerifyLoginView(HTTPMethodView):
                 
                 ## done with checking - now remove the 2fa state
 
-                await session.change_twofactor_auth_state(get_session_id(request), False)
+                await internal_session.change_twofactor_auth_state(get_session_id(request), False)
 
         return await success(request, "Two-factor authentication verified.")
