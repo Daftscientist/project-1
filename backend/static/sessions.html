@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900">
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Creation IP
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Created At
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Expires At
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Delete
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="fill_here">
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const url = "/api/v1/account/session/get/all";
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.withCredentials = true;
+        xhr.onreadystatechange = function() {
+            if (xhr.status == 200) {
+                const data = JSON.parse(xhr.responseText).result;
+                console.log(data)
+                // iterate over the data and append it to the table
+                for (let i = 0; i < data.length; i++) {
+                    const row = document.createElement("tr");
+                    row.classList.add("bg-white", "border-b", "dark:bg-gray-800", "dark:border-gray-700");
+                    const ip = document.createElement("th");
+                    ip.className = "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white";
+                    ip.innerText = data[i].creation_ip;
+                    row.appendChild(ip);
+
+                    const created_at = document.createElement("td");
+                    created_at.className = "px-6 py-4 whitespace-nowrap";
+                    created_at.innerText = new Date(data[i].created_at).toUTCString();
+                    row.appendChild(created_at);
+
+                    const expires_at = document.createElement("td");
+                    expires_at.className = "px-6 py-4 whitespace-nowrap";
+                    expires_at.innerText = new Date(data[i].expiry).toUTCString();
+                    row.appendChild(expires_at);
+
+                    const delete_button = document.createElement("td");
+                    delete_button.className = "px-6 py-4 whitespace-nowrap";
+                    const button = document.createElement("button");
+                    button.className = "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded";
+                    button.innerText = "Delete";
+                    button.onclick = function() {
+                        const xhr2 = new XMLHttpRequest();
+                        xhr2.open("POST", "/api/v1/account/session/delete", true);
+                        xhr2.withCredentials = true;
+                        xhr2.setRequestHeader("Content-Type", "application/json");
+                        xhr2.onreadystatechange = function() {
+                            if (xhr2.status == 200) {
+                                row.remove();
+                            }
+                        }
+                        xhr2.send(JSON.stringify({session_id: data[i].session_token}));
+                    }
+                    delete_button.appendChild(button);
+                    row.appendChild(delete_button);
+
+                    document.getElementById("fill_here").appendChild(row);
+                }
+            } else {
+                window.location.href = "/login.html";
+            }
+        }
+        xhr.send();
+
+        // make request to the /api/v1/auth/oauth/discord route to check that it doesnt error
+        /*const xhr2 = new XMLHttpRequest();
+        xhr2.withCredentials = true;
+        xhr2.open("GET", "/api/v1/account/link/discord", true);
+        xhr2.onreadystatechange = function() {
+            if (xhr2.status != 200) {
+                document.getElementById("discord_oauth_button").style.display = "none";
+            }
+        }
+        xhr2.send();*/
+
+    </script>    
+</body>
+</html>

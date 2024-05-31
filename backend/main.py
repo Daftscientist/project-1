@@ -21,6 +21,8 @@ from core.oauth import discord as discord_oauth_handler
 app = sanic.Sanic("backend", env_prefix='APPLICATION_CONFIG_')
 app.config.FALLBACK_ERROR_FORMAT = "auto"
 
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 CORS(
     app, automatic_options=True, allow_headers="application/json", expose_headers="application/json",
     resources={

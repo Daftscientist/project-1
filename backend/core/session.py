@@ -1,6 +1,7 @@
 """
 This module provides functionality for managing sessions.
 """
+import pickle
 import uuid
 import time
 import aiosqlite
@@ -32,11 +33,77 @@ class SessionManager:
                     uuid TEXT,
                     creation_ip TEXT,                
                     expiry INTEGER,
+                    discord_oauth_token BLOB DEFAULT NULL,
+                    discord_oauth_state TEXT DEFAULT NULL,
                     created_at INTEGER DEFAULT (strftime('%s', 'now'))
                 )
             ''')
             await db.commit()
             await self.session_cleanup()
+
+    async def set_users_discord_oauth_state(self, user_uuid: str, state: str) -> None:
+        """
+        Sets the Discord OAuth state for a user.
+
+        Args:
+            user_uuid (str): The UUID of the user.
+            state (str): The OAuth state.
+        """
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                'UPDATE Sessions SET discord_oauth_state = ? WHERE uuid = ?',
+                (state, user_uuid)
+            )
+            await db.commit()
+    
+    async def get_users_discord_oauth_state(self, user_uuid: str) -> str:
+        """
+        Returns the Discord OAuth state for a user.
+
+        Args:
+            user_uuid (str): The UUID of the user.
+
+        Returns:
+            str: The OAuth state.
+        """
+        async with aiosqlite.connect(self.db_path) as db:
+            async with db.execute('SELECT discord_oauth_state FROM Sessions WHERE uuid = ?', (user_uuid,)) as cursor:
+                return await cursor.fetchone()
+    
+    async def set_users_discord_oauth_token(self, user_uuid: str, token: dict) -> None:
+        """
+        Sets the Discord OAuth token for a user.
+
+        Args:
+            user_uuid (str): The UUID of the user.
+            token (dict): The OAuth token.
+        """
+
+        fixed_token = pickle.dumps(token, 0)
+
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                'UPDATE Sessions SET discord_oauth_token = ? WHERE uuid = ?',
+                (fixed_token, user_uuid)
+            )
+            await db.commit()
+    
+    async def get_users_discord_oauth_token(self, user_uuid: str) -> dict:
+        """
+        Returns the Discord OAuth token for a user.
+
+        Args:
+            user_uuid (str): The UUID of the user.
+
+        Returns:
+            dict: The OAuth token.
+        """
+        async with aiosqlite.connect(self.db_path) as db:
+            async with db.execute('SELECT discord_oauth_token FROM Sessions WHERE uuid = ?', (user_uuid,)) as cursor:
+                row = await cursor.fetchone()
+                if row is not None:
+                    return pickle.loads(row[0])
+                return None
 
     async def get_all_users(self) -> list[str]:
         """

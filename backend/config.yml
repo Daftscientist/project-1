@@ -15,6 +15,7 @@ session:
   session_max_age: 604800 # - Amount of time a session will last for (in seconds)
   session_cleanup_interval: 3600 # - Clear expired sessions every hour
   cookie_secure: true # - Only send cookies over HTTPS
+  cookie_http_only: true # - Disallow JavaScript from accessing cookies
 2fa:
   enabled: true # - Allow users to choose to enable 2FA
   forced: false # - Force users to enable 2FA
@@ -66,10 +67,10 @@ oauth:
     expiry: 1800 # - Amount of time an email OAuth code will last for (in seconds)
     # Further configuration for email OAuth in Email section
   discord:
-    enabled: false # - Enable Discord OAuth
+    enabled: true # - Enable Discord OAuth
     client_id: '' # - Discord OAuth client ID
     client_secret: '' # - Discord OAuth client secret
-    login_redirect_uri: 'http://localhost:8080/api/v1/auth/oauth/callback/discord' # - Redirect URI for logging in with Discord OAuth
-    link_redirect_uri: 'http://localhost:8080/api/v1/account/link/callback/discord' # - Redirect URI for linking Discord OAuth to a user account
+    login_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/auth/oauth/callback/discord' # - Redirect URI for logging in with Discord OAuth
+    link_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/account/link/callback/discord' # - Redirect URI for linking Discord OAuth to a user account
     scopes: ['identify', 'email'] # - Discord OAuth scopes
   
