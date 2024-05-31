@@ -188,11 +188,11 @@ class User(Base):
             str: The setup URI for two-factor authentication.
         """
         return pyotp.totp.TOTP(
-            s=self.secret_token,
+            s=self.two_factor_authentication_secret,
             interval=config_data["2fa"]["period"],
             digits=config_data["2fa"]["digits"],
         ).provisioning_uri(
-            name=self.uuid, issuer_name=config_data["2fa"]["issuer_name"]
+            name=str(self.uuid), issuer_name=config_data["2fa"]["issuer_name"]
         )
     
     def verify_two_factor_auth(self, user_otp:str):
@@ -205,5 +205,5 @@ class User(Base):
             Returns:
                 bool: True if the OTP is valid, False otherwise.
             """
-            totp = pyotp.parse_uri(self.get_authentication_setup_uri())
+            totp = pyotp.parse_uri(self.get_two_factor_auth_setup_uri())
             return totp.verify(user_otp)

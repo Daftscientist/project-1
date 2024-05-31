@@ -64,7 +64,7 @@ class CreateView(HTTPMethodView):
                     ip, ip
                 )
 
-                if not request.app.ctx.config["email"]["verification_email"]["enabled"]:
+                if not request.app.ctx.config["email"]["verification_email"]["enabled"]: ## fix to stay false
                     user = await users_dal.get_user_by_email(params.email)
                     await users_dal.update_user(email_verified=True, uuid=user.uuid, email_verification_code=None)
                 

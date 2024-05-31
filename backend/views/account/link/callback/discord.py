@@ -72,6 +72,10 @@ class DiscordOauthLinkCallbackView(HTTPMethodView):
                 if user.discord_account_identifier is not None:
                     raise BadRequest("Account is already linked to a discord account. Please unlink the account first.")
                 
+                ## check if discord id is already linked to an account
+                if await users_dal.get_user_by_discord_id(_id) is not None:
+                    raise BadRequest("Discord account is already linked to another account.")
+                
                 if user.avatar is None:
                     await users_dal.update_user(uuid=user.uuid, avatar=avatar)
 
@@ -86,7 +90,7 @@ class DiscordOauthLinkCallbackView(HTTPMethodView):
                         user.uuid
                     )
                 )
-                response = success("Successfully linked discord account.")
+                response = await success(request, "Successfully linked discord account.")
                 ## delete the cookie
                 response = del_oauth_cookie(response, "discord_oauth")
 

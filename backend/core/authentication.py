@@ -73,7 +73,7 @@ def protected(myfunc):
 
         if request.app.ctx.config["2fa"]["enabled"] is True:
             session_id = get_session_id(request)
-            if request.app.ctx.session.get_twofactor_auth_state(session_id) is True:
+            if await request.app.ctx.session.get_twofactor_auth_state(session_id) is True:
                 raise Unauthorized("Two-factor authentication verification required prior to accessing any protected routes.")
 
         response = await myfunc(request, *args, **kwargs)

@@ -37,7 +37,7 @@ class EmailAuthenticationView(HTTPMethodView):
                 users_dal = UsersDAL(session)
                 user = await users_dal.get_user_by_email(params.email)
                 if not user:
-                    return success(request, "Login email successfully sent.")
+                    return await success(request, "Login email successfully sent.")
                     ## This is here for security reasons, so that attackers cannot check if an email is registered or not.
                     ## The email is not registered, but we still send a success message to the user.
 
@@ -62,4 +62,4 @@ class EmailAuthenticationView(HTTPMethodView):
 
                 await send_login_email(request, cache.get(user.uuid))
 
-                return success(request, "Login email successfully sent.")
+                return await success(request, "Login email successfully sent.")

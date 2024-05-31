@@ -66,6 +66,6 @@ class BackupCodeVerificationView(HTTPMethodView):
                         generated_code = generate_backup_code(request.app.ctx.config["2fa"]["backup_code_length"])
                         data_to_return.append(generated_code)
                         await mfa_backup_codes_dal.create_backup_code(user.uuid, await encoder.hash_password(generated_code.encode('utf-8')))
-                    return success("Two-factor authentication verified. Your backup codes have been reset.", {"backup_codes": data_to_return})
+                    return await success(request, "Two-factor authentication verified. Your backup codes have been reset.", {"backup_codes": data_to_return})
 
-        return success("Two-factor authentication verified.")
+        return await success(request, "Two-factor authentication verified.")

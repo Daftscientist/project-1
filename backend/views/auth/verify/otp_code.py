@@ -50,4 +50,4 @@ class TwoFaVerifyLoginView(HTTPMethodView):
 
                 await session.change_twofactor_auth_state(get_session_id(request), False)
 
-        return success("Two-factor authentication verified.")
+        return await success(request, "Two-factor authentication verified.")

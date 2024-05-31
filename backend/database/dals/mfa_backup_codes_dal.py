@@ -4,7 +4,7 @@ This module contains the Mfa_backup_codes_DAL class for accessing server data.
 
 from typing import List, Optional
 
-from sqlalchemy import update
+from sqlalchemy import delete, update
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
@@ -28,7 +28,7 @@ class Mfa_backup_codes_DAL():
         """
         code = Mfa_backup_codes(owner_uuid=owner_uuid, code=code)
         self.db_session.add(code)
-        await self.db_session.commit()
+        await self.db_session.flush()
         return code
 
     async def get_users_codes(self, owner_uuid: int) -> List[Mfa_backup_codes]:
@@ -58,7 +58,7 @@ class Mfa_backup_codes_DAL():
         q = select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid, Mfa_backup_codes.code == code)
         return await self.db_session.execute(q).scalar()
 
-    def delete_users_codes(self, owner_uuid: int):
+    async def delete_users_codes(self, owner_uuid: int):
         """
         Delete all backup codes for the specified user.
 
@@ -66,13 +66,13 @@ class Mfa_backup_codes_DAL():
             owner_uuid: The UUID of the user to delete the backup codes for.
         """
         ## check if the user exists
-        if not self.db_session.execute(select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid)).scalar():
+        result = await self.db_session.execute(select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid))
+        if not result.scalar():
             return False
 
-        q = select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid)
-        self.db_session.execute(q).delete()
-        self.db_session.commit()
-        return True
+        q = delete(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid)
+        await self.db_session.execute(q)
+        await self.db_session.flush()
 
     async def delete_code(self, owner_uuid: int, code: str):
         """
@@ -83,7 +83,7 @@ class Mfa_backup_codes_DAL():
             code (str): The backup code to delete.
         """
         q = select(Mfa_backup_codes).where(Mfa_backup_codes.owner_uuid == owner_uuid, Mfa_backup_codes.code == code)
-        self.db_session.execute(q).delete()
-        self.db_session.commit()
+        await self.db_session.execute(q).delete()
+        await self.db_session.flush()
         return True
     
