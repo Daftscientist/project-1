@@ -1,11 +1,8 @@
 const SIDEBAR_CONTENT_URL = "pages/components/sidebar.html";
-const SIDEBAR_SCRIPT_URL = "pages/components/scripts/sidebar.js";
 
 async function get_sidebar_content() {
-    console.log("Fetching sidebar content")
     const res = await fetch(SIDEBAR_CONTENT_URL);
     const html = await res.text();
-    console.log("Fetched sidebar content")
     return html;
 }
 
@@ -83,7 +80,7 @@ class Route{
                 // add the sidebar script
                 const sidebar_script = document.createElement("script");
                 sidebar_script.id = "sidebar_script";
-                sidebar_script.src = SIDEBAR_SCRIPT_URL;
+                sidebar_script.src = this.js_file;
                 document.body.appendChild(sidebar_script);
             }
         };

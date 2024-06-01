@@ -31,12 +31,7 @@ function entry_point() {
         second_xhr.onreadystatechange = function () {
             if (second_xhr.status == 200) {
                 const data = JSON.parse(second_xhr.responseText);
-                if (data.status == "200") {
-                    alert("Two-factor authentication has been enabled successfully");
-                    window.changeUrl("dashboard");
-                } else {
-                    alert(data.message);
-                }
+                window.changeUrl("dashboard");
             }
         }
         // need to send two_factor_authentication_otp_code

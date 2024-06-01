@@ -1,18 +1,26 @@
 from sanic import Request, BadRequest, redirect
 from sanic.views import HTTPMethodView
+from core.responses import data_response
 from core.oauth.discord import DiscordOAuth
 from core.cookies import check_oauth_cookie_present, send_oauth_cookie
 from core.authentication import protected
 from core.general import restricted_to_verified
+from sanic_dantic import parse_params, BaseModel
 
 
 class DiscordOauthLinkingView(HTTPMethodView):
     """The discord oauth view."""
 
+    class DiscordOauthLinkingRequest(BaseModel):
+        """The delete sessions request model."""
+
+        rejoin_uri: str
+
     @staticmethod
     @protected
     @restricted_to_verified()
-    async def get(request: Request):
+    @parse_params(body=DiscordOauthLinkingRequest)
+    async def post(request: Request, params: DiscordOauthLinkingRequest):
         """ The discord oauth account linking route. """
 
         if not request.app.ctx.config["oauth"]["discord"]["enabled"]:
@@ -31,13 +39,14 @@ class DiscordOauthLinkingView(HTTPMethodView):
         login_info = client.get_login_url()
         redirect_uri = login_info[0]
 
-        response = redirect(redirect_uri)
+        response = await data_response(request, {"redirect_uri": redirect_uri})
         response = send_oauth_cookie(
             request=request,
             response=response, 
             identifier="discord_oauth",
             data={
-                "state": login_info[1]
+                "state": login_info[1],
+                "rejoin_uri": params.rejoin_uri
             }
         )
         return response

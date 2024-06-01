@@ -1,14 +1,20 @@
-function logout() {
-    const url = "/api/v1/auth/logout";
+function linkDiscord() {
+    const url = "/api/v1/account/link/discord";
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     xhr.withCredentials = true;
     xhr.onreadystatechange = function() {
         if (xhr.status == 200) {
-            window.changeUrl("login");
+            // redirect to the discord oauth page
+            window.location.href = JSON.parse(xhr.responseText).result.redirect_uri;
         }
     }
-    xhr.send();
+    xhr.send(
+        JSON.stringify({
+            "rejoin_uri": `${window.location.origin}/dashboard`
+        })
+    );
+
 }
 
 function entry_point(){

@@ -1,4 +1,4 @@
-from sanic import Request, BadRequest
+from sanic import Request, BadRequest, redirect
 from sanic.views import HTTPMethodView
 from core.responses import success
 from core.oauth.discord import DiscordOAuth
@@ -90,7 +90,7 @@ class DiscordOauthLinkCallbackView(HTTPMethodView):
                         user.uuid
                     )
                 )
-                response = await success(request, "Successfully linked discord account.")
+                response = redirect(get_oauth_cookie(request, "discord_oauth")["rejoin_uri"])
                 ## delete the cookie
                 response = del_oauth_cookie(response, "discord_oauth")
 

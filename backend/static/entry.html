@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Loading...</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+        .bg-gray-950 {
+            background-color: rgba(20, 30, 49, 1);
+        }
+
+        .grid-cols-15 {
+            grid-template-columns: repeat(15, minmax(0, 1fr));
+        }
+    </style>
 </head>
 <body class="h-page bg-gray-50 dark:bg-gray-900">
-    <!-- Your body content here -->
-
-    <!-- Move the script tag here -->
+    <!-- Script tag for the router -->
     <script src="pages/router.js"></script>
+    <!-- Setting the changeUrl function to be part of the wider scope -->
     <script>
         window.changeUrl = changeUrl;
     </script>
+    <!-- Page specific script tags inserted below -->
 </body>
 </html>
