@@ -1,0 +1,51 @@
+<section class="h-full bg-gray-50 dark:bg-gray-900">
+    <div class="flex items-center mb-2" id="sticky_banner">
+        <div class="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium" id="banner-content"></span> Change a few things up and try submitting again.
+        </div>
+    </div>
+    <div class="flex items-center mb-2" id="good_sticky_banner">
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            role="alert">
+            <span class="font-medium">Success</span> You were successfull in your request.
+        </div>
+    </div>
+    <form class="max-w-sm mx-auto" id="update_max_sessions">
+        <label for="number-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Maximum
+            concurrent sessions:</label>
+        <input type="number" id="number-input" aria-describedby="helper-text-explanation"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required />
+        <button type="submit"
+            class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Update</button>
+
+    </form>
+
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Creation IP
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Created At
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Expires At
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Delete
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="fill_here">
+
+            </tbody>
+        </table>
+    </div>
+    <button onclick="changeUrl('login');"
+        class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">
+        change to login page
+    </button>
+</section>

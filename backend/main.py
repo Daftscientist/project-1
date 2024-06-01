@@ -1,6 +1,7 @@
 import os
 import uuid
 import sanic
+import sanic.response
 from sanic_cors import CORS
 import routes
 from database import db
@@ -106,6 +107,12 @@ async def ticker(app, loop):
 
 # Sanic exceptions - https://github.com/sanic-org/sanic/blob/main/sanic/exceptions.py
 
+# add wildcard route to handle all requests and to serve static/entry.html
+@app.route("<route>", methods=["GET"])
+async def index(request, route):
+    print(route)
+    return await sanic.response.file("static/entry.html")
+
 for index_version, api_routes in enumerate(routes.routes):
     config = load_config("config.yml")
     if (index_version + 1) in config["routing"]["enabled_versions"]:
@@ -118,7 +125,7 @@ for index_version, api_routes in enumerate(routes.routes):
             )
 
 # serve static files without overriding the predefined routes above
-app.static("/", "./static")
+app.static("/pages/", "./static/pages/")
 ## serve them
 
 
