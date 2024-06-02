@@ -61,39 +61,38 @@ class Route{
         document.title = this.title;
 
         // remove the page script if it exists
-        if (document.getElementById("page_script")) {
+        if (document.getElementById("page_script") !== null) {
             document.getElementById("page_script").remove();
         }
 
-        if (!this.sidebar) {
+        if (!this.sidebar) { // if the route does not want a sidebar
             
             // remove the sidebar if it exists
-            if (document.getElementById("sidebar")){
+            if (document.getElementById("sidebar") !== null){
                 
                 document.getElementById("sidebar").remove();
             }
             // remove the sidebar script if it exists
-            if (document.getElementById("sidebar_script")) {
+            if (document.getElementById("sidebar_script") !== null) {
                 
                 document.getElementById("sidebar_script").remove();
             }
 
             // remove old content if it exists
-            if (document.getElementById("content") !== null && document.getElementById("content").nodeName === "MAIN"){
+            if (document.getElementById("content") !== null){
                 document.getElementById("content").remove();
-
-                // create a non-sidebar content div
             }
             const content = document.createElement("div");
             content.id = "content";
             document.body.appendChild(content);
-        } else {
+        } else { // route does want a sidebar
             
             // remove content if it exists
             if (document.getElementById("content") !== null){
-                if (document.getElementById("content").nodeName !== "MAIN"){
-                    console.log("removing content :))) it isnt MAIN")
-                    document.getElementById("content").remove();
+                if (document.getElementById("content").nodeName === "DIV") {
+                    document.getElementById("content").remove(); // the content had no sidebar previously
+                } else {
+                    document.getElementById("content").innerHTML = ""; // the content was inside a sidebar
                 }
             }
 
@@ -131,6 +130,9 @@ class Route{
                 }
             }
             
+            // clear content
+            document.getElementById("content").innerHTML = "";
+
         };
         
         // add the html content to the page
@@ -185,7 +187,7 @@ function changeUrl(url) {
     const new_url = routes[url] || false;
     if (new_url) {
         // if the current route is not the new route
-        if (currentRoute) {
+        if ((routes[window.location.pathname.replace("/", "")] || false) !== new_url) {
             // set the current route to false as we are moving to a new route
             currentRoute.current = false;
         }
@@ -212,7 +214,7 @@ window.onpopstate = async function(event) {
         const route = routes[event.state.route] || false;
         if (route) {
             
-            if (!currentRoute === route) {
+            if ((routes[window.location.pathname.replace("/", "")] || false) !== route) {
                 // set the current route to false as we are moving to a new route
                 currentRoute.current = false;
             }

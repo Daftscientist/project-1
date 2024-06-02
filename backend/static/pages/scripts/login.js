@@ -46,9 +46,9 @@ function entry_point() {
                 var changed_url = false
                 setTimeout(() => {
                     console.log("working")
-                    if (changed_url == false) {
+                    if (changed_url === false) {
                         changed_url = true
-                        window.changeUrl("dashboard");
+                        window.location.href = "/dashboard";
                     }
                     console.log("apparently not")
                 }, 2000);
