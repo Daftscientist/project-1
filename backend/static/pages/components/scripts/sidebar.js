@@ -5,7 +5,9 @@ function logout() {
     xhr.withCredentials = true;
     xhr.onreadystatechange = function() {
         if (xhr.status == 200) {
-            window.changeUrl("login");
+            if (JSON.parse(xhr.responseText).success) {
+                window.changeUrl("login")
+            }
         }
     }
     xhr.send();
