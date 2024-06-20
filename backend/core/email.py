@@ -1,6 +1,7 @@
 
 """
 This module contains the Email class for sending emails.
+pip install MailBuddy
 """
 # pylint: disable=import-error,no-name-in-module
 from email.mime.multipart import MIMEMultipart
