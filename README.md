@@ -8,6 +8,9 @@ A project to replace pterodactyl and be a showcase of my Python and React skills
 
 - This project does not follow Open Authorization specification. Read the documentation.
 
+## Works with ⛓️
+- This project works hand in hand with its [docker management daemon](https://github.com/Daftscientist/LittleWings)
+
 ## TODO
 | Done? | Idea |
 | --- | --- |
