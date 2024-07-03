@@ -21,6 +21,41 @@ class DaemonInteractor:
             }
         )
 
+    # ---- Daemon authentication config ----
+    async def get_auth_keys(self):
+        async with self.http_client.get('/daemon/auth') as response:
+            ## handle errors
+            response.raise_for_status()
+            return await response.json()
+    
+    async def new_auth_key(self, data: dict):
+        async with self.http_client.post('/daemon/auth', data=data) as response:
+            ## handle errors
+            response.raise_for_status()
+            return await response.json()
+    
+    async def delete_auth_key(self, key_id: str):
+        async with self.http_client.delete(f'/daemon/auth/{key_id}') as response:
+            ## handle errors
+            response.raise_for_status()
+            return await response.json()
+    
+    # ---- Daemon general config ----
+    async def get_daemon_config(self):
+        async with self.http_client.get('/daemon/manage') as response:
+            ## handle errors
+            response.raise_for_status()
+            return await response.json()
+    
+    async def edit_daemon_config(self, data: dict):
+        # {"config_values": {"key": "value"}}
+        # https://github.com/Daftscientist/LittleWings/blob/main/src/views.py#L12-L18
+        async with self.http_client.patch('/daemon/manage', data=data) as response:
+            ## handle errors
+            response.raise_for_status()
+            return await response.json()
+
+    # ---- Daemon server management ----
     async def create_server(self, data: dict):
         async with self.http_client.post('/server', data=data) as response:
             ## handle errors
