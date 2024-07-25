@@ -7,6 +7,16 @@ from dataclasses import dataclass
 
 @dataclass
 class IncusLimits:
+    """
+    This class is used to represent the limits of an instance.
+
+    Args:
+        cpu (int): The CPU limit.
+        memory (int): The memory limit.
+        disk (int): The disk limit.
+        swap (int): The swap limit.
+        io (int): The IO limit
+    """
     cpu: int
     memory: int
     disk: int
@@ -24,6 +34,20 @@ class IncusLimits:
 
 @dataclass
 class IncusInstance:
+    """
+    This class is used to represent an instance on a node.
+
+    Args:
+        instance_id (str): The ID of the instance.
+        name (str): The name of the instance.
+        description (str): The description of the instance.
+        owner_id (int): The ID of the owner of the instance.
+        limits (IncusLimits): The limits for the instance.
+        node_id (int): The ID of the node the instance is on.
+        status (str): The status of the instance.
+        ip (str): The IP address of the instance.
+        port (int): The port of the instance.
+    """
     instance_id: str
     name: str
     description: str
@@ -50,6 +74,13 @@ class IncusInstance:
     async def start(self, forced=False, timeout=0):
         """
         This function is used to start an instance.
+
+        Args:
+            forced (bool): Whether to force the stop.
+            timeout (int): The timeout for the stop.
+        
+        Returns:
+            dict: The response from the instance.
         """
 
         payload = {
@@ -66,6 +97,13 @@ class IncusInstance:
     async def stop(self, forced=False, timeout=0):
         """
         This function is used to stop an instance.
+
+        Args:
+            forced (bool): Whether to force the stop.
+            timeout (int): The timeout for the stop.
+        
+        Returns:
+            dict: The response from the instance.
         """
 
         payload = {
@@ -82,6 +120,13 @@ class IncusInstance:
     async def restart(self, forced=False, timeout=0):
         """
         This function is used to restart an instance.
+
+        Args:
+            forced (bool): Whether to force the restart.
+            timeout (int): The timeout for the restart.
+        
+        Returns:
+            dict: The response from the instance.
         """
 
         payload = {
@@ -132,6 +177,12 @@ class IncusInstance:
     async def execute_command(self, command: str|list):
         """
         This function is used to execute a command on an instance.
+
+        Args:
+            command (str|list): The command to execute.
+        
+        Returns:
+            dict: The response from the instance.
         """
 
         payload = {
@@ -155,6 +206,18 @@ class IncusInstance:
 
 @dataclass
 class IncusNode:
+    """
+    This class is used to represent a node.
+
+    Args:
+        node_id (int): The ID of the node.
+        name (str): The name of the node.
+        description (str): The description of the node.
+        location (str): The location of the node.
+        REST_endpoint_url (str): The REST endpoint URL of the node.
+        bearer (str): The bearer token for the node.
+        os_type (str): The OS type of the node.
+    """
     node_id: int
     name: str
     description: str
@@ -274,7 +337,7 @@ class IncusNode:
         This function is used to get all instances from the node.
 
         Returns:
-            list: A list of IncusInstance objects.
+            list: A list of incus instance internal URLs objects.
         """
 
         async with aiohttp.ClientSession() as session:
@@ -313,6 +376,9 @@ class ServerManager:
 
         Args:
             egg (str): The egg to convert.
+        
+        Returns:
+            str: The chicken (yaml config file).
         """
     
         # Define the structure for the output YAML
@@ -362,3 +428,4 @@ class ServerManager:
         
         # Return the node object
         return IncusNode(node)
+
