@@ -85,6 +85,34 @@ class UsersDAL():
 
         q = await self.db_session.execute(select(User).where(User.discord_account_identifier == discord_id))
         return q.scalars().first()
+    
+    async def get_user_by_google_id(self, google_id: str) -> User:
+        """
+        Retrieve a user from the database based on their google id.
+
+        Args:
+            id (str): The id of the user to retrieve.
+
+        Returns:
+            User: The user object corresponding to the given email, or None if no user is found.
+        """
+
+        q = await self.db_session.execute(select(User).where(User.google_account_identifier == google_id))
+        return q.scalars().first()
+    
+    async def get_user_by_github_id(self, github_id: str) -> User:
+        """
+        Retrieve a user from the database based on their github id.
+
+        Args:
+            id (str): The id of the user to retrieve.
+
+        Returns:
+            User: The user object corresponding to the given email, or None if no user is found.
+        """
+
+        q = await self.db_session.execute(select(User).where(User.github_account_identifier == github_id))
+        return q.scalars().first()
 
     async def get_user_by_email(self, email: str) -> User:
         """

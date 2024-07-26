@@ -161,6 +161,13 @@ class User(Base):
             AesEngine
         ), nullable=True, default=None
     )
+    github_account_identifier = Column(
+        StringEncryptedType(
+            String(255),
+            get_encryption_key(),
+            AesEngine
+        ), nullable=True, default=None
+    )
     two_factor_authentication_enabled = Column(Boolean, nullable=False, default=False)
     two_factor_authentication_secret = Column(
         StringEncryptedType(
