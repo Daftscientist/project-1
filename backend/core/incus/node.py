@@ -85,9 +85,11 @@ class IncusNode:
             },
         "profiles": ["default"],
         "config": {
-            "limits.cpu": "2",
-            "limits.memory": "2GB",
-            "limits.disk": "10GB",
+            "limits.cpu": limits.cpu,
+            "limits.memory": limits.memory,
+            "limits.disk": limits.disk,
+            "limits.swap": limits.swap,
+            "limits.io": limits.io,
             "volatile.metadata": json.dumps({
                 "name": name,
                 "description": description,

@@ -8,6 +8,8 @@ image: 'images:debian/12'
 
 type: 'VM'
 
+# No scripts are required for a VM, as the VM will be started with the image or iso specified above.
+
 env_variables:
   - name: 'API_KEY'
     value: '1234567890'

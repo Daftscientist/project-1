@@ -7,7 +7,7 @@ image: 'images:ubuntu/20.04'
 type: 'SYSTEM'
 
 scripts:
-  start: 'python3 main.py'
+  start: 'python3 main.py' # Can be specified, but is not required as could restrict functionality.
   install: 'pip install -r requirements.txt'
 
 env_variables:

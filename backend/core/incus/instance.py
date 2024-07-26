@@ -174,3 +174,30 @@ class IncusInstance:
             async with session.delete(f'{self.REST_endpoint_url}/instances/{self.instance_id}',
                                       headers=self.headers) as response:
                 return await response.json()
+    
+    async def update(self, name: str = None, description: str = None, owner_id = None, limits: IncusLimits = None):
+        if not name and not description and not limits:
+            raise ValueError('At least one of name, description, or limits must be provided.')
+        
+        payload = {}
+
+        if name:
+            payload['config']['volatile.metadata']['name'] = name
+        if description:
+            payload['config']['volatile.metadata']['description'] = description
+        if owner_id:
+            payload['config']['volatile.metadata']['owner_id'] = owner_id
+        
+        if limits:
+            for limit in limits.to_dict():
+                if not limit:
+                    continue
+                payload['config'][f'limits.{limit}'] = limits.to_dict()[limit]
+
+        async with aiohttp.ClientSession() as session:
+            async with session.put(f'{self.REST_endpoint_url}/instances/{self.instance_id}',
+                                   headers=self.headers, json=payload) as response:
+                return await response.json()
+    
+    async def create_backup():
+        pass

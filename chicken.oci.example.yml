@@ -4,10 +4,10 @@ description: 'A custom application container chicken, running python :D'
 author: 'contact@leojohnston.tech'
 image: 'python:3.8'
 
-type: 'OCI'
+type: 'OCI' ## OCI meaning the same as an Application Container or a Pterodactyl-esque container, with strict limits and startup commands.
 
 scripts:
-  start: 'python3 main.py'
+  start: 'python3 main.py' # Must be specified, as this is the command that will be run when the container starts.
   install: 'pip install -r requirements.txt'
 
 env_variables:
