@@ -13,6 +13,7 @@ from sqlalchemy import (
 )
 # pylint: disable=import-error
 from database.db import Base
+from sqlalchemy.orm import relationship
 
 class Server(Base):
     """
@@ -23,16 +24,15 @@ class Server(Base):
     identifier = Column(Integer, nullable=False, autoincrement=True)
     uuid = Column(Uuid, nullable=False, primary_key=True, default=uuid.uuid4())
     name = Column(String, nullable=False)
-    node_identifier = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
     updated_at = Column(DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
 
-    cpu_limit = Column(Integer, nullable=False)
-    memory_limit = Column(Integer, nullable=False)
-    disk_limit = Column(Integer, nullable=False)
-    swap_limit = Column(Integer, nullable=False, default=0)
-    io_limit = Column(Integer, nullable=False, default=0)
-    threads_limit = Column(Integer, nullable=False, default=0)
+    owner_uuid = Column(Uuid, nullable=False)
+    
+    subusers = relationship("Subuser", backref="server", primaryjoin="Server.uuid == Subuser.uuid")
+
+    node_uuid = Column(Uuid, nullable=False)
+    chicken_uuid = Column(Uuid, nullable=False)
 
     database_limit = Column(Integer, nullable=False, default=0)
     backups_limit = Column(Integer, nullable=False, default=0)
