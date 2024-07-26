@@ -19,12 +19,64 @@
     </style>
 </head>
 <body class="h-page bg-gray-50 dark:bg-gray-900">
-    <!-- Script tag for the router -->
-    <script src="pages/router.js"></script>
-    <!-- Setting the changeUrl function to be part of the wider scope -->
-    <script>
-        window.changeUrl = changeUrl;
+    <section id="entrypoint"></section>
+    <script type="module">
+        import { Route, Router } from 'https://leojohnston.tech/cdn/javascript-router/router.min.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const entryDOM = document.getElementById('entrypoint');
+
+            const route404 = new Route(
+                '/404', // route path
+                '/views/404.html', // html file path
+                '/js/404.js', // js file path
+                '404' // meta tag title
+            );
+
+            const loadingRoute = new Route(
+                '/loading', '/views/loading.html',
+                '', 'Loading...'
+            );
+
+            const router = new Router(
+                entryDOM, route404,
+                loadingRoute, "/"
+            )
+
+            const routes = [
+                new Route(
+                    '/', '/views/dashboard.html',
+                    '/scripts/dashboard.js', 'Dashboard'
+                ),
+                new Route(
+                    '/login', '/views/login.html',
+                    '/scripts/login.js', 'Login'
+                ),
+                new Route(
+                    '/create', '/views/create.html',
+                    '/scripts/create.js', 'Create'
+                ),
+                new Route(
+                    '/2fa-login', '/views/2fa-login.html',
+                    '/scripts/2fa-login.js', '2FA Login'
+                ),
+                new Route(
+                    '/twofa', '/views/twofa.html',
+                    '/scripts/twofa.js', '2FA'
+                ),
+                new Route(
+                    '/sessions', '/views/sessions.html',
+                    '/scripts/sessions.js', 'Sessions'
+                ),
+
+            ]
+            for (const route of routes) {
+                router.addRoute(route);
+            }
+            router.init();
+            window.myRouter = myRouter;
+        });
+
     </script>
-    <!-- Page specific script tags inserted below -->
 </body>
 </html>
