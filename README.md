@@ -94,7 +94,7 @@ Use `ctrl+c` to stop the backend running.
 ### Daemon Installation (Incus)
 Follow the instructions [here](https://linuxcontainers.org/incus/docs/main/installing/#installing) to install Incus on your linux server.
 
-Following [this](https://linuxcontainers.org/incus/docs/main/authentication/#using-json-web-token-jwt-to-perform-tls-authentication), you will (temporarily, till a custom wrapper is developed) follow the steps here to upload the JWT to the web panel.
+Following this, you will (temporarily, till a custom wrapper is developed) follow the steps [here](https://linuxcontainers.org/incus/docs/main/authentication/#using-json-web-token-jwt-to-perform-tls-authentication) to upload the JWT to the web panel.
 
 ### Development tips
 
