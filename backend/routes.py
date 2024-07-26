@@ -1,3 +1,5 @@
+from views.auth.oauth.callback.google import GoogleOauthCallbackView
+from views.auth.oauth.google import GoogleOauthView
 from views.auth.verify.backup_code import BackupCodeVerificationView
 from views.auth.verify.otp_code import TwoFaVerifyLoginView
 from views.account.disable.two_factor_authentication import DisableTwoFaView
@@ -32,6 +34,7 @@ routes = [
         ["/auth/logout", logout.LogoutView],
         ["/auth/reset/password", ResetPasswordView],
         ["/auth/oauth/discord", DiscordOauthView],
+        ["/auth/oauth/google", GoogleOauthView],
         ["/auth/oauth/email/", EmailAuthenticationView],
 
         # --- Authentication Verify ---
@@ -60,6 +63,7 @@ routes = [
 
         # --- Authentication Callback ---
         ["/auth/oauth/callback/discord", DiscordOauthCallbackView],
+        ["/auth/oauth/callback/google", GoogleOauthCallbackView],
         ["/auth/oauth/callback/email/<identifier>", EmailAuthenticationCallbackView],
         ["/auth/reset/callback/password", ResetPasswordCallbackView],
 
