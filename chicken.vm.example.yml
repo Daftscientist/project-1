@@ -3,7 +3,7 @@ version: '1.0.0'
 description: 'A custom VM chicken, running debian :D'
 author: 'contact@leojohnston.tech'
 image: 'images:debian/12'
-# Or use an .iso file on the system
+# Or use an .iso file on the system - must be accessable on the Nodes file system at the path specified
 #iso: 'path/to/iso/file.iso'
 
 type: 'VM'
