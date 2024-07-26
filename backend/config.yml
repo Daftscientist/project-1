@@ -73,4 +73,17 @@ oauth:
     login_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/auth/oauth/callback/discord' # - Redirect URI for logging in with Discord OAuth
     link_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/account/link/callback/discord' # - Redirect URI for linking Discord OAuth to a user account
     scopes: ['identify', 'email'] # - Discord OAuth scopes
-  
+  google:
+    enabled: false # - Enable Google OAuth
+    client_id: '' # - Google OAuth client ID
+    client_secret: '' # - Google OAuth client secret
+    login_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/auth/oauth/callback/google' # - Redirect URI for logging in with Google OAuth
+    link_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/account/link/callback/google' # - Redirect URI for linking Google OAuth to a user account
+    scopes: ['profile', 'email'] # - Google OAuth scopes
+  github:
+    enabled: false # - Enable GitHub OAuth
+    client_id: '' # - GitHub OAuth client ID
+    client_secret: '' # - GitHub OAuth client secret
+    login_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/auth/oauth/callback/github' # - Redirect URI for logging in with GitHub OAuth
+    link_redirect_uri: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev/api/v1/account/link/callback/github' # - Redirect URI for linking GitHub OAuth to a user account
+    scopes: ['read:user', 'user:email'] # - GitHub OAuth scopes
