@@ -1,10 +1,10 @@
 name: 'custom_chicken'
 version: '1.0.0'
-description: 'A custom chicken, running python :D'
+description: 'A custom application container chicken, running python :D'
 author: 'contact@leojohnston.tech'
 image: 'python:3.8'
 
-type: 'Application'
+type: 'OCI'
 
 scripts:
   start: 'python3 main.py'
@@ -13,5 +13,5 @@ scripts:
 env_variables:
   - name: 'API_KEY'
     value: '1234567890'
-  - name: 'SECRET
+  - name: 'SECRET'
     value: 'super_secret'

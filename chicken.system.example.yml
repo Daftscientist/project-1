@@ -1,0 +1,17 @@
+name: 'custom_chicken'
+version: '1.0.0'
+description: 'A custom system container chicken, running ubuntu :D'
+author: 'contact@leojohnston.tech'
+image: 'images:ubuntu/20.04'
+
+type: 'SYSTEM'
+
+scripts:
+  start: 'python3 main.py'
+  install: 'pip install -r requirements.txt'
+
+env_variables:
+  - name: 'API_KEY'
+    value: '1234567890'
+  - name: 'SECRET'
+    value: 'super_secret'

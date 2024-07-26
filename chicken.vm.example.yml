@@ -1,0 +1,15 @@
+name: 'custom_chicken'
+version: '1.0.0'
+description: 'A custom VM chicken, running debian :D'
+author: 'contact@leojohnston.tech'
+image: 'images:debian/12'
+# Or use an .iso file on the system
+#iso: 'path/to/iso/file.iso'
+
+type: 'VM'
+
+env_variables:
+  - name: 'API_KEY'
+    value: '1234567890'
+  - name: 'SECRET'
+    value: 'super_secret'
