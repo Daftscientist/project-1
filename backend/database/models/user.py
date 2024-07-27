@@ -179,6 +179,11 @@ class User(Base):
     setting_up_two_factor_authentication = Column(Boolean, nullable=False, default=False)
     #servers = relationship("Server", back_populates="user")
 
+    ## root_admin
+    is_root_admin = Column(Boolean, nullable=False, default=False)
+    ## staff_level
+    staff_level = Column(Integer, nullable=False, default=False)
+
     def to_dict(self):
             """
             Converts the User object to a dictionary.
