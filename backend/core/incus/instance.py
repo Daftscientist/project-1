@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+import datetime
+import uuid
 import aiohttp
 
 from core.incus.limits import IncusLimits
@@ -100,16 +102,9 @@ class IncusInstance:
             dict: The response from the instance.
         """
 
-        payload = {
-            'action': 'stop',
-            'forced': forced,
-            'timeout': timeout
-        }
+        await self.stop(forced, timeout)
 
-        async with aiohttp.ClientSession() as session:
-            async with session.put(f'{self.REST_endpoint_url}/instances/{self.instance_id}/state',
-                                    headers=self.headers, json=payload) as response:
-                return await response.json()
+        return await self.start(forced, timeout)
             
     async def get_state(self):
         """
@@ -121,13 +116,18 @@ class IncusInstance:
                                    headers=self.headers) as response:
                 return await response.json()
     
-    async def rebuild(self):
+    async def rebuild(self, empty='none'):
         """
-        This function is used to rebuild an instance.
+            This function is used to rebuild an instance.
+            - Default value for empty is 'none', which clears the instance root directory.
         """
 
         payload = {
-
+            {
+                "source": {
+                    "type": empty
+                }
+            }
         }
 
         async with aiohttp.ClientSession() as session:
@@ -176,6 +176,15 @@ class IncusInstance:
                 return await response.json()
     
     async def update(self, name: str = None, description: str = None, owner_id = None, limits: IncusLimits = None):
+        """
+        This function is used to update an instance.
+
+        Args:
+            name (str): The name of the instance.
+            description (str): The description of the instance.
+            owner_id (int): The ID of the owner of the instance.
+            limits (IncusLimits): The limits for the instance.
+        """
         if not name and not description and not limits:
             raise ValueError('At least one of name, description, or limits must be provided.')
         
@@ -199,5 +208,64 @@ class IncusInstance:
                                    headers=self.headers, json=payload) as response:
                 return await response.json()
     
-    async def create_backup():
-        pass
+    async def create_backup(self, expires_at: datetime.datetime=datetime.datetime.now() + datetime.timedelta(days=360)):
+        """
+        This function is used to create a backup of an instance.
+
+        Args:
+            expires_at (datetime.datetime): The time the backup expires.
+        """
+
+        backup_id = str(uuid.uuid4()) + "_" + self.owner_id
+
+        payload = {
+            "compression_algorithm": "gzip",
+            "expires_at": str(expires_at),
+            "instance_only": True,
+            "name": backup_id,
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(f'{self.REST_endpoint_url}/instances/{self.instance_id}/backups',
+                                    headers=self.headers, payload=payload) as response:
+                return await response.json()
+    
+    async def delete_backup(self, backup_id: str):
+        """
+        This function is used to delete a backup of an instance.
+
+        Args:
+            backup_id (str): The ID of the backup to delete
+        """
+
+        async with aiohttp.ClientSession() as session:
+            async with session.delete(f'{self.REST_endpoint_url}/instances/{self.instance_id}/backups/{backup_id}',
+                                      headers=self.headers) as response:
+                return await response.json()
+    
+    async def export_backup(self, backup_id: str) -> bytes:
+        """
+        This function is used to export a backup of an instance.
+
+        Args:
+            backup_id (str): The ID of the backup to export
+        """
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'{self.REST_endpoint_url}/instances/{self.instance_id}/backups/{backup_id}/export',
+                                   headers=self.headers) as response:
+                ## return the octet stream
+                return await response.read()
+    
+    async def backups(self):
+        """
+        This function is used to get the backups of an instance.
+        """
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'{self.REST_endpoint_url}/instances/{self.instance_id}/backups',
+                                   headers=self.headers) as response:
+                return await response.json()
+    
+
+    
