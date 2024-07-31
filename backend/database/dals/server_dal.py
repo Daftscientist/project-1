@@ -20,7 +20,7 @@ class ServerDAL():
 
     async def create_server(
         self, name: str,
-        node_identifier: int,
+        node_uuid: int,
         cpu_limit: int,
         memory_limit: int,
         disk_limit: int,
@@ -36,7 +36,7 @@ class ServerDAL():
 
         Args:
             name (str): The name of the server.
-            node_identifier (int): The identifier of the node.
+            node_uuid (int): The identifier of the node.
             cpu_limit (int): The CPU limit of the server.
             memory_limit (int): The memory limit of the server.
             disk_limit (int): The disk limit of the server.
@@ -52,7 +52,7 @@ class ServerDAL():
         """
         new_server = Server(
             name=name,
-            node_identifier=node_identifier,
+            node_uuid=node_uuid,
             cpu_limit=cpu_limit,
             memory_limit=memory_limit,
             disk_limit=disk_limit,

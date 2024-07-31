@@ -54,9 +54,9 @@ class IncusNode:
                                    headers=self.headers) as response:
                 return await response.json()
 
-    async def create_instance_oci(self, chicken: str, name: str, description: str, owner_id: int, limits: IncusLimits):
+    async def create_instance_oci(self, chicken: str, name: str, description: str, owner_id: int, limits: IncusLimits, network_ports: list):
         """
-        This function is used to create an OCI instance on the node.
+        This function is used to create an OCI instance on the node with specified networking.
 
         Args:
             chicken (str): The chicken to create the instance from.
@@ -64,16 +64,37 @@ class IncusNode:
             description (str): The description of the instance.
             owner_id (int): The ID of the owner of the instance.
             limits (IncusLimits): The limits for the instance.
+            network_ports (dict): A dictionary of ports to expose.
         """
 
         ## turn chicken yml string to dict
         chicken_dict = yaml.safe_load(chicken)
+
+        if chicken_dict.get('type') is None or chicken_dict.get('type') != 'oci':
+            raise ValueError('The chicken must be of type OCI.')
 
         instance_uuid = str(uuid.uuid4())
 
         ## take image from chicken and split it to server and alias
         image = chicken_dict['image']
         image = image.split('/', 1)
+
+        # Build the devices section with network configuration
+        devices = {
+            "root": {
+                "type": "disk",
+                "pool": "default",
+                "path": "/",
+            }
+        }
+
+        # Add network ports to the devices section
+        for port in network_ports:
+            devices[f"port{port}"] = {
+                "type": "proxy",
+                "listen": f"tcp:0.0.0.0:{port}",
+                "connect": f"tcp:127.0.0.1:{port}"
+            }
 
         payload = {
             "name": instance_uuid,  # Use the UUID as the instance name
@@ -83,39 +104,33 @@ class IncusNode:
                 "protocol": "oci",
                 "server": image[0]
             },
-        "profiles": ["default"],
-        "config": {
-            "limits.cpu": limits.cpu,
-            "limits.memory": limits.memory,
-            "limits.disk": limits.disk,
-            "limits.swap": limits.swap,
-            "limits.io": limits.io,
-            "volatile.metadata": json.dumps({
-                "name": name,
-                "description": description,
-                "owner_id": owner_id            
-            }),
-            "user.user-data": f"#cloud-config runcmd: {chicken_dict.get('scripts', {}).get('startup', '')}",
-            "user.vendor-data": f"#cloud-config runcmd: {chicken_dict.get('scripts', {}).get('install', '')}"
-        },
-        "devices": {
-            "root": {
-                "type": "disk",
-                "pool": "default",
-                "path": "/",
+            "profiles": ["default"],
+            "config": {
+                "limits.cpu": limits.cpu,
+                "limits.memory": limits.memory,
+                "limits.disk": limits.disk,
+                "limits.memory.swap": limits.swap,
+                "limits.io": limits.io,
+                "volatile.metadata": json.dumps({
+                    "name": name,
+                    "description": description,
+                    "owner_id": owner_id            
+                }),
+                "user.user-data": f"#cloud-config runcmd: {chicken_dict.get('scripts', {}).get('startup', '')}",
+                "user.vendor-data": f"#cloud-config runcmd: {chicken_dict.get('scripts', {}).get('install', '')}"
+            },
+            "devices": devices,
+            "environment": {
+                item['env_name']: item['default_value'] for item in chicken_dict['env_variables']
             }
-        },
-        "environment": {
-            item['env_name']: item['default_value'] for item in chicken_dict['env_variables']
         }
-    }
 
         async with aiohttp.ClientSession() as session:
             async with session.post(f'{self.REST_endpoint_url}/instances',
                                      json=payload, headers=self.headers) as response:
                 return await response.json()
 
-    async def get_instance(self, instance_id: str):
+    async def get_instance(self, instance_id: str) -> IncusInstance:
         """
         This function is used to get an instance from the node.
 
@@ -148,7 +163,14 @@ class IncusNode:
                     ip=instance['ip'],
                     port=instance['port']
                 )
-            
+    
+    """    # get a list of all ports in use by containers
+        async def get_ports(self):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f'{self.REST_endpoint_url}/ports',
+                                    headers=self.headers) as response:
+                    return await response.json()"""
+
     async def get_instances(self):
         """
         This function is used to get all instances from the node.
@@ -163,20 +185,31 @@ class IncusNode:
                 instances = await response.json()
 
                 return instances
-"""                return [IncusInstance(
-                    instance_id=instance['id'],
-                    name=instance['metadata']['name'],
-                    description=instance['metadata']['description'],
-                    owner_id=instance['metadata']['owner_id'],
-                    limits=IncusLimits(
-                        cpu=instance['metadata']['limits']['cpu'],
-                        memory=instance['metadata']['limits']['memory'],
-                        disk=instance['metadata']['limits']['disk'],
-                        swap=instance['metadata']['limits']['swap'],
-                        io=instance['metadata']['limits']['io']
-                    ),
-                    node_id=self.node_id,
-                    status=instance['status'],
-                    ip=instance['ip'],
-                    port=instance['port']
-                ) for instance in instances]"""
+
+    async def add_docker_registry(self, alias: str, url: str, protocol: str = 'oci', username: str = None, password: str = None):
+        """
+        This function is used to add a Docker registry to the node.
+
+        Args:
+            alias (str): The alias name for the Docker registry.
+            url (str): The URL of the Docker registry.
+            protocol (str): The protocol of the Docker registry (default: 'oci').
+            username (str): The username for the Docker registry (optional).
+            password (str): The password for the Docker registry (optional).
+        """
+
+        payload = {
+            "name": alias,
+            "url": url,
+            "protocol": protocol,
+        }
+
+        if username and password:
+            payload["auth_type"] = "basic"
+            payload["username"] = username
+            payload["password"] = password
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(f'{self.REST_endpoint_url}/remotes',
+                                    json=payload, headers=self.headers) as response:
+                return await response.json()

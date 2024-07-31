@@ -49,7 +49,7 @@ class IncusManager:
         # Convert to YAML
         return yaml.dump(blendpanel_egg, sort_keys=False)
     
-    async def get_node(self, node_id: int):
+    async def get_node(self, node_id: int) -> IncusNode:
         """
         Get a node from the database and return a IncusNode object
 

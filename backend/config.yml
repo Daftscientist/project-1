@@ -1,21 +1,24 @@
+# Description: Configuration file for the API.
+# Info: Restart the webserver for the changes to take effect.
+#      The configuration file is in YAML format
 server:
   debug: true # - Enable exception stack traces in console
   reload: true # - Reload the server when code changes
 customization:
   title: 'API' # - Title of the API
 routing:
-  context_path: /api # - Base path for all API endpoints
-  enabled_versions: [1] # - List of enabled API versions
+  context_path: /api # - Base path for all API endpoints - must start with a forward slash - could break any harcoded URLs in the frontend
+  enabled_versions: [1] # - List of enabled API versions - Enabling multiple will allow users to use any of the enabled versions, breaking changes could clash. - Must be a list
 database:
-  url: 'sqlite+aiosqlite:///./test.db'
-  create_tables: false # - Create tables on startup/reload
+  url: 'sqlite+aiosqlite:///./test.db' # - URL of the database - can be any SQLAlchemy compatible URL
+  create_tables: false # - Create tables on startup/reload, this will delete all data on startup if set to true
 session:
-  cookie_identifier: 'session' # - Name of the cookie used to store the session ID
-  user_max_sessions: 3 # - Maximum number of sessions a user can have at the same time
-  session_max_age: 604800 # - Amount of time a session will last for (in seconds)
-  session_cleanup_interval: 3600 # - Clear expired sessions every hour
-  cookie_secure: true # - Only send cookies over HTTPS
-  cookie_http_only: true # - Disallow JavaScript from accessing cookies
+  cookie_identifier: 'session' # - Name of the cookie used to store the session ID - changing this invalidates all existing sessions
+  user_max_sessions: 3 # - Maximum number of sessions a user can have at the same time - lowering this in production will cause issues for users
+  session_max_age: 604800 # - Amount of time a session will last for (in seconds) - 604800 = 1 week
+  session_cleanup_interval: 3600 # - Clear expired sessions every x seconds - 3600 = 1 hour
+  cookie_secure: true # - Only send cookies over HTTPS - should always be true in production
+  cookie_http_only: true # - Disallow JavaScript from accessing cookies - i.e. stopping them from being modified by malicious scripts/actors
 2fa:
   enabled: true # - Allow users to choose to enable 2FA
   forced: false # - Force users to enable 2FA
@@ -25,13 +28,18 @@ session:
 
   backup_codes: 5 # - Number of recovery codes to generate
   backup_code_length: 16 # - Length of each recovery code (must be an even number)
-
 email:
   host: 'smtp.gmail.com' # - SMTP server host
   port: 587 # - SMTP server port
   username: '' # - SMTP server username
   password: '' # - SMTP server password
   sender: '' # - Email address to send emails from
+
+  # Further configuration for email OAuth:
+  ## These variables are optional and when sending emails, the placeholder values will be replaced with the actual values
+  ### {verification_url} - URL to verify the email address
+  #### {login_url} - URL to login to the account
+  ##### {reset_url} - URL to reset the password
   welcome_email:
     enabled: false # - Enable welcome emails
     subject: 'Welcome to the API' # - Subject of the welcome email
@@ -51,15 +59,14 @@ email:
     subject: 'Reset your password' # - Subject of the password reset email
     plain_body: 'Click the following link to reset your password: {reset_url}' # - Plain text body of the password reset email
     html_body_file: 'password_reset_email.html' # - HTML body of the password reset email
-
 core:
-  frontend_url: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev'
-  encryption_key: 'wLtgFX0SyIB6V2gMTEmHIxEQNac5wpVuxlqIApGz7NM=' # - Key used to encrypt sensitive data
-  password_salt: 'salt' # - Salt used to hash passwords
-  cookie_secret: 'secret' # - Secret used to sign cookies
-  cookie_algorithm: 'HS256' # - Algorithm used to sign cookies
-  default_avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' # - Default avatar URL for new users
-  password_min_length: 8 # - Minimum length of a users password
+  frontend_url: 'https://congenial-fiesta-9wj49x4455v2vwx-8000.app.github.dev' # - URL of the frontend - used for CORS and to redirect users
+  encryption_key: 'wLtgFX0SyIB6V2gMTEmHIxEQNac5wpVuxlqIApGz7NM=' # - Key used to encrypt sensitive data in the database - must be 32 bytes long - can be generated with os.urandom(32) - DO NOT CHANGE THIS AFTER USERS HAVE REGISTERED
+  password_salt: 'salt' # - Salt used to hash passwords - can be any string - DO NOT CHANGE THIS AFTER USERS HAVE REGISTERED
+  cookie_secret: 'secret' # - Secret used to sign cookies - can be any string - Changing this will invalidate all existing sessions
+  cookie_algorithm: 'HS256' # - Algorithm used to sign cookies - can be any algorithm supported by PyJWT - Changing this will invalidate all existing sessions
+  default_avatar: 'https://cdn.discordapp.com/embed/avatars/0.png' # - Default avatar URL for new users - Should be a URL to an image
+  password_min_length: 8 # - Minimum length of a users password - Changing this in production will not have any effect on existing users
   password_reset_code_expiry: 18000 # - Amount of time a password reset code will last for (in seconds)
 oauth:
   email:
